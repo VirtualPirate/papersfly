@@ -1,0 +1,163 @@
+/*
+ * "Classic" resume design — single column, editorial serif name over a clean
+ * sans body. Everything is sized in `pt` via the CSS variables set from
+ * theme.ts, so these are the very same numbers the jsPDF writer draws with.
+ *
+ * Spacing strategy: elements use margin-TOP only (never margin-bottom) so there
+ * is no margin-collapsing to reason about — blocks simply stack by their top
+ * gap, mirroring the PDF writer's top-down cursor.
+ */
+
+.resume-page {
+  width: var(--page-w);
+  min-height: var(--page-h);
+  box-sizing: border-box;
+  padding: var(--margin-top) var(--margin-x) var(--margin-bottom);
+  background: #ffffff;
+  color: var(--c-ink);
+  font-family: var(--f-sans);
+  font-size: var(--s-body);
+  line-height: var(--lh-body);
+  /* Keep text crisp on screen; the PDF is independent of this. */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+/* ---- Header ---------------------------------------------------------- */
+.resume-name {
+  margin: 0;
+  font-family: var(--f-serif);
+  font-weight: 700;
+  font-size: var(--s-name);
+  line-height: 1.02;
+  letter-spacing: -0.2pt;
+  color: var(--c-ink);
+}
+
+.resume-headline {
+  margin: var(--sp-after-name) 0 0;
+  font-weight: 600;
+  font-size: var(--s-headline);
+  letter-spacing: var(--tracking-headline);
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+.resume-contact {
+  margin: var(--sp-after-headline) 0 0;
+  font-size: var(--s-contact);
+  line-height: var(--lh-contact);
+  color: var(--c-muted);
+}
+.resume-contact .sep {
+  color: var(--c-faint);
+  padding: 0 5pt;
+}
+
+.header-rule {
+  margin-top: var(--sp-after-contact);
+  border: 0;
+  border-top: var(--rule-w) solid var(--c-rule);
+}
+
+/* ---- Sections -------------------------------------------------------- */
+.resume-section {
+  margin-top: var(--sp-section-top);
+}
+.section-heading {
+  margin: 0;
+  font-weight: 600;
+  font-size: var(--s-section);
+  letter-spacing: var(--tracking-section);
+  text-transform: uppercase;
+  color: var(--c-accent);
+  padding-bottom: 4pt;
+  border-bottom: var(--rule-w) solid var(--c-rule);
+}
+.section-body {
+  margin-top: var(--sp-after-section-heading);
+}
+
+/* ---- Summary --------------------------------------------------------- */
+.resume-summary {
+  margin: 0;
+  color: var(--c-ink);
+}
+
+/* ---- Experience / Education items ------------------------------------ */
+.resume-item + .resume-item {
+  margin-top: var(--sp-item-gap);
+}
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12pt;
+}
+.item-title {
+  font-weight: 600;
+  font-size: var(--s-role);
+  color: var(--c-ink);
+}
+.item-date {
+  flex: none;
+  font-size: var(--s-date);
+  color: var(--c-faint);
+  white-space: nowrap;
+}
+.item-org {
+  margin-top: var(--sp-after-item-header);
+  font-size: var(--s-org);
+  color: var(--c-accent);
+}
+.item-org .org-location {
+  color: var(--c-muted);
+}
+.item-detail {
+  margin-top: var(--sp-after-item-header);
+  font-size: var(--s-body);
+  color: var(--c-muted);
+}
+
+/* ---- Bullets --------------------------------------------------------- */
+.bullets {
+  margin: var(--sp-after-org) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.bullets li {
+  position: relative;
+  padding-left: var(--bullet-indent);
+  color: var(--c-ink);
+}
+.bullets li + li {
+  margin-top: var(--sp-bullet-gap);
+}
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 2pt;
+  top: calc(var(--lh-body) / 2 - 1pt);
+  width: 2.4pt;
+  height: 2.4pt;
+  border-radius: 50%;
+  background: var(--c-accent);
+}
+
+/* ---- Skills ---------------------------------------------------------- */
+.skill-row {
+  display: flex;
+  gap: var(--sp-skill-gap);
+}
+.skill-row + .skill-row {
+  margin-top: var(--sp-skill-row-gap);
+}
+.skill-label {
+  flex: none;
+  width: var(--skill-label-w);
+  font-weight: 600;
+  color: var(--c-ink);
+}
+.skill-values {
+  color: var(--c-muted);
+}

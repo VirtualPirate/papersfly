@@ -1,0 +1,34 @@
+/*
+ * @font-face for the on-screen preview. These load the SAME subset TTFs that
+ * are embedded (as base64) into the PDF, so screen and print typography match.
+ * Vite bundles + fingerprints these as static assets; they load once at page
+ * load (not on download) and are then cached for offline use.
+ */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("./inter-regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url("./inter-semibold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url("./inter-bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "SourceSerif";
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url("./serif-bold.ttf") format("truetype");
+}

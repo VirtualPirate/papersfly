@@ -1,0 +1,27 @@
+{
+  "name": "vector-resume-builder",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Fully client-side resume builder that exports a true-vector PDF (selectable text, embedded fonts) with no backend.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "gen:fonts": "node scripts/gen-fonts.mjs",
+    "verify:pdf": "node scripts/verify-pdf.mjs"
+  },
+  "dependencies": {
+    "jspdf": "^2.5.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "pdfjs-dist": "^4.7.76",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}
