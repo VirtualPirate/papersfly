@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { App } from "../App";
+
+const title = "Vector Résumé Builder — Free True-Vector PDF Résumé Maker";
+const description =
+  "Build a résumé in your browser and export a true-vector PDF with selectable text and embedded fonts. 100% client-side, works offline, no signup.";
+---
+
+<BaseLayout title={title} description={description}>
+  {/* The tool is browser-only (jsPDF + live layout measurement), so it renders
+      client-side. This static skeleton gives an instant paint and a crawlable
+      heading; the inline script removes it the moment the React app mounts. */}
+  <div id="app-skeleton" class="app-skeleton">
+    <h1>Vector Résumé Builder</h1>
+    <p>Live preview · true-vector PDF · 100% offline</p>
+    <p class="app-skeleton__hint">Loading the editor…</p>
+  </div>
+
+  <App client:only="react" />
+</BaseLayout>
+
+<script is:inline>
+  // Remove the static skeleton as soon as the React app (.app) mounts. Decoupled
+  // from React/Astro internals so it survives version changes.
+  const skeleton = document.getElementById("app-skeleton");
+  if (skeleton) {
+    const obs = new MutationObserver(() => {
+      if (document.querySelector(".app")) {
+        skeleton.remove();
+        obs.disconnect();
+      }
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+  }
+</script>

@@ -6,17 +6,36 @@ selectable, searchable text and embedded fonts, never a screenshot. No backend, 
 no network call to generate or download the file. It works offline after the first load.
 
 ```bash
-npm install
-npm run dev      # open the printed localhost URL
+pnpm install
+pnpm dev        # Astro dev server — open the printed localhost URL
 ```
 
 Other scripts:
 
 ```bash
-npm run build        # type-check + static production build into dist/
-npm run preview      # serve the production build locally
-npm run gen:fonts    # regenerate the embedded base64 font module from the TTFs
+pnpm build       # astro check (type-check) + static production build into dist/
+pnpm preview     # serve the production build locally
+pnpm gen:fonts   # regenerate the embedded base64 font module from the TTFs
+pnpm gen:og      # regenerate public/og-image.png (social card)
 ```
+
+## Hosting & SEO
+
+The app is built with **Astro** (static output). The résumé tool itself is a browser-only
+React island mounted with `client:only="react"` — Astro renders no application logic on the
+server; it renders the SEO-rich `<head>` and a lightweight pre-hydration skeleton. All SEO
+lives in that statically rendered `<head>`: `<title>`, description, canonical, Open Graph,
+Twitter card, and a JSON-LD `WebApplication` schema. The build also emits an auto-generated
+`sitemap-index.xml` (via `@astrojs/sitemap`) and a `robots.txt` that points at it.
+
+**Set the production domain in one place:** the `SITE` constant (the `site` option) in
+[`astro.config.mjs`](astro.config.mjs). Canonical URLs, Open Graph/Twitter image URLs, the
+sitemap, and `robots.txt` all derive from it — `https://example.com` is a placeholder until
+the real domain is chosen. For a subpath deploy (e.g. a GitHub Pages project site), also set
+`base`.
+
+Output is fully static (`dist/`), so it deploys to any static host with no adapter or
+server runtime required.
 
 ## How it produces a vector PDF, client-side, with no backend (the short version)
 

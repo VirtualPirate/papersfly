@@ -8,7 +8,6 @@ import {
 } from "react";
 import { SchemaForm } from "./forms/SchemaForm";
 import { documents, defaultDocument } from "./documents/registry";
-import { downloadResumePdf } from "./pdf/download";
 import { theme } from "./theme/theme";
 import { collectResumeText, unsupportedChars } from "./fonts/coverage";
 
@@ -102,6 +101,7 @@ export function App() {
     let cancelled = false;
     (async () => {
       try {
+        const { downloadResumePdf } = await import("./pdf/download");
         await downloadResumePdf(host, "resume.pdf");
       } catch (err) {
         console.error("PDF generation failed:", err);

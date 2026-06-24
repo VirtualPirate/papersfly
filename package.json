@@ -5,19 +5,25 @@
   "type": "module",
   "description": "Fully client-side resume builder that exports a true-vector PDF (selectable text, embedded fonts) with no backend.",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
     "gen:fonts": "node scripts/gen-fonts.mjs",
+    "gen:og": "node scripts/gen-og.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@astrojs/react": "^4.4.2",
+    "@astrojs/sitemap": "^3",
+    "astro": "^5.18.2",
     "jspdf": "^2.5.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9",
+    "@resvg/resvg-js": "^2.6.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
