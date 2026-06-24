@@ -2,7 +2,7 @@
 
 A fully **client-side** résumé builder. Fill in your content, watch a live HTML/CSS
 preview, and click **Download PDF** to get a **true-vector** PDF (`resume.pdf`) — real
-selectable, searchable text and vector strokes, never a screenshot. No backend, no server,
+selectable, searchable text and embedded fonts, never a screenshot. No backend, no server,
 no network call to generate or download the file. It works offline after the first load.
 
 ```bash
@@ -15,89 +15,100 @@ Other scripts:
 ```bash
 npm run build        # type-check + static production build into dist/
 npm run preview      # serve the production build locally
-npm run verify:pdf   # generate resume.pdf in Node and assert it is true vector
 npm run gen:fonts    # regenerate the embedded base64 font module from the TTFs
 ```
 
 ## How it produces a vector PDF, client-side, with no backend (the short version)
 
-The design is authored as an **HTML/CSS template** and every measurement — page size,
+The résumé is authored **once** as an HTML/CSS template (`ClassicPreview` +
+[`classic.css`](src/templates/classic/classic.css)), and every measurement — page size,
 margins, font sizes, line heights, gaps — is expressed in **points (pt)** in one shared
-[`theme.ts`](src/theme/theme.ts), so the CSS preview (`pt` is a real CSS unit) and the PDF
-writer draw from the exact same numbers. On download, [`buildPdf`](src/pdf/buildPdf.ts)
-creates a **jsPDF** document, registers two **TTF fonts embedded as base64** in the JS
-bundle (so font setup makes zero network requests), and the template's
-[`classicToPdf`](src/templates/classic/classicPdf.ts) walks the content top-to-bottom
-emitting jsPDF `text`/`line`/`circle` calls — so glyphs become embedded-font outlines and
-rules become vector strokes. `doc.save("resume.pdf")` serializes the document to a Blob and
-clicks a temporary object-URL `<a download>` — a direct download with **no `window.print()`,
-no print dialog, and no server round-trip**. Because the text is real font-backed text (not
-a rasterized image), it stays selectable, searchable, and crisp at any zoom.
+[`theme.ts`](src/theme/theme.ts), so the page renders at its true physical size
+(612pt × 792pt). On download, [`download.ts`](src/pdf/download.ts) hands that rendered DOM
+to **jsPDF's `doc.html()`**, which walks the elements and emits **native, selectable
+vector text** for every run (plus vector strokes for the rules) — not a rasterized image.
+Custom fonts come through because the TTFs are embedded with `addFont` and mapped onto the
+CSS via the `fontFaces` option (see [`registerFonts.ts`](src/fonts/registerFonts.ts)), so
+the PDF carries the real **Inter / Source Serif** glyph programs (`/FontFile2`) instead of
+falling back to Helvetica. `doc.save("resume.pdf")` serializes to a Blob and clicks a
+temporary object-URL `<a download>` — a direct download with **no `window.print()`, no
+print dialog, and no server round-trip**.
 
 ## Architecture
 
 ```
 src/
   theme/theme.ts                  Shared design tokens in pt — the single source of truth
-                                  for both renderers (also exposed as CSS custom properties).
+                                  for the layout (also exposed as CSS custom properties).
   data/resume.ts                  ResumeData types + realistic sample content. Content only;
                                   no design lives here.
   templates/
-    types.ts                      Template = { id, name, Preview, toPdf } over ResumeData.
+    types.ts                      Template = { id, name, Preview } over ResumeData.
     registry.ts                   List of templates. Add a design = add a module here.
     classic/
       classic.css                 The DESIGN, authored in HTML/CSS (pt units via theme vars).
-      ClassicPreview.tsx          Renders ResumeData -> live HTML/CSS preview.
-      classicPdf.ts               Maps the SAME layout -> jsPDF vector draw calls.
-      index.ts                    Bundles the two into one Template.
+      ClassicPreview.tsx          Renders ResumeData -> HTML/CSS. This IS the PDF source.
+      index.ts                    Bundles the preview into one Template.
   fonts/
     *.ttf                         Subset (Latin) Inter + Source Serif 4, OFL-licensed.
     fonts.css                     @font-face for the preview (same TTFs as the PDF).
     fontData.ts                   AUTO-GENERATED base64 of the TTFs for jsPDF embedding.
-    registerFonts.ts              Registers the embedded fonts onto a jsPDF doc.
+    registerFonts.ts              Embeds the fonts (addFont) + the doc.html() fontFaces map.
   pdf/
-    buildPdf.ts                   Pure, isomorphic: (template, data) -> jsPDF document.
-    download.ts                   buildPdf + doc.save() -> direct Blob download.
+    download.ts                   Renders the live DOM via doc.html() -> direct Blob download.
   components/EditorForm.tsx        Controlled form; every edit -> new ResumeData -> live update.
-  App.tsx                          Two-pane shell: editor + scaled live preview + Download.
+  App.tsx                          Editor + scaled live preview + an offscreen, true-size copy
+                                   used as the PDF capture source.
 scripts/
   gen-fonts.mjs                   TTF -> base64 module (run via npm run gen:fonts).
-  verify-pdf.mjs                  Headless true-vector verification (npm run verify:pdf).
+  inspect-pdf.mjs                 Forensic vector-vs-raster classifier for any PDF (see below).
 ```
 
 **Content vs. design separation.** `ResumeData` (content) flows into a `Template` (design).
 Editing the form produces a new immutable `ResumeData`, which re-renders the preview and
-feeds the PDF writer. Adding a new design means adding one template module (a `Preview`
-component + a `toPdf` writer) to `registry.ts` — content never changes.
+feeds the PDF. Adding a new design means adding one template module (a `Preview` component)
+to `registry.ts`; content never changes.
 
-**Why two renderers from one theme?** The PDF is not a screenshot of the DOM, so it can't be
-"the same" automatically. Instead both renderers consume the same pt-based tokens: the CSS
-uses them as custom properties (the preview page is rendered at true physical size,
-612×792pt = 816×1056px, then scaled to fit the screen), and the jsPDF writer uses the same
-numbers as drawing coordinates. Keep them in sync by changing tokens in one place.
+**One source of truth.** Unlike a hand-drawn PDF writer, the design is expressed exactly
+once — in HTML/CSS. `doc.html()` captures the same rendered markup the preview shows, so
+there is no second renderer to keep in sync.
 
-## Why jsPDF (and not dompdf.js / a DOM-to-PDF parser)
+**Why an offscreen capture copy?** `doc.html()` reads layout from a *laid-out, untransformed*
+DOM. The visible preview is wrapped in a `transform: scale()` to fit the screen, which would
+distort the capture, so `App` also renders a hidden, true-size copy of the page and points
+`doc.html()` at that. `download.ts` neutralizes the preview's full-page `min-height` inline
+on the captured node (the clone `doc.html()` makes drops ancestor selectors) so a one-page
+résumé doesn't spill a trailing blank page on the 792pt boundary.
 
-The spec allowed either jsPDF with a hand-mapped layout, or a DOM/CSS-parsing library like
-dompdf.js. I chose **jsPDF as the PDF writer** because it reliably delivers all of the hard
-requirements *today*: true-vector embedded-font text, a direct Blob download, and fully
-offline operation, with a stable font-embedding path. DOM-parsing-to-PDF libraries get you
-closer to "render the literal template" but are newer and less predictable around custom
-font embedding and CSS edge cases. The trade-off is that the design must be expressed twice
-(CSS + jsPDF mapping); the shared pt-token system keeps that cheap and the two outputs
-aligned. Explicitly **not used**: html2canvas / html2pdf.js / any screenshot-to-canvas
-approach (those rasterize), and any server-side rendering. jsPDF's optional raster deps
-(`html2canvas`, `dompurify`, `canvg`, reachable only via the unused `doc.html()`) are
-stubbed out in [`vite.config.ts`](vite.config.ts) so they never enter the bundle.
+## Why `doc.html()` (a DOM-to-PDF renderer)
+
+`doc.html()` lets us author the design once in HTML/CSS and get selectable, embedded-font
+vector text out the other side — no parallel hand-mapped layout to maintain. The trade-offs,
+which are acceptable for a client-side résumé download, are:
+
+- **Browser-only.** It needs a real, laid-out DOM (computed styles, geometry), so PDF
+  generation can't run headless in Node. (This is why there is no Node `verify:pdf` script;
+  see Verification.)
+- **Partial CSS.** The native renderer handles document-flow layouts (blocks, text,
+  spacing) well; it does **not** fully support flexbox/grid/transforms, so the template is
+  authored in plain block flow.
+- **Pagination control is coarser** than a hand-mapped writer (see Notes & limitations).
+
+Explicitly **not** used: html2pdf.js or any screenshot approach that flattens the page into
+a non-selectable image. Note that jsPDF's `doc.html()` *does* always load and run
+html2canvas — but as its DOM layout/rendering **engine**, drawing through jsPDF's vector
+`context2d` (whose text path emits real `pdf.text()` glyph runs), not onto a raster canvas.
+So the output is selectable vector text, verified by **659 text-show operators and zero
+`/Subtype /Image`** in the sample export.
 
 ## Fonts
 
-Typography uses **Inter** (sans body) and **Source Serif 4** (the serif name), both
-OFL-licensed (licenses in [`src/fonts/`](src/fonts)). The TTFs are **subset to Latin +
-typographic punctuation** (~33–40 KB each) so both the bundle and the embedded font program
-in each PDF stay small. The same TTFs power the on-screen `@font-face` and the PDF embedding,
-so screen and print typography match. `fontData.ts` (base64) is generated from the TTFs by
-`npm run gen:fonts`.
+Typography uses **Inter** (sans body, weights 400/600) and **Source Serif 4** (the serif
+name, weight 700), both OFL-licensed (licenses in [`src/fonts/`](src/fonts)). The TTFs are
+**subset to Latin + typographic punctuation** (~33–40 KB each) so both the bundle and the
+embedded font program in each PDF stay small. The same TTFs power the on-screen `@font-face`
+and the PDF embedding (via `addFont` + the `doc.html()` `fontFaces` map), so screen and PDF
+typography match. `fontData.ts` (base64) is generated from the TTFs by `npm run gen:fonts`.
 
 Because the fonts are subset to Latin, characters from other scripts (CJK, Cyrillic, Greek,
 etc.) have no glyph and would be dropped from the PDF. Rather than fail silently, the app
@@ -107,33 +118,30 @@ chain) and widen the `pyftsubset` unicode set in the font-prep step.
 
 ## Notes & limitations
 
-- **Pagination.** The PDF writer breaks across pages (it keeps whole lines/bullets together,
-  reserves the date column, and never strands a section heading). The on-screen preview is a
-  single continuous sheet, so for content that runs onto a second page the preview shows
-  everything in one tall sheet while the PDF is the paginated source of truth. The bundled
-  sample fits one page.
-- **Two renderers.** The PDF is not a DOM screenshot, so the design is expressed twice (CSS +
-  jsPDF), both driven by the shared pt tokens. They aim to mirror, not be pixel-identical.
+- **Pagination.** `doc.html()` paginates automatically (`autoPaging: "text"`). The bundled
+  sample fits one page, which is the supported case. Page margins come from the template's
+  own padding, applied **once** around the whole block — so a résumé that overflows onto a
+  second page keeps a top margin only on page 1 and a bottom margin only on the last page;
+  intermediate breaks have no margin and content can run to the sheet edge. Doing multi-page
+  properly means moving margins to `doc.html()`'s per-page `margin` option; until then treat
+  more than one page as degraded.
+- **Single renderer.** The PDF is captured from the live HTML/CSS, so there is no separate
+  PDF layout to drift out of sync — at the cost of being bound to what `doc.html()` can
+  render (see "Why `doc.html()`").
 
 ## Verification
 
-`npm run verify:pdf` runs the app's real `buildPdf` in Node (no browser), writes
-`resume.pdf`, and asserts:
-
-- `/Producer` is `jsPDF 2.5.2` (metadata names the library);
-- `/FontFile2` is present — the TrueType program is embedded (CID TrueType, Identity-H);
-- there is **no** `/Subtype /Image` — nothing is rasterized;
-- **pdf.js** extracts the real text (selectable / searchable), matching expected strings.
-
-See the latest run's results in the project notes; on a clean machine you can reproduce
-selectable-text and embedding evidence with poppler too:
+Because generation is browser-only, there is no headless Node check. To confirm an exported
+PDF is true vector with embedded fonts, download `resume.pdf` and inspect it:
 
 ```bash
 pdffonts resume.pdf     # Inter / SourceSerif -> "CID TrueType ... emb yes ... uni yes"
 pdftotext resume.pdf -  # prints the résumé text, proving it is real text, not an image
+node scripts/inspect-pdf.mjs resume.pdf   # pdf.js-based: pages, embedded fonts, /Image, text
 ```
 
-Browser checks performed during development: generating the PDF fired **zero** network
-requests (instrumented `fetch`/`XHR`/`sendBeacon` + DevTools network panel), and generation
-runs entirely from in-memory data + embedded fonts, so it works with the network
-disconnected.
+`scripts/inspect-pdf.mjs` reports the producer, embedded-font subtypes (`/FontFile2`,
+`CIDFontType2`/`Type0`), the count of text-drawing vs image-paint operators, the extracted
+text, and a VECTOR/RASTER verdict — the same forensic signals used to validate this build
+(single page, embedded Inter + Source Serif, zero rasterized images, and ~2k chars of
+selectable text for the bundled sample).

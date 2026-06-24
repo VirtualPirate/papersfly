@@ -19,13 +19,6 @@
   src: url("./inter-semibold.ttf") format("truetype");
 }
 @font-face {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 700;
-  font-display: block;
-  src: url("./inter-bold.ttf") format("truetype");
-}
-@font-face {
   font-family: "SourceSerif";
   font-style: normal;
   font-weight: 700;

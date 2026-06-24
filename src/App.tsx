@@ -9,6 +9,7 @@ import { collectResumeText, unsupportedChars } from "./fonts/coverage";
 // The page at true physical size, in CSS px (96dpi): pt * 96 / 72.
 const PX = 96 / 72;
 const PAGE_W_PX = theme.page.width * PX;
+const PAGE_H_PX = theme.page.height * PX;
 
 export function App() {
   const [data, setData] = useState<ResumeData>(sampleResume);
@@ -22,7 +23,16 @@ export function App() {
   const stageRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
-  const [frame, setFrame] = useState({ w: PAGE_W_PX, h: PAGE_W_PX * 1.294 });
+  const [frame, setFrame] = useState({ w: PAGE_W_PX, h: PAGE_H_PX });
+
+  // PDF export. The capture copy is mounted ONLY during a download (so live edits
+  // don't pay for a second always-on render of the whole résumé) and is fed a
+  // FROZEN snapshot of the data (so typing mid-export can't change what
+  // doc.html() is measuring).
+  const pdfSourceRef = useRef<HTMLDivElement>(null);
+  const [exportData, setExportData] = useState<ResumeData | null>(null);
+  const [downloading, setDownloading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Subscribe ONCE on mount. The observer watches the stage (width) and the
   // page (content height), so data edits still update the frame without
@@ -58,7 +68,42 @@ export function App() {
     };
   }, []);
 
-  const handleDownload = () => downloadResumePdf(template, data, "resume.pdf");
+  // Once the frozen capture copy has mounted and laid out, export it then unmount.
+  // Running from a layout effect guarantees the node is committed and measurable
+  // before doc.html() reads it.
+  useLayoutEffect(() => {
+    if (!exportData) return;
+    const host = pdfSourceRef.current?.querySelector<HTMLElement>(".resume-page");
+    if (!host) {
+      setDownloading(false);
+      setExportData(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        await downloadResumePdf(host, "resume.pdf");
+      } catch (err) {
+        console.error("PDF generation failed:", err);
+        if (!cancelled) setError("Could not generate the PDF. Please try again.");
+      } finally {
+        if (!cancelled) {
+          setDownloading(false);
+          setExportData(null);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [exportData]);
+
+  const handleDownload = () => {
+    if (downloading) return;
+    setError(null);
+    setDownloading(true);
+    setExportData(data); // freeze content + mount the offscreen capture copy
+  };
   const handleReset = () => setData(sampleResume);
 
   return (
@@ -72,18 +117,35 @@ export function App() {
           <button className="btn btn-ghost" onClick={handleReset}>
             Reset sample
           </button>
-          <button className="btn btn-primary" onClick={handleDownload}>
-            ↓ Download PDF
+          <button
+            className="btn btn-primary"
+            onClick={handleDownload}
+            disabled={downloading}
+          >
+            {downloading ? "Generating…" : "↓ Download PDF"}
           </button>
         </div>
       </header>
 
+      {error && (
+        <div className="warning-bar" role="alert">
+          <span>
+            <strong>PDF error:</strong> {error}
+          </span>
+          <button className="bar-dismiss" onClick={() => setError(null)} aria-label="Dismiss">
+            ×
+          </button>
+        </div>
+      )}
+
       {unsupported.length > 0 && (
         <div className="warning-bar" role="alert">
-          <strong>Heads up:</strong> this template's font can't render{" "}
-          {unsupported.slice(0, 12).map((c) => `“${c}”`).join(", ")}
-          {unsupported.length > 12 ? " …" : ""}. Those characters will be left out of the
-          PDF.
+          <span>
+            <strong>Heads up:</strong> this template's font can't render{" "}
+            {unsupported.slice(0, 12).map((c) => `“${c}”`).join(", ")}
+            {unsupported.length > 12 ? " …" : ""}. Those characters will be left out of
+            the PDF.
+          </span>
         </div>
       )}
 
@@ -104,6 +166,29 @@ export function App() {
           </div>
         </div>
       </div>
+
+      {/*
+        Offscreen, true-size capture source for doc.html(). Mounted only during a
+        download and fed a frozen snapshot, so it neither slows live editing nor
+        shifts under concurrent edits. doc.html() needs a laid-out, untransformed
+        DOM — the visible preview is transform:scaled, so it can't be used.
+      */}
+      {exportData && (
+        <div
+          ref={pdfSourceRef}
+          className="pdf-capture"
+          aria-hidden
+          style={{
+            position: "fixed",
+            left: "-10000px",
+            top: 0,
+            width: PAGE_W_PX,
+            pointerEvents: "none",
+          }}
+        >
+          <Preview data={exportData} />
+        </div>
+      )}
     </div>
   );
 }

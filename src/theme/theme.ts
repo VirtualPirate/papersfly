@@ -2,11 +2,11 @@
  * Design tokens for the resume, expressed in PostScript POINTS (pt).
  *
  * Why points? A PDF page is measured in pt (1pt = 1/72 inch) and so is CSS
- * (`pt` is a real CSS unit). By authoring every size, gap and margin in pt we
- * can feed the SAME numbers to the HTML/CSS preview and to the jsPDF writer —
- * one source of truth, so the on-screen design and the vector PDF stay in lock
- * step. The preview renders the page at its true physical size (612pt x 792pt =
- * 816px x 1056px at 96dpi) and simply scales the whole sheet to fit the screen.
+ * (`pt` is a real CSS unit). Authoring every size, gap and margin in pt lets the
+ * preview render the page at its TRUE physical size (612pt x 792pt = 816px x
+ * 1056px at 96dpi); `doc.html()` then captures that same rendered HTML into the
+ * vector PDF, so the screen design and the PDF share one source of truth. The
+ * preview scales the whole sheet down only to fit it on screen.
  */
 import type { CSSProperties } from "react";
 
@@ -67,10 +67,10 @@ export const theme = {
   /** Hanging indent for bullet bodies, in pt. */
   bulletIndent: 13,
   /**
-   * Tracking (letter-spacing) in pt for the uppercase labels. SCREEN ONLY:
-   * the PDF deliberately omits per-glyph tracking because jsPDF implements it
-   * as per-glyph positioning, which makes extractors read "S U M M A R Y" and
-   * hurts phrase search. On screen a hair of tracking still looks crisp.
+   * Tracking (letter-spacing) in pt for the uppercase labels — a hair keeps them
+   * crisp. Kept small on purpose: doc.html() renders letter-spacing as glyph
+   * positioning, and heavy tracking can make text extractors read "S U M M A R Y"
+   * and hurt phrase search.
    */
   tracking: {
     headline: 0.5,
@@ -78,18 +78,13 @@ export const theme = {
   },
 } as const;
 
-export type Theme = typeof theme;
-
-/** Inner content width available between the left/right margins, in pt. */
-export const contentWidth = theme.page.width - theme.page.marginX * 2;
-
 /** React style object that also permits `--custom` CSS variable keys. */
 export type StyleWithVars = CSSProperties & Record<`--${string}`, string>;
 
 /**
  * Flatten the theme into CSS custom properties (all in `pt`) so the stylesheet
- * reads the exact same numbers the PDF writer uses. Applied inline on the
- * `.resume-page` root.
+ * reads the exact same numbers — and doc.html() captures that rendered CSS into
+ * the PDF. Applied inline on the `.resume-page` root.
  */
 export function themeCssVars(): StyleWithVars {
   const t = theme;

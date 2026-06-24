@@ -11,7 +11,6 @@ const fontsDir = join(here, "..", "src", "fonts");
 const fonts = [
   { id: "interRegular", file: "inter-regular.ttf" },
   { id: "interSemiBold", file: "inter-semibold.ttf" },
-  { id: "interBold", file: "inter-bold.ttf" },
   { id: "serifBold", file: "serif-bold.ttf" },
 ];
 

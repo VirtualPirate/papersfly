@@ -1,10 +1,17 @@
 /*
- * Forensic vector-vs-raster check for an arbitrary PDF.
- * Reuses the same signals as verify-pdf.mjs but on an external file.
+ * Forensic vector-vs-raster classifier for any PDF: reports the producer,
+ * embedded-font subtypes, text-vs-image operator counts, extracted text, and a
+ * VECTOR/RASTER verdict.
+ *
+ * Usage: node scripts/inspect-pdf.mjs <path-to.pdf>
  */
 import { readFileSync } from "node:fs";
 
-const FILE = "/Users/artazasameen/Downloads/PartyBalanceSummaryReport (1).pdf";
+const FILE = process.argv[2];
+if (!FILE) {
+  console.error("Usage: node scripts/inspect-pdf.mjs <path-to.pdf>");
+  process.exit(1);
+}
 const bytes = new Uint8Array(readFileSync(FILE));
 const raw = Buffer.from(bytes).toString("latin1");
 const kb = (bytes.length / 1024).toFixed(1);

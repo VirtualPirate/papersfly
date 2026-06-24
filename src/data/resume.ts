@@ -1,9 +1,9 @@
 /**
  * The resume CONTENT, fully decoupled from the DESIGN.
  *
- * A template turns this plain data into (a) an HTML/CSS preview and (b) a
- * vector PDF. Editing the data in the form updates `ResumeData` in React state,
- * which re-renders the preview live and feeds the PDF writer on download.
+ * A template turns this plain data into an HTML/CSS preview. Editing the data in
+ * the form updates `ResumeData` in React state, which re-renders the preview
+ * live — and that same rendered markup is what doc.html() exports on download.
  */
 
 export interface ContactInfo {

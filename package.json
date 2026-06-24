@@ -8,8 +8,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "gen:fonts": "node scripts/gen-fonts.mjs",
-    "verify:pdf": "node scripts/verify-pdf.mjs"
+    "gen:fonts": "node scripts/gen-fonts.mjs"
   },
   "dependencies": {
     "jspdf": "^2.5.2",
