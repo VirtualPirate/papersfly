@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
@@ -15,5 +16,9 @@ export default defineConfig({
     // The embedded base64 fonts make one chunk large by design; raise the
     // warning limit so the build stays quiet about an intentional choice.
     chunkSizeWarningLimit: 1600,
+  },
+  test: {
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.ts"],
   },
 });

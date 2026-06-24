@@ -1,7 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
-import { sampleResume, type ResumeData } from "./data/resume";
-import { EditorForm } from "./components/EditorForm";
-import { defaultTemplate } from "./templates/registry";
+import { SchemaForm } from "./forms/SchemaForm";
+import { documents, defaultDocument } from "./documents/registry";
 import { downloadResumePdf } from "./pdf/download";
 import { theme } from "./theme/theme";
 import { collectResumeText, unsupportedChars } from "./fonts/coverage";
@@ -12,9 +11,19 @@ const PAGE_W_PX = theme.page.width * PX;
 const PAGE_H_PX = theme.page.height * PX;
 
 export function App() {
-  const [data, setData] = useState<ResumeData>(sampleResume);
-  const template = defaultTemplate;
-  const Preview = template.Preview;
+  const [docId, setDocId] = useState<string>(defaultDocument.id);
+  const doc = useMemo(
+    () => documents.find((d) => d.id === docId) ?? defaultDocument,
+    [docId],
+  );
+  const [data, setData] = useState<any>(defaultDocument.defaultData);
+  const Preview = doc.templates[0].Preview;
+
+  const handleDocChange = (id: string) => {
+    const next = documents.find((d) => d.id === id) ?? defaultDocument;
+    setDocId(next.id);
+    setData(next.defaultData); // load that type's seed content
+  };
 
   // Characters the embedded subset fonts cannot render (e.g. CJK, Cyrillic).
   const unsupported = useMemo(() => unsupportedChars(collectResumeText(data)), [data]);
@@ -25,12 +34,11 @@ export function App() {
   const [scale, setScale] = useState(1);
   const [frame, setFrame] = useState({ w: PAGE_W_PX, h: PAGE_H_PX });
 
-  // PDF export. The capture copy is mounted ONLY during a download (so live edits
-  // don't pay for a second always-on render of the whole résumé) and is fed a
-  // FROZEN snapshot of the data (so typing mid-export can't change what
-  // doc.html() is measuring).
+  // PDF export. The capture copy is mounted ONLY during a download and is fed a
+  // FROZEN snapshot of the data so typing mid-export can't change what
+  // doc.html() is measuring.
   const pdfSourceRef = useRef<HTMLDivElement>(null);
-  const [exportData, setExportData] = useState<ResumeData | null>(null);
+  const [exportData, setExportData] = useState<any | null>(null);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,8 +77,6 @@ export function App() {
   }, []);
 
   // Once the frozen capture copy has mounted and laid out, export it then unmount.
-  // Running from a layout effect guarantees the node is committed and measurable
-  // before doc.html() reads it.
   useLayoutEffect(() => {
     if (!exportData) return;
     const host = pdfSourceRef.current?.querySelector<HTMLElement>(".resume-page");
@@ -104,7 +110,7 @@ export function App() {
     setDownloading(true);
     setExportData(data); // freeze content + mount the offscreen capture copy
   };
-  const handleReset = () => setData(sampleResume);
+  const handleReset = () => setData(doc.defaultData);
 
   return (
     <div className="app">
@@ -114,14 +120,22 @@ export function App() {
           <span className="tag">live preview · true-vector PDF · 100% offline</span>
         </div>
         <div className="topbar-actions">
+          <select
+            aria-label="Document type"
+            className="doc-select"
+            value={doc.id}
+            onChange={(e) => handleDocChange(e.target.value)}
+          >
+            {documents.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name}
+              </option>
+            ))}
+          </select>
           <button className="btn btn-ghost" onClick={handleReset}>
             Reset sample
           </button>
-          <button
-            className="btn btn-primary"
-            onClick={handleDownload}
-            disabled={downloading}
-          >
+          <button className="btn btn-primary" onClick={handleDownload} disabled={downloading}>
             {downloading ? "Generating…" : "↓ Download PDF"}
           </button>
         </div>
@@ -142,16 +156,15 @@ export function App() {
         <div className="warning-bar" role="alert">
           <span>
             <strong>Heads up:</strong> this template's font can't render{" "}
-            {unsupported.slice(0, 12).map((c) => `“${c}”`).join(", ")}
-            {unsupported.length > 12 ? " …" : ""}. Those characters will be left out of
-            the PDF.
+            {unsupported.slice(0, 12).map((c) => `"${c}"`).join(", ")}
+            {unsupported.length > 12 ? " …" : ""}. Those characters will be left out of the PDF.
           </span>
         </div>
       )}
 
       <div className="workspace">
         <div className="editor">
-          <EditorForm data={data} onChange={setData} />
+          <SchemaForm schema={doc.schema} data={data} onChange={setData} />
         </div>
 
         <div className="preview" ref={stageRef}>
@@ -167,12 +180,8 @@ export function App() {
         </div>
       </div>
 
-      {/*
-        Offscreen, true-size capture source for doc.html(). Mounted only during a
-        download and fed a frozen snapshot, so it neither slows live editing nor
-        shifts under concurrent edits. doc.html() needs a laid-out, untransformed
-        DOM — the visible preview is transform:scaled, so it can't be used.
-      */}
+      {/* Offscreen, true-size capture source for doc.html(). Mounted only during
+          a download and fed a frozen snapshot. */}
       {exportData && (
         <div
           ref={pdfSourceRef}
