@@ -1,4 +1,11 @@
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  Suspense,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+} from "react";
 import { SchemaForm } from "./forms/SchemaForm";
 import { documents, defaultDocument } from "./documents/registry";
 import { downloadResumePdf } from "./pdf/download";
@@ -17,7 +24,8 @@ export function App() {
     [docId],
   );
   const [data, setData] = useState<any>(defaultDocument.defaultData);
-  const Preview = doc.templates[0].Preview;
+  const template = doc.templates[0];
+  const Preview = template.Preview; // lazy — rendered behind <Suspense> below
 
   const handleDocChange = (id: string) => {
     const next = documents.find((d) => d.id === id) ?? defaultDocument;
@@ -38,7 +46,13 @@ export function App() {
   // FROZEN snapshot of the data so typing mid-export can't change what
   // doc.html() is measuring.
   const pdfSourceRef = useRef<HTMLDivElement>(null);
-  const [exportData, setExportData] = useState<any | null>(null);
+  // The capture copy needs BOTH a frozen data snapshot AND the resolved
+  // (non-lazy) template component, so it renders synchronously the instant it
+  // mounts. A still-suspended lazy component would produce no `.resume-page`
+  // for the layout effect below to find, silently aborting the export.
+  const [capture, setCapture] = useState<
+    { data: any; Comp: ComponentType<{ data: any }> } | null
+  >(null);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -78,11 +92,11 @@ export function App() {
 
   // Once the frozen capture copy has mounted and laid out, export it then unmount.
   useLayoutEffect(() => {
-    if (!exportData) return;
+    if (!capture) return;
     const host = pdfSourceRef.current?.querySelector<HTMLElement>(".resume-page");
     if (!host) {
       setDownloading(false);
-      setExportData(null);
+      setCapture(null);
       return;
     }
     let cancelled = false;
@@ -95,20 +109,30 @@ export function App() {
       } finally {
         if (!cancelled) {
           setDownloading(false);
-          setExportData(null);
+          setCapture(null);
         }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [exportData]);
+  }, [capture]);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (downloading) return;
     setError(null);
     setDownloading(true);
-    setExportData(data); // freeze content + mount the offscreen capture copy
+    try {
+      // Resolve the template's chunk to the concrete component FIRST, so the
+      // offscreen capture renders synchronously and `.resume-page` exists the
+      // moment the layout effect above reads it.
+      const Comp = await template.preload();
+      setCapture({ data, Comp }); // freeze content + mount the offscreen copy
+    } catch (err) {
+      console.error("Template preload failed:", err);
+      setError("Could not generate the PDF. Please try again.");
+      setDownloading(false);
+    }
   };
   const handleReset = () => setData(doc.defaultData);
 
@@ -174,15 +198,18 @@ export function App() {
               ref={pageRef}
               style={{ transform: `scale(${scale})`, width: PAGE_W_PX }}
             >
-              <Preview data={data} />
+              <Suspense fallback={<div className="template-loading" aria-hidden />}>
+                <Preview data={data} />
+              </Suspense>
             </div>
           </div>
         </div>
       </div>
 
       {/* Offscreen, true-size capture source for doc.html(). Mounted only during
-          a download and fed a frozen snapshot. */}
-      {exportData && (
+          a download and fed a frozen snapshot. Renders the preloaded concrete
+          component (not the lazy one) so `.resume-page` exists synchronously. */}
+      {capture && (
         <div
           ref={pdfSourceRef}
           className="pdf-capture"
@@ -195,7 +222,7 @@ export function App() {
             pointerEvents: "none",
           }}
         >
-          <Preview data={exportData} />
+          <capture.Comp data={capture.data} />
         </div>
       )}
     </div>

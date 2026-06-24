@@ -12,6 +12,20 @@ import type { ResumeData } from "../data/resume";
 export interface Template {
   id: string;
   name: string;
-  /** Live HTML/CSS preview — also the exact source the PDF is drawn from. */
+  /**
+   * Live HTML/CSS preview — also the exact source the PDF is drawn from.
+   *
+   * Lazy: the underlying component (and its CSS) live in the template's own
+   * build-time chunk, fetched on demand via dynamic `import()`. Render it behind
+   * a `<Suspense>` boundary.
+   */
   Preview: ComponentType<{ data: ResumeData }>;
+  /**
+   * Resolve the template's chunk and return the concrete component. Awaiting
+   * this guarantees the component renders synchronously on its next mount —
+   * which the PDF export relies on (it queries `.resume-page` immediately after
+   * mounting an offscreen capture copy, so a still-suspended lazy component
+   * would make the export silently no-op).
+   */
+  preload: () => Promise<ComponentType<{ data: ResumeData }>>;
 }

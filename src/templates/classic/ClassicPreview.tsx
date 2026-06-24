@@ -124,3 +124,6 @@ export function ClassicPreview({ data }: { data: ResumeData }) {
     </div>
   );
 }
+
+// Default export so the registry can lazy-load it via a bare dynamic import.
+export default ClassicPreview;
