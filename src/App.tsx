@@ -10,6 +10,16 @@ import { SchemaForm } from "./forms/SchemaForm";
 import { documents, defaultDocument } from "./documents/registry";
 import { theme } from "./theme/theme";
 import { collectResumeText, unsupportedChars } from "./fonts/coverage";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CircleAlert, TriangleAlert, X } from "lucide-react";
 
 // The page at true physical size, in CSS px (96dpi): pt * 96 / 72.
 const PX = 96 / 72;
@@ -138,52 +148,62 @@ export function App() {
 
   return (
     <div className="app">
-      <header className="topbar">
-        <div className="brand">
-          <h1>Vector Résumé Builder</h1>
-          <span className="tag">live preview · true-vector PDF · 100% offline</span>
+      <header className="flex shrink-0 items-center justify-between gap-4 border-b bg-background px-5 py-3">
+        <div className="flex items-baseline gap-2.5">
+          <h1 className="text-base font-bold tracking-tight">Vector Résumé Builder</h1>
+          <span className="text-xs text-muted-foreground">
+            live preview · true-vector PDF · 100% offline
+          </span>
         </div>
-        <div className="topbar-actions">
-          <select
-            aria-label="Document type"
-            className="doc-select"
-            value={doc.id}
-            onChange={(e) => handleDocChange(e.target.value)}
-          >
-            {documents.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name}
-              </option>
-            ))}
-          </select>
-          <button className="btn btn-ghost" onClick={handleReset}>
+        <div className="flex items-center gap-2.5">
+          <Select value={doc.id} onValueChange={handleDocChange}>
+            <SelectTrigger aria-label="Document type" className="w-[160px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {documents.map((d) => (
+                <SelectItem key={d.id} value={d.id}>
+                  {d.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button variant="ghost" onClick={handleReset}>
             Reset sample
-          </button>
-          <button className="btn btn-primary" onClick={handleDownload} disabled={downloading}>
+          </Button>
+          <Button onClick={handleDownload} disabled={downloading}>
             {downloading ? "Generating…" : "↓ Download PDF"}
-          </button>
+          </Button>
         </div>
       </header>
 
       {error && (
-        <div className="warning-bar" role="alert">
-          <span>
-            <strong>PDF error:</strong> {error}
-          </span>
-          <button className="bar-dismiss" onClick={() => setError(null)} aria-label="Dismiss">
-            ×
-          </button>
-        </div>
+        <Alert variant="destructive" className="shrink-0 rounded-none border-x-0 border-t-0">
+          <CircleAlert />
+          <AlertTitle>PDF error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-2 top-2 size-7"
+            onClick={() => setError(null)}
+            aria-label="Dismiss"
+          >
+            <X className="size-4" />
+          </Button>
+        </Alert>
       )}
 
       {unsupported.length > 0 && (
-        <div className="warning-bar" role="alert">
-          <span>
-            <strong>Heads up:</strong> this template's font can't render{" "}
+        <Alert className="shrink-0 rounded-none border-x-0 border-t-0">
+          <TriangleAlert />
+          <AlertTitle>Heads up</AlertTitle>
+          <AlertDescription>
+            This template's font can't render{" "}
             {unsupported.slice(0, 12).map((c) => `"${c}"`).join(", ")}
             {unsupported.length > 12 ? " …" : ""}. Those characters will be left out of the PDF.
-          </span>
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
       <div className="workspace">

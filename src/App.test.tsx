@@ -29,11 +29,24 @@ describe("App", () => {
 
   it("shows a document-type selector defaulting to the resume", async () => {
     render(<App />);
-    const select = screen.getByLabelText("Document type") as HTMLSelectElement;
+    // shadcn/Radix Select renders a combobox button showing the current value.
+    const select = screen.getByRole("combobox", { name: "Document type" });
     expect(select).toBeInTheDocument();
-    expect(select.value).toBe("resume");
+    expect(select).toHaveTextContent("Résumé");
     // Flush the lazy preview so its resolution is wrapped in act().
     await screen.findByRole("heading", { name: "Jordan Avery Chen" });
+  });
+
+  it("surfaces a dismissable error alert when PDF generation fails", async () => {
+    vi.mocked(downloadResumePdf).mockRejectedValueOnce(new Error("boom"));
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /download pdf/i }));
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("PDF error");
+    fireEvent.click(screen.getByRole("button", { name: "Dismiss" }));
+    await waitFor(() =>
+      expect(screen.queryByText("PDF error")).not.toBeInTheDocument(),
+    );
   });
 
   it("preloads the template so Download exports from a mounted .resume-page", async () => {

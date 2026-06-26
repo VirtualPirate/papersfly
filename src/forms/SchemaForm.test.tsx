@@ -27,13 +27,23 @@ const base: Demo = {
   items: [{ id: "i1", label: "One" }],
 };
 
+/** The "Items" list is the 2nd top-level block, collapsed by default. */
+function expandItems() {
+  fireEvent.click(screen.getByRole("button", { name: "Items" }));
+}
+
 describe("SchemaForm", () => {
-  it("renders section headings, labels and array cards", () => {
+  it("renders section triggers; Basics is open, lists are collapsed", () => {
     render(<SchemaForm schema={schema} data={base} onChange={() => {}} />);
-    expect(screen.getByText("Basics")).toBeInTheDocument();
+    // Accordion triggers (always rendered):
+    expect(screen.getByRole("button", { name: "Basics" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Items" })).toBeInTheDocument();
+    // Basics content is open:
     expect(screen.getByText("Full name")).toBeInTheDocument();
     expect(screen.getByText("Email")).toBeInTheDocument();
-    expect(screen.getByText("Items")).toBeInTheDocument();
+    // Items content is collapsed (not mounted) until expanded:
+    expect(screen.queryByText("#1")).not.toBeInTheDocument();
+    expandItems();
     expect(screen.getByText("#1")).toBeInTheDocument();
   });
 
@@ -61,7 +71,8 @@ describe("SchemaForm", () => {
   it("adds an array item with a fresh id", () => {
     const onChange = vi.fn();
     render(<SchemaForm schema={schema} data={base} onChange={onChange} />);
-    fireEvent.click(screen.getByText("+ Add"));
+    expandItems();
+    fireEvent.click(screen.getByRole("button", { name: /add items/i }));
     const next = onChange.mock.calls[0][0] as Demo;
     expect(next.items.length).toBe(2);
     expect(next.items[1].label).toBe("New");
@@ -71,7 +82,8 @@ describe("SchemaForm", () => {
   it("removes an array item", () => {
     const onChange = vi.fn();
     render(<SchemaForm schema={schema} data={base} onChange={onChange} />);
-    fireEvent.click(screen.getByText("Remove"));
+    expandItems();
+    fireEvent.click(screen.getByRole("button", { name: "Remove Items 1" }));
     expect(onChange).toHaveBeenCalledWith({ ...base, items: [] });
   });
 });

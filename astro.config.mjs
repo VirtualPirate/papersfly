@@ -1,6 +1,8 @@
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
+import tailwindcss from "@tailwindcss/vite";
+import { fileURLToPath } from "node:url";
 
 // SINGLE SOURCE OF TRUTH for the production origin. Canonical/OG URLs, the
 // sitemap, and robots.txt all derive from this. Replace with the real domain
@@ -24,6 +26,10 @@ export default defineConfig({
     inlineStylesheets: "auto",
   },
   vite: {
+    plugins: [tailwindcss()],
+    resolve: {
+      alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+    },
     build: {
       // The base64 embedded-font module is intentionally large on the PDF path.
       chunkSizeWarningLimit: 1600,

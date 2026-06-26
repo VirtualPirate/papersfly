@@ -1,16 +1,30 @@
 import type { ReactNode } from "react";
 import type { Block, FieldNode, FieldSpec, FormSchema, LeafField } from "./schema";
 import { addItem, removeItem, updateItem } from "./update";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Trash2 } from "lucide-react";
 
 type Obj = Record<string, any>;
 type Item = Obj & { id: string };
 
+/** Label wraps its control (a real <label>), so clicking the text focuses the
+   field and screen readers announce it — no id/htmlFor wiring needed. */
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <label className="field">
-      <span className="field-label">{label}</span>
+    <Label className="mb-3 flex flex-col items-start gap-1.5">
+      <span className="text-xs font-medium text-muted-foreground">{label}</span>
       {children}
-    </label>
+    </Label>
   );
 }
 
@@ -25,7 +39,7 @@ function Control({
 }) {
   if (spec.control === "textarea") {
     return (
-      <textarea
+      <Textarea
         rows={spec.rows}
         value={(value as string) ?? ""}
         onChange={(e) => onChange(e.target.value)}
@@ -38,13 +52,13 @@ function Control({
     const text = Array.isArray(value) ? value.join(spec.separator) : "";
     const handle = (s: string) => onChange(s.split(spec.separator));
     return spec.multiline ? (
-      <textarea rows={spec.rows} value={text} onChange={(e) => handle(e.target.value)} />
+      <Textarea rows={spec.rows} value={text} onChange={(e) => handle(e.target.value)} />
     ) : (
-      <input value={text} onChange={(e) => handle(e.target.value)} />
+      <Input value={text} onChange={(e) => handle(e.target.value)} />
     );
   }
   return (
-    <input
+    <Input
       value={(value as string) ?? ""}
       placeholder={spec.placeholder}
       onChange={(e) => onChange(e.target.value)}
@@ -89,7 +103,7 @@ function Nodes({
         }
         if (node.kind === "row") {
           return (
-            <div className="field-row" key={i}>
+            <div className="grid grid-cols-2 gap-3" key={i}>
               {node.fields.map((f, j) => (
                 <Leaf key={j} node={f} value={value} onChange={onChange} />
               ))}
@@ -111,7 +125,7 @@ function Nodes({
   );
 }
 
-function ArrayBlock({
+function ArrayItems({
   block,
   data,
   onChange,
@@ -123,45 +137,46 @@ function ArrayBlock({
   const items = (data[block.key] ?? []) as Item[];
   const setItems = (next: Item[]) => onChange({ ...data, [block.key]: next });
   return (
-    <section className="form-section">
-      <h2>
-        {block.title}
-        <button
-          type="button"
-          className="btn-mini"
-          onClick={() => setItems(addItem(items, block.makeItem()))}
-        >
-          + Add
-        </button>
-      </h2>
+    <div className="space-y-3">
       {items.map((item, i) => (
-        <div className="card" key={item.id}>
-          <div className="card-head">
-            <span className="idx">#{i + 1}</span>
-            <button
+        <Card key={item.id} className="gap-0 p-3.5">
+          <div className="mb-2.5 flex items-center justify-between">
+            <span className="text-xs font-bold text-muted-foreground">#{i + 1}</span>
+            <Button
               type="button"
-              className="btn-mini danger"
+              variant="ghost"
+              size="icon"
+              className="size-7 text-muted-foreground hover:text-destructive"
               onClick={() => setItems(removeItem(items, item.id))}
               aria-label={`Remove ${block.title} ${i + 1}`}
             >
-              Remove
-            </button>
+              <Trash2 className="size-4" />
+            </Button>
           </div>
           <Nodes
             nodes={block.itemChildren}
             value={item}
             onChange={(next) => setItems(updateItem(items, item.id, next as Item))}
           />
-        </div>
+        </Card>
       ))}
-    </section>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        className="w-full"
+        onClick={() => setItems(addItem(items, block.makeItem()))}
+      >
+        <Plus className="size-4" /> Add {block.title}
+      </Button>
+    </div>
   );
 }
 
 /**
- * Generic, schema-driven editor. Walks the schema and renders the same markup
- * and CSS classes as the original hand-written EditorForm, so a migrated form
- * is visually identical.
+ * Generic, schema-driven editor. Each top-level block (section or list) is an
+ * accordion panel; the first (Basics) is open by default. Editing emits a new
+ * immutable data object via the helpers in ./update.
  */
 export function SchemaForm<T>({
   schema,
@@ -174,18 +189,23 @@ export function SchemaForm<T>({
 }) {
   const value = data as Obj;
   const setValue = onChange as unknown as (next: Obj) => void;
+  const blocks = schema as Block[];
   return (
     <form className="editor-form" onSubmit={(e) => e.preventDefault()}>
-      {(schema as Block[]).map((block, i) =>
-        block.kind === "array" ? (
-          <ArrayBlock key={i} block={block} data={value} onChange={setValue} />
-        ) : (
-          <section className="form-section" key={i}>
-            <h2>{block.title}</h2>
-            <Nodes nodes={block.children} value={value} onChange={setValue} />
-          </section>
-        ),
-      )}
+      <Accordion type="multiple" defaultValue={["section-0"]}>
+        {blocks.map((block, i) => (
+          <AccordionItem key={i} value={`section-${i}`}>
+            <AccordionTrigger>{block.title}</AccordionTrigger>
+            <AccordionContent>
+              {block.kind === "array" ? (
+                <ArrayItems block={block} data={value} onChange={setValue} />
+              ) : (
+                <Nodes nodes={block.children} value={value} onChange={setValue} />
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     </form>
   );
 }
