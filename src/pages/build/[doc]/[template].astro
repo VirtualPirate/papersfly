@@ -1,0 +1,46 @@
+---
+// src/pages/build/[doc]/[template].astro
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { App } from "../../../App";
+import { documents } from "../../../documents/registry";
+import { buildBuilderPaths } from "../../../lib/routing";
+
+export function getStaticPaths() {
+  return buildBuilderPaths(documents).map(({ doc, template }) => ({
+    params: { doc, template },
+  }));
+}
+
+const { doc, template } = Astro.params;
+
+const docName = documents.find((d) => d.id === doc)?.name ?? "Document";
+const title = `${docName} builder — papersfly`;
+const description =
+  "Build your document in the browser and export a true-vector PDF. 100% client-side, works offline, no signup.";
+---
+
+<BaseLayout title={title} description={description}>
+  {/* The builder is browser-only (jsPDF + live layout measurement); this static
+      skeleton gives an instant paint and is removed when the React app mounts. */}
+  <div id="app-skeleton" class="app-skeleton">
+    <h1>papersfly</h1>
+    <p>Live preview · true-vector PDF · 100% offline</p>
+    <p class="app-skeleton__hint">Loading the editor…</p>
+  </div>
+
+  <App client:only="react" docId={doc} templateId={template} />
+</BaseLayout>
+
+<script is:inline>
+  // Remove the static skeleton as soon as the React app (.app) mounts.
+  const skeleton = document.getElementById("app-skeleton");
+  if (skeleton) {
+    const obs = new MutationObserver(() => {
+      if (document.querySelector(".app")) {
+        skeleton.remove();
+        obs.disconnect();
+      }
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+  }
+</script>

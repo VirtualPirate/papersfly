@@ -7,6 +7,6 @@ import { lazyTemplate } from "../lazyTemplate";
  * shape — a folder with a component, registered with one dynamic import.
  */
 export const classicTemplate = lazyTemplate(
-  { id: "classic", name: "Classic" },
+  { id: "classic", name: "Classic", description: "Single-column, editorial serif" },
   () => import("./ClassicPreview"),
 );

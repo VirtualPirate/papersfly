@@ -15,7 +15,7 @@ describe("App", () => {
   });
 
   it("renders the schema-driven resume editor with a lazy-loaded live preview", async () => {
-    render(<App />);
+    render(<App docId="resume" templateId="classic" />);
     // "Basics" is form-only; the name input value lives in the form.
     expect(screen.getByText("Basics")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Jordan Avery Chen")).toBeInTheDocument();
@@ -27,19 +27,22 @@ describe("App", () => {
     expect(screen.getAllByText("Experience").length).toBeGreaterThan(0);
   });
 
-  it("shows a document-type selector defaulting to the resume", async () => {
-    render(<App />);
-    // shadcn/Radix Select renders a combobox button showing the current value.
-    const select = screen.getByRole("combobox", { name: "Document type" });
-    expect(select).toBeInTheDocument();
-    expect(select).toHaveTextContent("Résumé");
+  it("shows a back link to the gallery and the active document · template", async () => {
+    render(<App docId="resume" templateId="classic" />);
+    const back = screen.getByRole("link", { name: /templates/i });
+    expect(back).toHaveAttribute("href", "/create");
+    const title = screen.getByTestId("builder-title");
+    expect(title).toHaveTextContent("Résumé");
+    expect(title).toHaveTextContent("Classic");
+    // No document-type dropdown anymore.
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
     // Flush the lazy preview so its resolution is wrapped in act().
     await screen.findByRole("heading", { name: "Jordan Avery Chen" });
   });
 
   it("surfaces a dismissable error alert when PDF generation fails", async () => {
     vi.mocked(downloadResumePdf).mockRejectedValueOnce(new Error("boom"));
-    render(<App />);
+    render(<App docId="resume" templateId="classic" />);
     fireEvent.click(screen.getByRole("button", { name: /download pdf/i }));
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("PDF error");
@@ -50,7 +53,7 @@ describe("App", () => {
   });
 
   it("preloads the template so Download exports from a mounted .resume-page", async () => {
-    render(<App />);
+    render(<App docId="resume" templateId="classic" />);
     fireEvent.click(screen.getByRole("button", { name: /download pdf/i }));
     // Preload must resolve the chunk BEFORE the capture mounts, so .resume-page
     // exists synchronously when the export reads it.

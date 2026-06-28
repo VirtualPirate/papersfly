@@ -12,6 +12,8 @@ import type { ResumeData } from "../data/resume";
 export interface Template {
   id: string;
   name: string;
+  /** Short one-line design description, shown on the gallery card. */
+  description?: string;
   /**
    * Live HTML/CSS preview — also the exact source the PDF is drawn from.
    *

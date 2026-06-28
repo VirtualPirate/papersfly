@@ -11,13 +11,7 @@ import { documents, defaultDocument } from "./documents/registry";
 import { theme } from "./theme/theme";
 import { collectResumeText, unsupportedChars } from "./fonts/coverage";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CircleAlert, TriangleAlert, X } from "lucide-react";
 
@@ -26,21 +20,24 @@ const PX = 96 / 72;
 const PAGE_W_PX = theme.page.width * PX;
 const PAGE_H_PX = theme.page.height * PX;
 
-export function App() {
-  const [docId, setDocId] = useState<string>(defaultDocument.id);
+interface AppProps {
+  /** Document type id from the route; falls back to the default document. */
+  docId?: string;
+  /** Template id from the route; falls back to the document's first template. */
+  templateId?: string;
+}
+
+export function App({ docId, templateId }: AppProps) {
   const doc = useMemo(
     () => documents.find((d) => d.id === docId) ?? defaultDocument,
     [docId],
   );
-  const [data, setData] = useState<any>(defaultDocument.defaultData);
-  const template = doc.templates[0];
+  const template = useMemo(
+    () => doc.templates.find((t) => t.id === templateId) ?? doc.templates[0],
+    [doc, templateId],
+  );
+  const [data, setData] = useState<any>(() => doc.defaultData);
   const Preview = template.Preview; // lazy — rendered behind <Suspense> below
-
-  const handleDocChange = (id: string) => {
-    const next = documents.find((d) => d.id === id) ?? defaultDocument;
-    setDocId(next.id);
-    setData(next.defaultData); // load that type's seed content
-  };
 
   // Characters the embedded subset fonts cannot render (e.g. CJK, Cyrillic).
   const unsupported = useMemo(() => unsupportedChars(collectResumeText(data)), [data]);
@@ -149,25 +146,24 @@ export function App() {
   return (
     <div className="app">
       <header className="flex shrink-0 items-center justify-between gap-4 border-b bg-background px-5 py-3">
-        <div className="flex items-baseline gap-2.5">
-          <h1 className="text-base font-bold tracking-tight">Vector Résumé Builder</h1>
-          <span className="text-xs text-muted-foreground">
-            live preview · true-vector PDF · 100% offline
-          </span>
+        <div className="flex min-w-0 items-center gap-3">
+          <a
+            href="/create"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+            Templates
+          </a>
+          <span className="h-5 w-px bg-border" aria-hidden="true" />
+          <h1 data-testid="builder-title" className="truncate text-sm font-bold tracking-tight">
+            {doc.name}
+            <span className="font-medium text-muted-foreground"> · {template.name}</span>
+          </h1>
         </div>
         <div className="flex items-center gap-2.5">
-          <Select value={doc.id} onValueChange={handleDocChange}>
-            <SelectTrigger aria-label="Document type" className="w-[160px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {documents.map((d) => (
-                <SelectItem key={d.id} value={d.id}>
-                  {d.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <ThemeToggle />
           <Button variant="ghost" onClick={handleReset}>
             Reset sample
           </Button>
