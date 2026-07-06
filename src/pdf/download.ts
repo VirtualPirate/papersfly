@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf";
-import { registerFonts, pdfFontFaces } from "../fonts/registerFonts";
+import { registerFonts, pdfFontFacesFor } from "../fonts/registerFonts";
+import { usedFontIds, type FontOverrides } from "../fonts/overrides";
 import { theme } from "../theme/theme";
 
 /** CSS px per pt at 96dpi — the page renders at its true physical size. */
@@ -18,11 +19,16 @@ const PX = 96 / 72;
  * laid-out DOM, so `element` must already be rendered (the app keeps an
  * offscreen, unscaled copy of the preview for exactly this).
  */
-async function renderResumeDoc(element: HTMLElement): Promise<jsPDF> {
+async function renderResumeDoc(
+  element: HTMLElement,
+  overrides: FontOverrides,
+): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "pt", format: "letter", compress: true });
 
-  // Embed the fonts BEFORE rendering so doc.html() can resolve to them.
-  registerFonts(doc);
+  // Embed only the fonts this résumé actually uses BEFORE rendering so
+  // doc.html() can resolve the preview's inline font-family to them.
+  const used = usedFontIds(overrides);
+  registerFonts(doc, used);
 
   const name = element.querySelector(".resume-name")?.textContent?.trim() || "Résumé";
   doc.setProperties({
@@ -55,7 +61,7 @@ async function renderResumeDoc(element: HTMLElement): Promise<jsPDF> {
       windowWidth: Math.round(theme.page.width * PX),
       margin: 0,
       autoPaging: "text",
-      fontFaces: pdfFontFaces,
+      fontFaces: pdfFontFacesFor(used),
     });
   } finally {
     element.style.minHeight = prevMinHeight;
@@ -72,7 +78,8 @@ async function renderResumeDoc(element: HTMLElement): Promise<jsPDF> {
 export async function downloadResumePdf(
   element: HTMLElement,
   filename = "resume.pdf",
+  overrides: FontOverrides = {},
 ): Promise<void> {
-  const doc = await renderResumeDoc(element);
+  const doc = await renderResumeDoc(element, overrides);
   doc.save(filename);
 }

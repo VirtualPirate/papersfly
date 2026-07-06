@@ -4,8 +4,9 @@
     {
       "name": "dev",
       "runtimeExecutable": "/Users/artazasameen/.nvm/versions/node/v22.21.1/bin/node",
-      "runtimeArgs": ["node_modules/astro/astro.js", "dev", "--port", "4321"],
-      "port": 4321
+      "runtimeArgs": ["node_modules/astro/astro.js", "dev"],
+      "port": 4321,
+      "autoPort": true
     },
     {
       "name": "preview",

@@ -10,6 +10,8 @@ import { SchemaForm } from "./forms/SchemaForm";
 import { documents, defaultDocument } from "./documents/registry";
 import { theme } from "./theme/theme";
 import { collectResumeText, unsupportedChars } from "./fonts/coverage";
+import { setFontOverride, type FontOverrides } from "./fonts/overrides";
+import type { FontId } from "./fonts/library";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -37,6 +39,9 @@ export function App({ docId, templateId }: AppProps) {
     [doc, templateId],
   );
   const [data, setData] = useState<any>(() => doc.defaultData);
+  const [fontOverrides, setFontOverrides] = useState<FontOverrides>({});
+  const handleFontChange = (path: string, id: FontId | null) =>
+    setFontOverrides((prev) => setFontOverride(prev, path, id));
   const Preview = template.Preview; // lazy — rendered behind <Suspense> below
 
   // Characters the embedded subset fonts cannot render (e.g. CJK, Cyrillic).
@@ -57,7 +62,7 @@ export function App({ docId, templateId }: AppProps) {
   // mounts. A still-suspended lazy component would produce no `.resume-page`
   // for the layout effect below to find, silently aborting the export.
   const [capture, setCapture] = useState<
-    { data: any; Comp: ComponentType<{ data: any }> } | null
+    { data: any; fontOverrides: FontOverrides; Comp: ComponentType<{ data: any; fontOverrides?: FontOverrides }> } | null
   >(null);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -109,7 +114,7 @@ export function App({ docId, templateId }: AppProps) {
     (async () => {
       try {
         const { downloadResumePdf } = await import("./pdf/download");
-        await downloadResumePdf(host, "resume.pdf");
+        await downloadResumePdf(host, "resume.pdf", capture.fontOverrides);
       } catch (err) {
         console.error("PDF generation failed:", err);
         if (!cancelled) setError("Could not generate the PDF. Please try again.");
@@ -134,14 +139,17 @@ export function App({ docId, templateId }: AppProps) {
       // offscreen capture renders synchronously and `.resume-page` exists the
       // moment the layout effect above reads it.
       const Comp = await template.preload();
-      setCapture({ data, Comp }); // freeze content + mount the offscreen copy
+      setCapture({ data, fontOverrides, Comp }); // freeze content + fonts + mount the offscreen copy
     } catch (err) {
       console.error("Template preload failed:", err);
       setError("Could not generate the PDF. Please try again.");
       setDownloading(false);
     }
   };
-  const handleReset = () => setData(doc.defaultData);
+  const handleReset = () => {
+    setData(doc.defaultData);
+    setFontOverrides({});
+  };
 
   return (
     <div className="app">
@@ -204,7 +212,13 @@ export function App({ docId, templateId }: AppProps) {
 
       <div className="workspace">
         <div className="editor">
-          <SchemaForm schema={doc.schema} data={data} onChange={setData} />
+          <SchemaForm
+            schema={doc.schema}
+            data={data}
+            onChange={setData}
+            fontOverrides={fontOverrides}
+            onFontChange={handleFontChange}
+          />
         </div>
 
         <div className="preview" ref={stageRef}>
@@ -215,7 +229,7 @@ export function App({ docId, templateId }: AppProps) {
               style={{ transform: `scale(${scale})`, width: PAGE_W_PX }}
             >
               <Suspense fallback={<div className="template-loading" aria-hidden />}>
-                <Preview data={data} />
+                <Preview data={data} fontOverrides={fontOverrides} />
               </Suspense>
             </div>
           </div>
@@ -238,7 +252,7 @@ export function App({ docId, templateId }: AppProps) {
             pointerEvents: "none",
           }}
         >
-          <capture.Comp data={capture.data} />
+          <capture.Comp data={capture.data} fontOverrides={capture.fontOverrides} />
         </div>
       )}
     </div>

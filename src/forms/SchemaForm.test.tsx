@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { builder, type FormSchema } from "./schema";
 import { SchemaForm } from "./SchemaForm";
+import { resumeSchema } from "@/documents/resume/schema";
+import { sampleResume } from "@/data/resume";
 
 interface Demo {
   name: string;
@@ -85,5 +87,42 @@ describe("SchemaForm", () => {
     expandItems();
     fireEvent.click(screen.getByRole("button", { name: "Remove Items 1" }));
     expect(onChange).toHaveBeenCalledWith({ ...base, items: [] });
+  });
+});
+
+function renderResumeForm(over = {}, onFontChange = vi.fn()) {
+  render(
+    <SchemaForm
+      schema={resumeSchema}
+      data={sampleResume}
+      onChange={() => {}}
+      fontOverrides={over}
+      onFontChange={onFontChange}
+    />,
+  );
+  return onFontChange;
+}
+
+describe("SchemaForm font pickers", () => {
+  it("renders a picker with the correct path for top-level and grouped fields", () => {
+    renderResumeForm();
+    expect(document.querySelector('[data-path="name"]')).toBeInTheDocument();
+    expect(document.querySelector('[data-path="headline"]')).toBeInTheDocument();
+    expect(document.querySelector('[data-path="contact.email"]')).toBeInTheDocument();
+  });
+
+  it("builds array-item paths from the item id (not index)", () => {
+    renderResumeForm();
+    fireEvent.click(screen.getByRole("button", { name: "Experience" }));
+    expect(document.querySelector('[data-path="experience.exp-1.role"]')).toBeInTheDocument();
+    expect(document.querySelector('[data-path="experience.exp-1.bullets"]')).toBeInTheDocument();
+  });
+
+  it("emits onFontChange(path, id) when a font is chosen", () => {
+    const onFontChange = renderResumeForm();
+    const trigger = document.querySelector('[data-path="name"]') as HTMLElement;
+    fireEvent.keyDown(trigger, { key: "Enter" });
+    fireEvent.keyDown(screen.getByRole("menuitem", { name: "Lora" }), { key: "Enter" });
+    expect(onFontChange).toHaveBeenCalledWith("name", "lora");
   });
 });

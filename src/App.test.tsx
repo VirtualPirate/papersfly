@@ -61,4 +61,28 @@ describe("App", () => {
     const captured = vi.mocked(downloadResumePdf).mock.calls[0][0];
     expect(captured).toHaveClass("resume-page");
   });
+
+  it("applies a per-field font override to the live preview", async () => {
+    render(<App docId="resume" templateId="classic" />);
+    const name = await screen.findByRole("heading", { name: "Jordan Avery Chen" });
+    expect(name.style.fontFamily).toBe("");
+
+    const picker = document.querySelector('[data-path="name"]') as HTMLElement;
+    fireEvent.keyDown(picker, { key: "Enter" });
+    fireEvent.keyDown(screen.getByRole("menuitem", { name: "Lora" }), { key: "Enter" });
+
+    expect(name).toHaveStyle({ fontFamily: '"Lora", Georgia, serif' });
+  });
+
+  it("passes the chosen overrides to the PDF export", async () => {
+    render(<App docId="resume" templateId="classic" />);
+    await screen.findByRole("heading", { name: "Jordan Avery Chen" });
+    const picker = document.querySelector('[data-path="name"]') as HTMLElement;
+    fireEvent.keyDown(picker, { key: "Enter" });
+    fireEvent.keyDown(screen.getByRole("menuitem", { name: "Lora" }), { key: "Enter" });
+
+    fireEvent.click(screen.getByRole("button", { name: /download pdf/i }));
+    await waitFor(() => expect(downloadResumePdf).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(downloadResumePdf).mock.calls[0][2]).toEqual({ name: "lora" });
+  });
 });

@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import type { ResumeData } from "../data/resume";
+import type { FontOverrides } from "../fonts/overrides";
 
 /**
  * A template is a self-contained design over `ResumeData`, rendered as HTML/CSS.
@@ -21,7 +22,7 @@ export interface Template {
    * build-time chunk, fetched on demand via dynamic `import()`. Render it behind
    * a `<Suspense>` boundary.
    */
-  Preview: ComponentType<{ data: ResumeData }>;
+  Preview: ComponentType<{ data: ResumeData; fontOverrides?: FontOverrides }>;
   /**
    * Resolve the template's chunk and return the concrete component. Awaiting
    * this guarantees the component renders synchronously on its next mount —
@@ -29,5 +30,5 @@ export interface Template {
    * mounting an offscreen capture copy, so a still-suspended lazy component
    * would make the export silently no-op).
    */
-  preload: () => Promise<ComponentType<{ data: ResumeData }>>;
+  preload: () => Promise<ComponentType<{ data: ResumeData; fontOverrides?: FontOverrides }>>;
 }

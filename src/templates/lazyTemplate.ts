@@ -1,8 +1,11 @@
 import { lazy, type ComponentType } from "react";
 import type { ResumeData } from "../data/resume";
+import type { FontOverrides } from "../fonts/overrides";
 import type { Template } from "./types";
 
-type PreviewModule = { default: ComponentType<{ data: ResumeData }> };
+type PreviewModule = {
+  default: ComponentType<{ data: ResumeData; fontOverrides?: FontOverrides }>;
+};
 
 /**
  * Wire a template to its own build-time chunk.

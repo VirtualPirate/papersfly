@@ -25,3 +25,23 @@
   font-display: block;
   src: url("./serif-bold.ttf") format("truetype");
 }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 700; font-display: block; src: url("./inter-bold.ttf") format("truetype"); }
+
+@font-face { font-family: "SourceSerif"; font-style: normal; font-weight: 400; font-display: block; src: url("./serif-regular.ttf") format("truetype"); }
+@font-face { font-family: "SourceSerif"; font-style: normal; font-weight: 600; font-display: block; src: url("./serif-semibold.ttf") format("truetype"); }
+
+@font-face { font-family: "Lora"; font-style: normal; font-weight: 400; font-display: block; src: url("./lora-regular.ttf") format("truetype"); }
+@font-face { font-family: "Lora"; font-style: normal; font-weight: 600; font-display: block; src: url("./lora-semibold.ttf") format("truetype"); }
+@font-face { font-family: "Lora"; font-style: normal; font-weight: 700; font-display: block; src: url("./lora-bold.ttf") format("truetype"); }
+
+@font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 400; font-display: block; src: url("./playfair-regular.ttf") format("truetype"); }
+@font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 600; font-display: block; src: url("./playfair-semibold.ttf") format("truetype"); }
+@font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 700; font-display: block; src: url("./playfair-bold.ttf") format("truetype"); }
+
+@font-face { font-family: "IBM Plex Sans"; font-style: normal; font-weight: 400; font-display: block; src: url("./plexsans-regular.ttf") format("truetype"); }
+@font-face { font-family: "IBM Plex Sans"; font-style: normal; font-weight: 600; font-display: block; src: url("./plexsans-semibold.ttf") format("truetype"); }
+@font-face { font-family: "IBM Plex Sans"; font-style: normal; font-weight: 700; font-display: block; src: url("./plexsans-bold.ttf") format("truetype"); }
+
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: block; src: url("./plexmono-regular.ttf") format("truetype"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 600; font-display: block; src: url("./plexmono-semibold.ttf") format("truetype"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 700; font-display: block; src: url("./plexmono-bold.ttf") format("truetype"); }
