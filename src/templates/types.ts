@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import type { ResumeData } from "../data/resume";
 import type { FontOverrides } from "../fonts/overrides";
+import type { FormSchema } from "../forms/schema";
 
 /**
  * A template is a self-contained design over `ResumeData`, rendered as HTML/CSS.
@@ -15,6 +16,8 @@ export interface Template {
   name: string;
   /** Short one-line design description, shown on the gallery card. */
   description?: string;
+  /** Form schema for editing this template's data. Each template owns its own schema. */
+  schema: FormSchema<ResumeData>;
   /**
    * Live HTML/CSS preview — also the exact source the PDF is drawn from.
    *

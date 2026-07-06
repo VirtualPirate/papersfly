@@ -213,7 +213,7 @@ export function App({ docId, templateId }: AppProps) {
       <div className="workspace">
         <div className="editor">
           <SchemaForm
-            schema={doc.schema}
+            schema={template.schema}
             data={data}
             onChange={setData}
             fontOverrides={fontOverrides}

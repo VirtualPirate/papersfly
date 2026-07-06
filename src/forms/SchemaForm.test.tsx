@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { builder, type FormSchema } from "./schema";
 import { SchemaForm } from "./SchemaForm";
-import { resumeSchema } from "@/documents/resume/schema";
+import { resumeSchema } from "@/templates/classic/schema";
 import { sampleResume } from "@/data/resume";
 
 interface Demo {

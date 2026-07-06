@@ -1,4 +1,5 @@
 import { lazyTemplate } from "../lazyTemplate";
+import { resumeSchema } from "./schema";
 
 /**
  * The classic design. Its component + `classic.css` are reached ONLY through the
@@ -7,6 +8,6 @@ import { lazyTemplate } from "../lazyTemplate";
  * shape — a folder with a component, registered with one dynamic import.
  */
 export const classicTemplate = lazyTemplate(
-  { id: "classic", name: "Classic", description: "Single-column, editorial serif" },
+  { id: "classic", name: "Classic", description: "Single-column, editorial serif", schema: resumeSchema },
   () => import("./ClassicPreview"),
 );

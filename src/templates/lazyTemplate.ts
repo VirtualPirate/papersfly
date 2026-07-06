@@ -1,6 +1,7 @@
 import { lazy, type ComponentType } from "react";
 import type { ResumeData } from "../data/resume";
 import type { FontOverrides } from "../fonts/overrides";
+import type { FormSchema } from "../forms/schema";
 import type { Template } from "./types";
 
 type PreviewModule = {
@@ -22,13 +23,14 @@ type PreviewModule = {
  * template is then just a folder + one `lazyTemplate(meta, () => import(...))`.
  */
 export function lazyTemplate(
-  meta: { id: string; name: string; description?: string },
+  meta: { id: string; name: string; description?: string; schema: FormSchema<ResumeData> },
   load: () => Promise<PreviewModule>,
 ): Template {
   return {
     id: meta.id,
     name: meta.name,
     description: meta.description,
+    schema: meta.schema,
     Preview: lazy(load),
     preload: () => load().then((m) => m.default),
   };
