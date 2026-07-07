@@ -29,6 +29,9 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  /* dvh tracks the *visible* viewport, so mobile browser chrome (the address
+     bar) never clips the header controls or the Download button. */
+  height: 100dvh;
 }
 
 /* ---- Static pre-hydration skeleton (Astro shell) -------------------- */
@@ -60,6 +63,33 @@ body {
   opacity: 0.8;
 }
 
+/* ---- Edit / Preview toggle (shown only in the single-column range) --- */
+.view-toggle {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 8px 12px;
+  background: var(--panel-bg);
+  border-bottom: 1px solid var(--panel-border);
+}
+.view-toggle button {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.view-toggle button[aria-selected="true"] {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--panel-bg);
+}
+
 /* ---- Two-pane layout ------------------------------------------------- */
 .workspace {
   display: grid;
@@ -67,10 +97,33 @@ body {
   flex: 1;
   min-height: 0;
 }
+
+/* Narrow screens collapse to one column. Rather than a cramped 50/50 split,
+   the Edit/Preview toggle picks which pane is visible so each gets full height. */
 @media (max-width: 900px) {
+  .view-toggle {
+    display: grid;
+  }
   .workspace {
     grid-template-columns: 1fr;
-    grid-auto-rows: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .editor {
+    border-right: none;
+  }
+  .workspace[data-view="edit"] .preview,
+  .workspace[data-view="preview"] .editor {
+    display: none;
+  }
+}
+
+/* Phone: tighten the panel padding so more of the width goes to content. */
+@media (max-width: 640px) {
+  .editor {
+    padding: 16px 14px 48px;
+  }
+  .preview {
+    padding: 16px 12px;
   }
 }
 

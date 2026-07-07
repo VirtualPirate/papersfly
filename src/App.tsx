@@ -47,6 +47,9 @@ export function App({ docId, templateId }: AppProps) {
   // The `.app` element — the Style popover portals into it so the chrome-scoped
   // reset in globals.css reaches the popover's buttons (Preflight is omitted).
   const [appEl, setAppEl] = useState<HTMLDivElement | null>(null);
+  // On narrow screens the editor and preview can't sit side by side, so a
+  // segmented toggle picks which one is visible (see `.view-toggle` in index.css).
+  const [view, setView] = useState<"edit" | "preview">("edit");
   const handleFontChange = (path: string, id: FontId | null) =>
     setFontOverrides((prev) => setFontOverride(prev, path, id));
   const Preview = template.Preview; // lazy — rendered behind <Suspense> below
@@ -98,7 +101,11 @@ export function App({ docId, templateId }: AppProps) {
     const recompute = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        const avail = stage.clientWidth - 56; // minus the .preview padding
+        // Subtract the stage's actual horizontal padding (differs by breakpoint)
+        // rather than a hardcoded value, so the page fills the available width.
+        const cs = getComputedStyle(stage);
+        const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+        const avail = stage.clientWidth - padX;
         const s = Math.min(1, Math.max(0.3, avail / PAGE_W_PX));
         const w = PAGE_W_PX * s;
         const h = page.offsetHeight * s;
@@ -172,24 +179,25 @@ export function App({ docId, templateId }: AppProps) {
 
   return (
     <div className="app" ref={setAppEl}>
-      <header className="flex shrink-0 items-center justify-between gap-4 border-b bg-background px-5 py-3">
-        <div className="flex min-w-0 items-center gap-3">
+      <header className="flex shrink-0 items-center justify-between gap-2 border-b bg-background px-3 py-3 sm:gap-4 sm:px-5">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <a
             href="/create"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
+            aria-label="Templates"
           >
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="m15 18-6-6 6-6" />
             </svg>
-            Templates
+            <span className="hidden sm:inline">Templates</span>
           </a>
           <span className="h-5 w-px bg-border" aria-hidden="true" />
           <h1 data-testid="builder-title" className="truncate text-sm font-bold tracking-tight">
             {doc.name}
-            <span className="font-medium text-muted-foreground"> · {template.name}</span>
+            <span className="hidden font-medium text-muted-foreground sm:inline"> · {template.name}</span>
           </h1>
         </div>
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           <ThemeToggle />
           <Popover>
             <PopoverTrigger asChild>
@@ -199,7 +207,7 @@ export function App({ docId, templateId }: AppProps) {
                   style={{ backgroundColor: activeColor.accent }}
                   aria-hidden
                 />
-                <span style={{ fontFamily: fontStack(activeFont.display) }}>{activeFont.name}</span>
+                <span className="hidden sm:inline" style={{ fontFamily: fontStack(activeFont.display) }}>{activeFont.name}</span>
                 <ChevronDown className="size-3.5 text-muted-foreground" aria-hidden />
               </Button>
             </PopoverTrigger>
@@ -212,11 +220,15 @@ export function App({ docId, templateId }: AppProps) {
               />
             </PopoverContent>
           </Popover>
-          <Button variant="ghost" onClick={handleReset}>
+          <Button variant="ghost" className="hidden sm:inline-flex" onClick={handleReset}>
             Reset sample
           </Button>
           <Button onClick={handleDownload} disabled={downloading}>
-            {downloading ? "Generating…" : "↓ Download PDF"}
+            {downloading ? "Generating…" : (
+              <>
+                ↓ <span className="hidden sm:inline">Download&nbsp;</span>PDF
+              </>
+            )}
           </Button>
         </div>
       </header>
@@ -250,7 +262,26 @@ export function App({ docId, templateId }: AppProps) {
         </Alert>
       )}
 
-      <div className="workspace">
+      <div className="view-toggle" role="tablist" aria-label="Editor view">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={view === "edit"}
+          onClick={() => setView("edit")}
+        >
+          Edit
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={view === "preview"}
+          onClick={() => setView("preview")}
+        >
+          Preview
+        </button>
+      </div>
+
+      <div className="workspace" data-view={view}>
         <div className="editor">
           <SchemaForm
             schema={template.schema}
