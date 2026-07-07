@@ -2,6 +2,13 @@ import type { ComponentType } from "react";
 import type { ResumeData } from "../data/resume";
 import type { FontOverrides } from "../fonts/overrides";
 import type { FormSchema } from "../forms/schema";
+import type { ColorScheme, FontPairing, Variant } from "../theme/variants";
+
+export interface TemplateVariants {
+  colors: ColorScheme[];
+  fonts: FontPairing[];
+  default: Variant;
+}
 
 /**
  * A template is a self-contained design over `ResumeData`, rendered as HTML/CSS.
@@ -18,6 +25,8 @@ export interface Template {
   description?: string;
   /** Form schema for editing this template's data. Each template owns its own schema. */
   schema: FormSchema<ResumeData>;
+  /** The color schemes + font pairings this template offers, plus its default. */
+  variants: TemplateVariants;
   /**
    * Live HTML/CSS preview — also the exact source the PDF is drawn from.
    *
@@ -25,7 +34,7 @@ export interface Template {
    * build-time chunk, fetched on demand via dynamic `import()`. Render it behind
    * a `<Suspense>` boundary.
    */
-  Preview: ComponentType<{ data: ResumeData; fontOverrides?: FontOverrides }>;
+  Preview: ComponentType<{ data: ResumeData; fontOverrides?: FontOverrides; variant?: Variant }>;
   /**
    * Resolve the template's chunk and return the concrete component. Awaiting
    * this guarantees the component renders synchronously on its next mount —
@@ -33,5 +42,5 @@ export interface Template {
    * mounting an offscreen capture copy, so a still-suspended lazy component
    * would make the export silently no-op).
    */
-  preload: () => Promise<ComponentType<{ data: ResumeData; fontOverrides?: FontOverrides }>>;
+  preload: () => Promise<ComponentType<{ data: ResumeData; fontOverrides?: FontOverrides; variant?: Variant }>>;
 }

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { render, screen } from "@testing-library/react";
 import { classicTemplate } from "./index";
 import { sampleResume } from "../../data/resume";
+import { COLOR_SCHEMES, FONT_PAIRINGS, DEFAULT_VARIANT } from "../../theme/variants";
 
 describe("classic template (lazy-loaded)", () => {
   it("preload() resolves the chunk to a component that renders the resume", async () => {
@@ -23,5 +24,13 @@ describe("classic template (lazy-loaded)", () => {
     expect(screen.queryByText("Jordan Avery Chen")).not.toBeInTheDocument();
     // Once the dynamic import resolves, the live preview renders.
     expect(await screen.findByText("Jordan Avery Chen")).toBeInTheDocument();
+  });
+});
+
+describe("classic template variants", () => {
+  it("exposes the shared color + font catalog and the default selection", () => {
+    expect(classicTemplate.variants.colors).toBe(COLOR_SCHEMES);
+    expect(classicTemplate.variants.fonts).toBe(FONT_PAIRINGS);
+    expect(classicTemplate.variants.default).toEqual(DEFAULT_VARIANT);
   });
 });

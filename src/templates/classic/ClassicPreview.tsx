@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import type { ContactInfo, ResumeData } from "../../data/resume";
 import { themeCssVars } from "../../theme/theme";
+import { resolveVariant, DEFAULT_VARIANT, type Variant } from "../../theme/variants";
 import { fontStyleFor, joinPath, type FontOverrides } from "../../fonts/overrides";
 import "./classic.css";
 
@@ -22,15 +23,17 @@ function contactParts(data: ResumeData): { key: keyof ContactInfo; value: string
 export function ClassicPreview({
   data,
   fontOverrides = {},
+  variant = DEFAULT_VARIANT,
 }: {
   data: ResumeData;
   fontOverrides?: FontOverrides;
+  variant?: Variant;
 }) {
   const f = (path: string) => fontStyleFor(fontOverrides, path);
   const parts = contactParts(data);
 
   return (
-    <div className="resume-page" style={themeCssVars()}>
+    <div className="resume-page" style={themeCssVars(resolveVariant(variant))}>
       <header>
         <h1 className="resume-name" style={f("name")}>{data.name}</h1>
         {data.headline && (

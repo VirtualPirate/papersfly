@@ -86,7 +86,11 @@ export type StyleWithVars = CSSProperties & Record<`--${string}`, string>;
  * reads the exact same numbers — and doc.html() captures that rendered CSS into
  * the PDF. Applied inline on the `.resume-page` root.
  */
-export function themeCssVars(): StyleWithVars {
+export function themeCssVars(overrides?: {
+  accent?: string;
+  displayStack?: string;
+  bodyStack?: string;
+}): StyleWithVars {
   const t = theme;
   return {
     "--page-w": `${t.page.width}pt`,
@@ -98,11 +102,11 @@ export function themeCssVars(): StyleWithVars {
     "--c-ink": t.color.ink,
     "--c-muted": t.color.muted,
     "--c-faint": t.color.faint,
-    "--c-accent": t.color.accent,
+    "--c-accent": overrides?.accent ?? t.color.accent,
     "--c-rule": t.color.rule,
 
-    "--f-sans": `"${t.font.sans}", system-ui, sans-serif`,
-    "--f-serif": `"${t.font.serif}", Georgia, serif`,
+    "--f-sans": overrides?.bodyStack ?? `"${t.font.sans}", system-ui, sans-serif`,
+    "--f-serif": overrides?.displayStack ?? `"${t.font.serif}", Georgia, serif`,
 
     "--s-name": `${t.size.name}pt`,
     "--s-headline": `${t.size.headline}pt`,

@@ -33,8 +33,11 @@ export function fontStyleFor(
 export const BASELINE_FONT_IDS: FontId[] = ["inter", "sourceSerif"];
 
 /** The unique, known fonts that must be embedded for a given override set. */
-export function usedFontIds(overrides: FontOverrides): FontId[] {
-  const set = new Set<FontId>(BASELINE_FONT_IDS);
+export function usedFontIds(
+  overrides: FontOverrides,
+  baseIds: FontId[] = BASELINE_FONT_IDS,
+): FontId[] {
+  const set = new Set<FontId>(baseIds);
   for (const id of Object.values(overrides)) {
     if (getFont(id)) set.add(id);
   }

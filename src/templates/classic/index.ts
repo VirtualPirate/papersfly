@@ -1,5 +1,6 @@
 import { lazyTemplate } from "../lazyTemplate";
 import { resumeSchema } from "./schema";
+import { COLOR_SCHEMES, FONT_PAIRINGS, DEFAULT_VARIANT } from "../../theme/variants";
 
 /**
  * The classic design. Its component + `classic.css` are reached ONLY through the
@@ -8,6 +9,12 @@ import { resumeSchema } from "./schema";
  * shape — a folder with a component, registered with one dynamic import.
  */
 export const classicTemplate = lazyTemplate(
-  { id: "classic", name: "Classic", description: "Single-column, editorial serif", schema: resumeSchema },
+  {
+    id: "classic",
+    name: "Classic",
+    description: "Single-column, editorial serif",
+    schema: resumeSchema,
+    variants: { colors: COLOR_SCHEMES, fonts: FONT_PAIRINGS, default: DEFAULT_VARIANT },
+  },
   () => import("./ClassicPreview"),
 );

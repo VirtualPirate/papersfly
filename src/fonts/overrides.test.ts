@@ -31,6 +31,11 @@ describe("usedFontIds", () => {
   it("ignores unknown font ids", () => {
     expect(new Set(usedFontIds({ name: "bogus" } as unknown as FontOverrides))).toEqual(new Set(["inter", "sourceSerif"]));
   });
+  it("unions caller-supplied base ids with override fonts", () => {
+    expect(new Set(usedFontIds({ name: "lora" }, ["playfair", "inter"]))).toEqual(
+      new Set(["playfair", "inter", "lora"]),
+    );
+  });
 });
 
 describe("setFontOverride", () => {

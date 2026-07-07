@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf";
 import { registerFonts, pdfFontFacesFor } from "../fonts/registerFonts";
 import { usedFontIds, type FontOverrides } from "../fonts/overrides";
+import type { FontId } from "../fonts/library";
 import { theme } from "../theme/theme";
 
 /** CSS px per pt at 96dpi — the page renders at its true physical size. */
@@ -22,12 +23,13 @@ const PX = 96 / 72;
 async function renderResumeDoc(
   element: HTMLElement,
   overrides: FontOverrides,
+  baseFontIds?: FontId[],
 ): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "pt", format: "letter", compress: true });
 
   // Embed only the fonts this résumé actually uses BEFORE rendering so
   // doc.html() can resolve the preview's inline font-family to them.
-  const used = usedFontIds(overrides);
+  const used = usedFontIds(overrides, baseFontIds);
   registerFonts(doc, used);
 
   const name = element.querySelector(".resume-name")?.textContent?.trim() || "Résumé";
@@ -79,7 +81,8 @@ export async function downloadResumePdf(
   element: HTMLElement,
   filename = "resume.pdf",
   overrides: FontOverrides = {},
+  baseFontIds?: FontId[],
 ): Promise<void> {
-  const doc = await renderResumeDoc(element, overrides);
+  const doc = await renderResumeDoc(element, overrides, baseFontIds);
   doc.save(filename);
 }

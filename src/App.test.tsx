@@ -85,4 +85,48 @@ describe("App", () => {
     await waitFor(() => expect(downloadResumePdf).toHaveBeenCalledTimes(1));
     expect(vi.mocked(downloadResumePdf).mock.calls[0][2]).toEqual({ name: "lora" });
   });
+
+  it("applies a color + font variant to the live preview from the Style popover", async () => {
+    render(<App docId="resume" templateId="classic" />);
+    await screen.findByRole("heading", { name: "Jordan Avery Chen" });
+    const page = document.querySelector(".resume-page") as HTMLElement;
+    expect(page.style.getPropertyValue("--c-accent")).toBe("#1f3a5f");
+
+    // Open the Style popover, then pick a scheme + pairing — the preview updates
+    // live while the popover stays open (it's non-modal, no apply step).
+    fireEvent.click(screen.getByRole("button", { name: /variants/i }));
+    fireEvent.click(await screen.findByRole("button", { name: "Burgundy" }));
+    fireEvent.click(screen.getByRole("button", { name: "Editorial" }));
+
+    expect(page.style.getPropertyValue("--c-accent")).toBe("#7c2d3a");
+    expect(page.style.getPropertyValue("--f-serif")).toBe('"Playfair Display", Georgia, serif');
+  });
+
+  it("resets the variant to the template default", async () => {
+    render(<App docId="resume" templateId="classic" />);
+    await screen.findByRole("heading", { name: "Jordan Avery Chen" });
+    const page = document.querySelector(".resume-page") as HTMLElement;
+
+    fireEvent.click(screen.getByRole("button", { name: /variants/i }));
+    fireEvent.click(await screen.findByRole("button", { name: "Forest" }));
+    expect(page.style.getPropertyValue("--c-accent")).toBe("#285043");
+
+    // The popover is non-modal, so Reset stays clickable behind it.
+    fireEvent.click(screen.getByRole("button", { name: /reset sample/i }));
+    expect(page.style.getPropertyValue("--c-accent")).toBe("#1f3a5f");
+  });
+
+  it("passes the variant's fonts to the PDF export", async () => {
+    render(<App docId="resume" templateId="classic" />);
+    await screen.findByRole("heading", { name: "Jordan Avery Chen" });
+
+    fireEvent.click(screen.getByRole("button", { name: /variants/i }));
+    fireEvent.click(await screen.findByRole("button", { name: "Mono" }));
+
+    fireEvent.click(screen.getByRole("button", { name: /download pdf/i }));
+    await waitFor(() => expect(downloadResumePdf).toHaveBeenCalledTimes(1));
+    expect(new Set(vi.mocked(downloadResumePdf).mock.calls[0][3])).toEqual(
+      new Set(["plexMono", "inter"]),
+    );
+  });
 });

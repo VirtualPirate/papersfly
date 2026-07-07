@@ -11,11 +11,14 @@ import { documents, defaultDocument } from "./documents/registry";
 import { theme } from "./theme/theme";
 import { collectResumeText, unsupportedChars } from "./fonts/coverage";
 import { setFontOverride, type FontOverrides } from "./fonts/overrides";
-import type { FontId } from "./fonts/library";
+import { fontStack, type FontId } from "./fonts/library";
+import { VariantPicker } from "./forms/VariantPicker";
+import { resolveVariantFontIds, type Variant } from "./theme/variants";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CircleAlert, TriangleAlert, X } from "lucide-react";
+import { ChevronDown, CircleAlert, TriangleAlert, X } from "lucide-react";
 
 // The page at true physical size, in CSS px (96dpi): pt * 96 / 72.
 const PX = 96 / 72;
@@ -40,9 +43,19 @@ export function App({ docId, templateId }: AppProps) {
   );
   const [data, setData] = useState<any>(() => doc.defaultData);
   const [fontOverrides, setFontOverrides] = useState<FontOverrides>({});
+  const [variant, setVariant] = useState<Variant>(() => template.variants.default);
+  // The `.app` element — the Style popover portals into it so the chrome-scoped
+  // reset in globals.css reaches the popover's buttons (Preflight is omitted).
+  const [appEl, setAppEl] = useState<HTMLDivElement | null>(null);
   const handleFontChange = (path: string, id: FontId | null) =>
     setFontOverrides((prev) => setFontOverride(prev, path, id));
   const Preview = template.Preview; // lazy — rendered behind <Suspense> below
+
+  // The current selection, for the Style trigger's swatch + font-name label.
+  const activeColor =
+    template.variants.colors.find((c) => c.id === variant.colorId) ?? template.variants.colors[0];
+  const activeFont =
+    template.variants.fonts.find((f) => f.id === variant.fontId) ?? template.variants.fonts[0];
 
   // Characters the embedded subset fonts cannot render (e.g. CJK, Cyrillic).
   const unsupported = useMemo(() => unsupportedChars(collectResumeText(data)), [data]);
@@ -62,7 +75,12 @@ export function App({ docId, templateId }: AppProps) {
   // mounts. A still-suspended lazy component would produce no `.resume-page`
   // for the layout effect below to find, silently aborting the export.
   const [capture, setCapture] = useState<
-    { data: any; fontOverrides: FontOverrides; Comp: ComponentType<{ data: any; fontOverrides?: FontOverrides }> } | null
+    {
+      data: any;
+      fontOverrides: FontOverrides;
+      variant: Variant;
+      Comp: ComponentType<{ data: any; fontOverrides?: FontOverrides; variant?: Variant }>;
+    } | null
   >(null);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -114,7 +132,7 @@ export function App({ docId, templateId }: AppProps) {
     (async () => {
       try {
         const { downloadResumePdf } = await import("./pdf/download");
-        await downloadResumePdf(host, "resume.pdf", capture.fontOverrides);
+        await downloadResumePdf(host, "resume.pdf", capture.fontOverrides, resolveVariantFontIds(capture.variant));
       } catch (err) {
         console.error("PDF generation failed:", err);
         if (!cancelled) setError("Could not generate the PDF. Please try again.");
@@ -139,7 +157,7 @@ export function App({ docId, templateId }: AppProps) {
       // offscreen capture renders synchronously and `.resume-page` exists the
       // moment the layout effect above reads it.
       const Comp = await template.preload();
-      setCapture({ data, fontOverrides, Comp }); // freeze content + fonts + mount the offscreen copy
+      setCapture({ data, fontOverrides, variant, Comp }); // freeze content + fonts + variant + mount the offscreen copy
     } catch (err) {
       console.error("Template preload failed:", err);
       setError("Could not generate the PDF. Please try again.");
@@ -149,10 +167,11 @@ export function App({ docId, templateId }: AppProps) {
   const handleReset = () => {
     setData(doc.defaultData);
     setFontOverrides({});
+    setVariant(template.variants.default);
   };
 
   return (
-    <div className="app">
+    <div className="app" ref={setAppEl}>
       <header className="flex shrink-0 items-center justify-between gap-4 border-b bg-background px-5 py-3">
         <div className="flex min-w-0 items-center gap-3">
           <a
@@ -172,6 +191,27 @@ export function App({ docId, templateId }: AppProps) {
         </div>
         <div className="flex items-center gap-2.5">
           <ThemeToggle />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" aria-label="Variants" className="gap-2">
+                <span
+                  className="size-3.5 rounded-full ring-1 ring-black/15"
+                  style={{ backgroundColor: activeColor.accent }}
+                  aria-hidden
+                />
+                <span style={{ fontFamily: fontStack(activeFont.display) }}>{activeFont.name}</span>
+                <ChevronDown className="size-3.5 text-muted-foreground" aria-hidden />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-72" container={appEl}>
+              <VariantPicker
+                colors={template.variants.colors}
+                fonts={template.variants.fonts}
+                value={variant}
+                onChange={setVariant}
+              />
+            </PopoverContent>
+          </Popover>
           <Button variant="ghost" onClick={handleReset}>
             Reset sample
           </Button>
@@ -229,7 +269,7 @@ export function App({ docId, templateId }: AppProps) {
               style={{ transform: `scale(${scale})`, width: PAGE_W_PX }}
             >
               <Suspense fallback={<div className="template-loading" aria-hidden />}>
-                <Preview data={data} fontOverrides={fontOverrides} />
+                <Preview data={data} fontOverrides={fontOverrides} variant={variant} />
               </Suspense>
             </div>
           </div>
@@ -252,7 +292,7 @@ export function App({ docId, templateId }: AppProps) {
             pointerEvents: "none",
           }}
         >
-          <capture.Comp data={capture.data} fontOverrides={capture.fontOverrides} />
+          <capture.Comp data={capture.data} fontOverrides={capture.fontOverrides} variant={capture.variant} />
         </div>
       )}
     </div>

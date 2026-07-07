@@ -1,0 +1,43 @@
+import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { VariantPicker } from "./VariantPicker";
+import { COLOR_SCHEMES, FONT_PAIRINGS, DEFAULT_VARIANT } from "@/theme/variants";
+
+function renderPicker(onChange = vi.fn()) {
+  render(
+    <VariantPicker
+      colors={COLOR_SCHEMES}
+      fonts={FONT_PAIRINGS}
+      value={DEFAULT_VARIANT}
+      onChange={onChange}
+    />,
+  );
+  return onChange;
+}
+
+describe("VariantPicker", () => {
+  it("renders a swatch per color and a specimen per font pairing", () => {
+    renderPicker();
+    for (const name of ["Navy", "Charcoal", "Burgundy", "Forest"]) {
+      expect(screen.getByRole("button", { name })).toBeInTheDocument();
+    }
+    for (const name of ["Classic", "Editorial", "Modern", "Mono"]) {
+      expect(screen.getByRole("button", { name })).toBeInTheDocument();
+    }
+  });
+
+  it("marks the active color and font as pressed", () => {
+    renderPicker();
+    expect(screen.getByRole("button", { name: "Navy" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Burgundy" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "Classic" })).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("emits a new variant with only the changed axis replaced", () => {
+    const onChange = renderPicker();
+    fireEvent.click(screen.getByRole("button", { name: "Burgundy" }));
+    expect(onChange).toHaveBeenLastCalledWith({ colorId: "burgundy", fontId: "classic" });
+    fireEvent.click(screen.getByRole("button", { name: "Editorial" }));
+    expect(onChange).toHaveBeenLastCalledWith({ colorId: "navy", fontId: "editorial" });
+  });
+});
