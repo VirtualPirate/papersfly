@@ -3,6 +3,7 @@ import { registerFonts, pdfFontFacesFor } from "../fonts/registerFonts";
 import { usedFontIds, type FontOverrides } from "../fonts/overrides";
 import type { FontId } from "../fonts/library";
 import { theme } from "../theme/theme";
+import { insertPageBreakSpacers, type PageMetrics } from "./paginate";
 
 /** CSS px per pt at 96dpi — the page renders at its true physical size. */
 const PX = 96 / 72;
@@ -52,13 +53,26 @@ async function renderResumeDoc(
   // boundary and autoPaging emits a trailing blank page.
   const prevMinHeight = element.style.minHeight;
   element.style.minHeight = "0px";
+
+  // Block-aware page breaks: insert spacers so no keep-together block (a résumé
+  // entry, a skill row, or a heading + its first item) straddles a page boundary,
+  // and so pushed blocks land below a top margin with a bottom margin on the page
+  // they left. No-op for single-page résumés and for templates without
+  // [data-pdf-block] markers (e.g. Atlas). doc.html keeps margin:0 — margins are
+  // realized by the spacers, which leaves full-bleed page-1 headers untouched.
+  const metrics: PageMetrics = {
+    pageH: theme.page.height * PX,
+    mt: theme.page.marginTop * PX,
+    mb: theme.page.marginTop * PX,
+  };
+  const removeSpacers = insertPageBreakSpacers(element, metrics);
   try {
     await doc.html(element, {
       x: 0,
       y: 0,
-      // The page renders at true size (612pt = 816px wide) and the .resume-page's
-      // own padding supplies the page margins, so map 816px straight to 612pt and
-      // keep doc-level margins at 0.
+      // The page renders at true size (816px = 612pt wide) and the .resume-page's
+      // own padding supplies the horizontal page margins, so map 816px straight to
+      // 612pt and keep doc-level margins at 0.
       width: theme.page.width,
       windowWidth: Math.round(theme.page.width * PX),
       margin: 0,
@@ -66,6 +80,7 @@ async function renderResumeDoc(
       fontFaces: pdfFontFacesFor(used),
     });
   } finally {
+    removeSpacers();
     element.style.minHeight = prevMinHeight;
   }
 

@@ -40,21 +40,21 @@ export function MeridianPreview({
       <div className="mrd-body">
         {data.summary.trim() && (
           <section className="mrd-section">
-            <h2 className="mrd-sec-h">Summary</h2>
+            <h2 className="mrd-sec-h" data-pdf-heading>Summary</h2>
             <div className="mrd-sec-body">
-              <p className="mrd-summary" style={f("summary")}>{data.summary}</p>
+              <p className="mrd-summary" data-pdf-block style={f("summary")}>{data.summary}</p>
             </div>
           </section>
         )}
 
         {data.experience.length > 0 && (
           <section className="mrd-section">
-            <h2 className="mrd-sec-h">Experience</h2>
+            <h2 className="mrd-sec-h" data-pdf-heading>Experience</h2>
             <div className="mrd-sec-body">
               {data.experience.map((item) => {
                 const base = joinPath("experience", item.id);
                 return (
-                  <div className="mrd-item" key={item.id}>
+                  <div className="mrd-item" data-pdf-block key={item.id}>
                     <div className="mrd-item-header">
                       <span className="mrd-role" style={f(joinPath(base, "role"))}>{item.role}</span>
                       <span className="mrd-date">
@@ -83,12 +83,12 @@ export function MeridianPreview({
 
         {data.education.length > 0 && (
           <section className="mrd-section">
-            <h2 className="mrd-sec-h">Education</h2>
+            <h2 className="mrd-sec-h" data-pdf-heading>Education</h2>
             <div className="mrd-sec-body">
               {data.education.map((item) => {
                 const base = joinPath("education", item.id);
                 return (
-                  <div className="mrd-item" key={item.id}>
+                  <div className="mrd-item" data-pdf-block key={item.id}>
                     <div className="mrd-item-header">
                       <span className="mrd-role" style={f(joinPath(base, "institution"))}>{item.institution}</span>
                       <span className="mrd-date">
@@ -115,12 +115,12 @@ export function MeridianPreview({
 
         {data.skills.length > 0 && (
           <section className="mrd-section">
-            <h2 className="mrd-sec-h">Skills</h2>
+            <h2 className="mrd-sec-h" data-pdf-heading>Skills</h2>
             <div className="mrd-sec-body">
               {data.skills.map((g) => {
                 const base = joinPath("skills", g.id);
                 return (
-                  <div className="mrd-skill-row" key={g.id}>
+                  <div className="mrd-skill-row" data-pdf-block key={g.id}>
                     <span className="mrd-skill-label" style={f(joinPath(base, "label"))}>{g.label}</span>
                     <span className="mrd-skill-val" style={f(joinPath(base, "items"))}>
                       {g.items.map((s) => s.trim()).filter(Boolean).join(", ")}

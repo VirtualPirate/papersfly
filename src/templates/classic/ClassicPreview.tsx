@@ -54,21 +54,21 @@ export function ClassicPreview({
 
       {data.summary.trim() && (
         <section className="resume-section">
-          <h2 className="section-heading">Summary</h2>
+          <h2 className="section-heading" data-pdf-heading>Summary</h2>
           <div className="section-body">
-            <p className="resume-summary" style={f("summary")}>{data.summary}</p>
+            <p className="resume-summary" data-pdf-block style={f("summary")}>{data.summary}</p>
           </div>
         </section>
       )}
 
       {data.experience.length > 0 && (
         <section className="resume-section">
-          <h2 className="section-heading">Experience</h2>
+          <h2 className="section-heading" data-pdf-heading>Experience</h2>
           <div className="section-body">
             {data.experience.map((item) => {
               const base = joinPath("experience", item.id);
               return (
-                <div className="resume-item" key={item.id}>
+                <div className="resume-item" data-pdf-block key={item.id}>
                   <div className="item-header">
                     <span className="item-title" style={f(joinPath(base, "role"))}>{item.role}</span>
                     <span className="item-date">
@@ -101,12 +101,12 @@ export function ClassicPreview({
 
       {data.education.length > 0 && (
         <section className="resume-section">
-          <h2 className="section-heading">Education</h2>
+          <h2 className="section-heading" data-pdf-heading>Education</h2>
           <div className="section-body">
             {data.education.map((item) => {
               const base = joinPath("education", item.id);
               return (
-                <div className="resume-item" key={item.id}>
+                <div className="resume-item" data-pdf-block key={item.id}>
                   <div className="item-header">
                     <span className="item-title" style={f(joinPath(base, "institution"))}>{item.institution}</span>
                     <span className="item-date">
@@ -133,12 +133,12 @@ export function ClassicPreview({
 
       {data.skills.length > 0 && (
         <section className="resume-section">
-          <h2 className="section-heading">Skills</h2>
+          <h2 className="section-heading" data-pdf-heading>Skills</h2>
           <div className="section-body">
             {data.skills.map((g) => {
               const base = joinPath("skills", g.id);
               return (
-                <div className="skill-row" key={g.id}>
+                <div className="skill-row" data-pdf-block key={g.id}>
                   <span className="skill-label" style={f(joinPath(base, "label"))}>{g.label}</span>
                   <span className="skill-values" style={f(joinPath(base, "items"))}>
                     {g.items.map((s) => s.trim()).filter(Boolean).join(", ")}

@@ -41,21 +41,21 @@ export function QuillPreview({
       <div className="qll-body">
         {data.summary.trim() && (
           <section className="qll-section">
-            <h2 className="qll-sec-h">Summary</h2>
+            <h2 className="qll-sec-h" data-pdf-heading>Summary</h2>
             <div className="qll-sec-body">
-              <p className="qll-summary" style={f("summary")}>{data.summary}</p>
+              <p className="qll-summary" data-pdf-block style={f("summary")}>{data.summary}</p>
             </div>
           </section>
         )}
 
         {data.experience.length > 0 && (
           <section className="qll-section">
-            <h2 className="qll-sec-h">Experience</h2>
+            <h2 className="qll-sec-h" data-pdf-heading>Experience</h2>
             <div className="qll-sec-body">
               {data.experience.map((item) => {
                 const base = joinPath("experience", item.id);
                 return (
-                  <div className="qll-item" key={item.id}>
+                  <div className="qll-item" data-pdf-block key={item.id}>
                     <div className="qll-item-header">
                       <span className="qll-role" style={f(joinPath(base, "role"))}>{item.role}</span>
                       <span className="qll-date">
@@ -84,12 +84,12 @@ export function QuillPreview({
 
         {data.education.length > 0 && (
           <section className="qll-section">
-            <h2 className="qll-sec-h">Education</h2>
+            <h2 className="qll-sec-h" data-pdf-heading>Education</h2>
             <div className="qll-sec-body">
               {data.education.map((item) => {
                 const base = joinPath("education", item.id);
                 return (
-                  <div className="qll-item" key={item.id}>
+                  <div className="qll-item" data-pdf-block key={item.id}>
                     <div className="qll-item-header">
                       <span className="qll-role" style={f(joinPath(base, "institution"))}>{item.institution}</span>
                       <span className="qll-date">
@@ -116,12 +116,12 @@ export function QuillPreview({
 
         {data.skills.length > 0 && (
           <section className="qll-section">
-            <h2 className="qll-sec-h">Skills</h2>
+            <h2 className="qll-sec-h" data-pdf-heading>Skills</h2>
             <div className="qll-sec-body">
               {data.skills.map((g) => {
                 const base = joinPath("skills", g.id);
                 return (
-                  <div className="qll-skill-row" key={g.id}>
+                  <div className="qll-skill-row" data-pdf-block key={g.id}>
                     <span className="qll-skill-label" style={f(joinPath(base, "label"))}>{g.label}</span>
                     <span className="qll-skill-val" style={f(joinPath(base, "items"))}>
                       {g.items.map((s) => s.trim()).filter(Boolean).join(", ")}

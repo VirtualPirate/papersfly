@@ -38,21 +38,21 @@ export function LedgerPreview({
       <div className="ldg-body">
         {data.summary.trim() && (
           <section className="ldg-section">
-            <h2 className="ldg-sec-h">Summary</h2>
+            <h2 className="ldg-sec-h" data-pdf-heading>Summary</h2>
             <div className="ldg-sec-body">
-              <p className="ldg-summary" style={f("summary")}>{data.summary}</p>
+              <p className="ldg-summary" data-pdf-block style={f("summary")}>{data.summary}</p>
             </div>
           </section>
         )}
 
         {data.experience.length > 0 && (
           <section className="ldg-section">
-            <h2 className="ldg-sec-h">Experience</h2>
+            <h2 className="ldg-sec-h" data-pdf-heading>Experience</h2>
             <div className="ldg-sec-body">
               {data.experience.map((item) => {
                 const base = joinPath("experience", item.id);
                 return (
-                  <div className="ldg-item" key={item.id}>
+                  <div className="ldg-item" data-pdf-block key={item.id}>
                     <div className="ldg-line">
                       <span className="ldg-line-title">
                         <span className="ldg-role" style={f(joinPath(base, "role"))}>{item.role}</span>
@@ -86,12 +86,12 @@ export function LedgerPreview({
 
         {data.education.length > 0 && (
           <section className="ldg-section">
-            <h2 className="ldg-sec-h">Education</h2>
+            <h2 className="ldg-sec-h" data-pdf-heading>Education</h2>
             <div className="ldg-sec-body">
               {data.education.map((item) => {
                 const base = joinPath("education", item.id);
                 return (
-                  <div className="ldg-item" key={item.id}>
+                  <div className="ldg-item" data-pdf-block key={item.id}>
                     <div className="ldg-line">
                       <span className="ldg-line-title">
                         <span className="ldg-role" style={f(joinPath(base, "institution"))}>{item.institution}</span>
@@ -120,12 +120,12 @@ export function LedgerPreview({
 
         {data.skills.length > 0 && (
           <section className="ldg-section">
-            <h2 className="ldg-sec-h">Skills</h2>
+            <h2 className="ldg-sec-h" data-pdf-heading>Skills</h2>
             <div className="ldg-sec-body">
               {data.skills.map((g) => {
                 const base = joinPath("skills", g.id);
                 return (
-                  <div className="ldg-skill-row" key={g.id}>
+                  <div className="ldg-skill-row" data-pdf-block key={g.id}>
                     <span className="ldg-skill-label" style={f(joinPath(base, "label"))}>{g.label}</span>
                     <span className="ldg-skill-val" style={f(joinPath(base, "items"))}>
                       {g.items.map((s) => s.trim()).filter(Boolean).join(", ")}
