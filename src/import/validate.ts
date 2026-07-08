@@ -99,6 +99,14 @@ function checkNode(node: ImportNode, value: unknown, path: string, errors: Impor
         if (typeof el !== "string") errors.push({ path: `${path}[${i}]`, message: `expected text, got ${typeName(el)}` });
       });
       return value.filter((el) => typeof el === "string");
+    case "number": {
+      if (typeof value === "number" && !Number.isNaN(value)) return value;
+      if (typeof value === "string" && value.trim() !== "" && !Number.isNaN(Number(value))) {
+        return Number(value);
+      }
+      errors.push({ path, message: `expected a number, got ${typeName(value)}` });
+      return 0;
+    }
     case "object":
       return checkObject(node.fields, value, path, errors);
     case "list":

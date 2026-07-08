@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { parseImportJson, validateAgainstSpec, finalizeImport, summarize } from "./validate";
 import { resumeImportSpec } from "../documents/resume/importSpec";
 import { sampleResume } from "../data/resume";
-import { stripIds } from "./spec";
+import { stripIds, num } from "./spec";
 
 const validContent = () => stripIds(structuredClone(sampleResume)) as unknown as Record<string, unknown>;
 
@@ -63,5 +63,26 @@ describe("finalizeImport + summarize", () => {
   });
   it("summarizes list counts", () => {
     expect(summarize(resumeImportSpec, validContent())).toBe("3 roles · 1 school · 3 skill groups");
+  });
+});
+
+describe("numeric import node", () => {
+  const spec = { qty: num(), rate: num() };
+
+  it("accepts real numbers", () => {
+    const res = validateAgainstSpec(spec, { qty: 3, rate: 12.5 });
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.value).toEqual({ qty: 3, rate: 12.5 });
+  });
+
+  it("coerces numeric strings the AI may emit", () => {
+    const res = validateAgainstSpec(spec, { qty: "3", rate: "12.50" });
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.value).toEqual({ qty: 3, rate: 12.5 });
+  });
+
+  it("rejects non-numeric text", () => {
+    const res = validateAgainstSpec(spec, { qty: "lots", rate: 1 });
+    expect(res.ok).toBe(false);
   });
 });

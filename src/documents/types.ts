@@ -15,5 +15,7 @@ export interface DocumentType<T> {
   defaultData: T;
   /** Content contract the AI-import prompt + validator are generated from. */
   importSpec: ImportSpec;
-  templates: Template[];
+  templates: Template<T>[];
+  /** Flatten every user-entered string into one blob for the font-coverage scan. */
+  collectText: (data: T) => string;
 }

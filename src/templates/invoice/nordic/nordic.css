@@ -1,0 +1,73 @@
+/*
+ * Nordic — minimal Swiss invoice. Ported from the approved demo
+ * (docs/superpowers/plans/assets/invoice-demos-reference.html, .t-nordic block):
+ * every px length ×0.8 → pt so the 760px demo maps onto the 612pt US-Letter page.
+ * Primary accent (demo red) is driven by the variant via var(--c-accent);
+ * the body font comes from the variant via var(--f-sans).
+ */
+.resume-page.t-nordic {
+  --nd-ink: #0f1115;
+  --nd-mut: #6c6e73;
+  --nd-faint: #9a9ca1;
+  --nd-line: #e0e0dc;
+  --nd-red: var(--c-accent);
+  --nd-paper: #fcfcfb;
+  width: var(--page-w);
+  min-height: var(--page-h);
+  box-sizing: border-box;
+  background: var(--nd-paper);
+  color: var(--nd-ink);
+  font-family: var(--f-sans);
+  padding: 48pt 46.4pt 41.6pt;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+.resume-page.t-nordic .num,
+.resume-page.t-nordic .nd-r,
+.resume-page.t-nordic .nd-tr b,
+.resume-page.t-nordic .nd-balance .v { font-variant-numeric: tabular-nums; }
+
+.resume-page.t-nordic .nd-topbar { height: 3.2pt; background: var(--c-accent); margin: -48pt -46.4pt 32pt; }
+.resume-page.t-nordic .nd-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 24pt; }
+.resume-page.t-nordic .nd-title { font-family: var(--f-serif); font-size: calc(41.6pt * var(--s-font-scale)); font-weight: 700; letter-spacing: -0.035em; line-height: 0.9; }
+.resume-page.t-nordic .nd-from { text-align: right; font-size: 9.2pt; line-height: 1.5; color: var(--nd-mut); }
+.resume-page.t-nordic .nd-from b { display: block; color: var(--nd-ink); font-size: 10.4pt; letter-spacing: -0.01em; }
+.resume-page.t-nordic .nd-from .nd-tag { color: var(--nd-faint); }
+.resume-page.t-nordic .nd-meta {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 19.2pt;
+  margin: 24pt 0 20pt; padding: 12pt 0; border-top: 1px solid var(--nd-line);
+  border-bottom: 1px solid var(--nd-line);
+}
+.resume-page.t-nordic .nd-lbl { font-size: 7.6pt; letter-spacing: 0.16em; text-transform: uppercase; color: var(--nd-faint); font-weight: 600; margin-bottom: 5.6pt; }
+.resume-page.t-nordic .nd-mt { margin-top: 11pt; }
+.resume-page.t-nordic .nd-val { font-size: 10pt; line-height: 1.45; }
+.resume-page.t-nordic .nd-val b { font-weight: 600; }
+.resume-page.t-nordic .nd-items { width: 100%; }
+.resume-page.t-nordic .nd-cols {
+  display: grid; grid-template-columns: 1fr 56pt 83.2pt 92.8pt; gap: 12.8pt;
+  font-size: 7.6pt; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--nd-faint); font-weight: 600; padding-bottom: 8pt;
+}
+.resume-page.t-nordic .nd-row {
+  display: grid; grid-template-columns: 1fr 56pt 83.2pt 92.8pt; gap: 12.8pt;
+  padding: 8.5pt 0; border-top: 1px solid var(--nd-line); align-items: baseline;
+}
+.resume-page.t-nordic .nd-row .nd-desc b { font-size: 10.4pt; font-weight: 600; }
+.resume-page.t-nordic .nd-row .nd-desc span { display: block; font-size: 8.8pt; color: var(--nd-mut); margin-top: 1.6pt; }
+.resume-page.t-nordic .nd-r { text-align: right; font-size: 10pt; }
+.resume-page.t-nordic .nd-totals { margin-top: 16pt; margin-left: auto; width: 256pt; }
+.resume-page.t-nordic .nd-totals.nd-balance-wrap { margin-top: 0; }
+.resume-page.t-nordic .nd-tr { display: flex; justify-content: space-between; font-size: 10pt; padding: 4.8pt 0; color: var(--nd-mut); }
+.resume-page.t-nordic .nd-tr b { color: var(--nd-ink); font-weight: 600; }
+.resume-page.t-nordic .nd-tr.strong { border-top: 1px solid var(--nd-ink); margin-top: 4.8pt; padding-top: 8pt; color: var(--nd-ink); font-weight: 600; }
+.resume-page.t-nordic .nd-balance {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-top: 10pt; padding-top: 10pt; border-top: 1.6pt solid var(--c-accent);
+}
+.resume-page.t-nordic .nd-balance .l { font-size: 8.8pt; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-accent); font-weight: 700; align-self: center; }
+.resume-page.t-nordic .nd-balance .v { font-size: calc(24pt * var(--s-font-scale)); font-weight: 700; color: var(--c-accent); letter-spacing: -0.02em; }
+.resume-page.t-nordic .nd-foot { display: flex; gap: 35.2pt; margin-top: 24pt; padding-top: 14pt; border-top: 1px solid var(--nd-line); font-size: 8.4pt; line-height: 1.55; color: var(--nd-mut); }
+.resume-page.t-nordic .nd-foot-col { flex: 1; }
+.resume-page.t-nordic .nd-foot .nd-lbl { margin-bottom: 4.8pt; }
+.resume-page.t-nordic .nd-foot b { color: var(--nd-ink); font-weight: 600; }

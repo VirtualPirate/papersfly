@@ -12,4 +12,10 @@ describe("document registry", () => {
     expect(defaultDocument.defaultData).toBe(sampleResume);
     expect(defaultDocument.templates.length).toBeGreaterThan(0);
   });
+
+  it("registers the invoice document with four templates", () => {
+    const invoice = documents.find((d) => d.id === "invoice");
+    expect(invoice).toBeDefined();
+    expect(invoice?.templates.length).toBe(4);
+  });
 });

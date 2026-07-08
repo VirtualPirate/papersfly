@@ -82,6 +82,42 @@ function Control({
       <Input className={className} value={text} onChange={(e) => handle(e.target.value)} />
     );
   }
+  if (spec.control === "number") {
+    return (
+      <Input
+        type="number"
+        inputMode="decimal"
+        step={spec.step ?? "any"}
+        min={spec.min}
+        className={className}
+        placeholder={spec.placeholder}
+        value={value === undefined || value === null ? "" : String(value)}
+        onChange={(e) => {
+          const raw = e.target.value;
+          if (raw === "") return onChange(0);
+          const n = Number(raw);
+          onChange(Number.isNaN(n) ? (typeof value === "number" ? value : 0) : n);
+        }}
+      />
+    );
+  }
+  if (spec.control === "select") {
+    return (
+      <select
+        className={
+          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm " +
+          "transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " +
+          (className ?? "")
+        }
+        value={(value as string) ?? ""}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        {spec.options.map((o) => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+    );
+  }
   return (
     <Input
       className={className}

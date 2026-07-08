@@ -39,12 +39,3 @@ export function unsupportedChars(text: string): string[] {
   }
   return [...out];
 }
-
-/** Flatten every user-entered string in a resume into one blob for scanning. */
-export function collectResumeText(data: import("../data/resume").ResumeData): string {
-  const parts: string[] = [data.name, data.headline, data.summary, ...Object.values(data.contact)];
-  for (const e of data.experience) parts.push(e.role, e.company, e.location, ...e.bullets);
-  for (const e of data.education) parts.push(e.institution, e.degree, e.location, e.detail);
-  for (const s of data.skills) parts.push(s.label, ...s.items);
-  return parts.join(" ");
-}

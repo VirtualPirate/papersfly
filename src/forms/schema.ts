@@ -11,7 +11,9 @@
 export type FieldSpec =
   | { control: "text"; placeholder?: string }
   | { control: "textarea"; rows?: number }
-  | { control: "stringList"; separator: string; multiline: boolean; rows?: number };
+  | { control: "stringList"; separator: string; multiline: boolean; rows?: number }
+  | { control: "number"; placeholder?: string; step?: number; min?: number }
+  | { control: "select"; options: { value: string; label: string }[] };
 
 export interface LeafField {
   kind: "field";
@@ -63,6 +65,10 @@ export interface Builder<S> {
   lines(key: Key<S>, label: string, opts?: { rows?: number }): LeafField;
   /** string[] edited as a single input, separator-joined (default ","). */
   tags(key: Key<S>, label: string, opts?: { separator?: string }): LeafField;
+  /** Numeric input; coerces to a number (empty ⇒ 0, invalid ⇒ previous value). */
+  number(key: Key<S>, label: string, opts?: { placeholder?: string; step?: number; min?: number }): LeafField;
+  /** Native single-select emitting the chosen option value (a string). */
+  select(key: Key<S>, label: string, options: { value: string; label: string }[]): LeafField;
   row(...fields: LeafField[]): RowNode;
   group<K extends Key<S>>(key: K, build: (b: Builder<S[K]>) => FieldNode[]): GroupNode;
 }
@@ -109,6 +115,18 @@ export function builder<T>(): RootBuilder<T> {
       key,
       label,
       spec: { control: "stringList", separator: opts?.separator ?? ",", multiline: false },
+    }),
+    number: (key: string, label: string, opts?: { placeholder?: string; step?: number; min?: number }) => ({
+      kind: "field",
+      key,
+      label,
+      spec: { control: "number", ...opts },
+    }),
+    select: (key: string, label: string, options: { value: string; label: string }[]) => ({
+      kind: "field",
+      key,
+      label,
+      spec: { control: "select", options },
     }),
     row: (...fields: LeafField[]) => ({ kind: "row", fields }),
     group: (key: string, build: (sub: any) => FieldNode[]) => ({

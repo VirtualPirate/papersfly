@@ -11,20 +11,21 @@ export interface TemplateVariants {
 }
 
 /**
- * A template is a self-contained design over `ResumeData`, rendered as HTML/CSS.
- * The same rendered markup is BOTH the live preview and the source the PDF is
- * generated from (via `doc.html()`), so the design is authored once.
+ * A template is a self-contained design over document data `T` (defaulting to
+ * `ResumeData`), rendered as HTML/CSS. The same rendered markup is BOTH the live
+ * preview and the source the PDF is generated from (via `doc.html()`), so the
+ * design is authored once.
  *
  * Adding a new design = add a module that exports one `Template`, then list it
  * in `registry.ts`. Content (data) never changes; only the design does.
  */
-export interface Template {
+export interface Template<T = ResumeData> {
   id: string;
   name: string;
   /** Short one-line design description, shown on the gallery card. */
   description?: string;
   /** Form schema for editing this template's data. Each template owns its own schema. */
-  schema: FormSchema<ResumeData>;
+  schema: FormSchema<T>;
   /** The color schemes + font pairings this template offers, plus its default. */
   variants: TemplateVariants;
   /**
@@ -34,7 +35,7 @@ export interface Template {
    * build-time chunk, fetched on demand via dynamic `import()`. Render it behind
    * a `<Suspense>` boundary.
    */
-  Preview: ComponentType<{ data: ResumeData; fontOverrides?: FontOverrides; variant?: Variant }>;
+  Preview: ComponentType<{ data: T; fontOverrides?: FontOverrides; variant?: Variant }>;
   /**
    * Resolve the template's chunk and return the concrete component. Awaiting
    * this guarantees the component renders synchronously on its next mount —
@@ -42,5 +43,5 @@ export interface Template {
    * mounting an offscreen capture copy, so a still-suspended lazy component
    * would make the export silently no-op).
    */
-  preload: () => Promise<ComponentType<{ data: ResumeData; fontOverrides?: FontOverrides; variant?: Variant }>>;
+  preload: () => Promise<ComponentType<{ data: T; fontOverrides?: FontOverrides; variant?: Variant }>>;
 }

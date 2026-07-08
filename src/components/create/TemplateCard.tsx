@@ -13,7 +13,9 @@ export function TemplateCard({
   data,
 }: {
   docId: string;
-  template: Template;
+  // Erased boundary: the gallery renders templates of any document type
+  // (data is passed through as the matching defaultData — see `data as never`).
+  template: Template<any>;
   data: unknown;
 }) {
   const Preview = template.Preview;

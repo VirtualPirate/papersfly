@@ -1,0 +1,554 @@
+<title>Invoice templates — 4 directions</title>
+<style>
+  /* ============================ tokens + chrome ============================ */
+  *, *::before, *::after { box-sizing: border-box; }
+  :root {
+    --bg: #e9e8e4;          /* studio grey, faint warm bias */
+    --bg-2: #f3f2ef;
+    --fg: #1c1d1a;
+    --muted: #6a6b66;
+    --faint: #93948e;
+    --line: #d4d3cd;
+    --card: #ffffff;
+    --accent: #1f4a3d;
+    --shadow: 0 1px 2px rgba(20,20,18,.06), 0 18px 40px -18px rgba(20,20,18,.28);
+    --ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #131315; --bg-2: #1b1b1e; --fg: #eceae4; --muted: #a2a29b;
+      --faint: #74746e; --line: #2c2c30; --card: #202024;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 28px 60px -20px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #e9e8e4; --bg-2: #f3f2ef; --fg: #1c1d1a; --muted: #6a6b66;
+    --faint: #93948e; --line: #d4d3cd; --card: #ffffff;
+    --shadow: 0 1px 2px rgba(20,20,18,.06), 0 18px 40px -18px rgba(20,20,18,.28);
+  }
+  :root[data-theme="dark"] {
+    --bg: #131315; --bg-2: #1b1b1e; --fg: #eceae4; --muted: #a2a29b;
+    --faint: #74746e; --line: #2c2c30; --card: #202024;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 28px 60px -20px rgba(0,0,0,.7);
+  }
+
+  body { margin: 0; }
+  .page {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--ui);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 56px 24px 96px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+
+  .masthead { margin-bottom: 44px; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin: 0 0 14px;
+  }
+  .masthead h1 {
+    font-size: clamp(30px, 6vw, 46px); line-height: 1.02; letter-spacing: -.02em;
+    margin: 0 0 16px; font-weight: 680; text-wrap: balance;
+  }
+  .masthead p { margin: 0; max-width: 60ch; color: var(--muted); font-size: 15.5px; line-height: 1.55; }
+  .lede-note {
+    margin-top: 18px; font-size: 13.5px; color: var(--faint);
+    border-left: 2px solid var(--line); padding-left: 14px; line-height: 1.5;
+  }
+
+  /* entry (rationale card + sheet) */
+  .entry { margin-top: 56px; }
+  .rationale {
+    display: grid; grid-template-columns: 1fr auto; gap: 20px 28px;
+    align-items: end; padding-bottom: 18px; margin-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  .rationale .tag {
+    font-size: 11.5px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--faint); font-weight: 600; margin: 0 0 8px;
+  }
+  .rationale h2 {
+    font-size: 27px; margin: 0 0 10px; letter-spacing: -.01em; font-weight: 640;
+  }
+  .rationale .why { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.55; max-width: 54ch; }
+  .rationale .meta-fonts { margin: 10px 0 0; font-size: 12.5px; color: var(--faint); }
+  .rationale .meta-fonts b { color: var(--muted); font-weight: 600; }
+  .swatches { display: flex; gap: 7px; }
+  .swatches i {
+    width: 22px; height: 22px; border-radius: 5px; display: block;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+  }
+
+  .stage { width: 100%; overflow: hidden; }
+  .sheet {
+    width: 760px; transform-origin: top left; background: #fff; color: #111;
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+
+  footer.foot {
+    margin-top: 72px; padding-top: 22px; border-top: 1px solid var(--line);
+    color: var(--faint); font-size: 13px; line-height: 1.6;
+  }
+  .theme-btn {
+    position: fixed; top: 16px; right: 16px; z-index: 20;
+    font: 600 12px/1 var(--ui); letter-spacing: .04em;
+    color: var(--fg); background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 9px 14px; cursor: pointer; box-shadow: var(--shadow);
+  }
+  .theme-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  @media (max-width: 620px) {
+    .page { padding: 40px 14px 72px; }
+    .rationale { grid-template-columns: 1fr; align-items: start; }
+    .swatches { margin-top: 4px; }
+  }
+
+  /* =========================================================================
+     SHEET BASE — every invoice sheet keeps a paper look in both themes
+     ========================================================================= */
+  .sheet, .sheet * { box-sizing: border-box; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ------------------------------ NORDIC (Swiss) ------------------------- */
+  .t-nordic {
+    --nd-ink: #0f1115; --nd-mut: #6c6e73; --nd-faint: #9a9ca1;
+    --nd-line: #e0e0dc; --nd-red: #e5342a; --nd-paper: #fcfcfb;
+    background: var(--nd-paper); color: var(--nd-ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 60px 58px 52px; letter-spacing: -.005em;
+  }
+  .t-nordic .nd-topbar { height: 4px; background: var(--nd-red); margin: -60px -58px 40px; }
+  .t-nordic .nd-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; }
+  .t-nordic .nd-title { font-size: 52px; font-weight: 700; letter-spacing: -.035em; line-height: .9; }
+  .t-nordic .nd-from { text-align: right; font-size: 11.5px; line-height: 1.5; color: var(--nd-mut); }
+  .t-nordic .nd-from b { display: block; color: var(--nd-ink); font-size: 13px; letter-spacing: -.01em; }
+  .t-nordic .nd-from .nd-tag { color: var(--nd-faint); }
+  .t-nordic .nd-meta {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 24px;
+    margin: 40px 0 34px; padding: 20px 0; border-top: 1px solid var(--nd-line);
+    border-bottom: 1px solid var(--nd-line);
+  }
+  .t-nordic .nd-lbl { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--nd-faint); font-weight: 600; margin-bottom: 7px; }
+  .t-nordic .nd-val { font-size: 12.5px; line-height: 1.45; }
+  .t-nordic .nd-val b { font-weight: 600; }
+  .t-nordic .nd-items { width: 100%; }
+  .t-nordic .nd-cols {
+    display: grid; grid-template-columns: 1fr 70px 104px 116px; gap: 16px;
+    font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--nd-faint); font-weight: 600; padding-bottom: 10px;
+  }
+  .t-nordic .nd-row {
+    display: grid; grid-template-columns: 1fr 70px 104px 116px; gap: 16px;
+    padding: 14px 0; border-top: 1px solid var(--nd-line); align-items: baseline;
+  }
+  .t-nordic .nd-row .nd-desc b { font-size: 13px; font-weight: 600; }
+  .t-nordic .nd-row .nd-desc span { display: block; font-size: 11px; color: var(--nd-mut); margin-top: 2px; }
+  .t-nordic .nd-r { text-align: right; font-size: 12.5px; }
+  .t-nordic .nd-totals { margin-top: 26px; margin-left: auto; width: 320px; }
+  .t-nordic .nd-tr { display: flex; justify-content: space-between; font-size: 12.5px; padding: 6px 0; color: var(--nd-mut); }
+  .t-nordic .nd-tr b { color: var(--nd-ink); font-weight: 600; }
+  .t-nordic .nd-tr.strong { border-top: 1px solid var(--nd-ink); margin-top: 6px; padding-top: 10px; color: var(--nd-ink); font-weight: 600; }
+  .t-nordic .nd-balance {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--nd-red);
+  }
+  .t-nordic .nd-balance .l { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--nd-red); font-weight: 700; align-self: center; }
+  .t-nordic .nd-balance .v { font-size: 30px; font-weight: 700; color: var(--nd-red); letter-spacing: -.02em; }
+  .t-nordic .nd-foot { display: flex; gap: 44px; margin-top: 46px; padding-top: 20px; border-top: 1px solid var(--nd-line); font-size: 10.5px; line-height: 1.55; color: var(--nd-mut); }
+  .t-nordic .nd-foot .nd-lbl { margin-bottom: 6px; }
+  .t-nordic .nd-foot b { color: var(--nd-ink); font-weight: 600; }
+
+  /* ------------------------------ STERLING (classic serif) --------------- */
+  .t-sterling {
+    --st-ink: #1e1b16; --st-mut: #5c574d; --st-faint: #918a7c;
+    --st-green: #20463a; --st-gold: #a6853f; --st-line: #d8d2c6; --st-paper: #fbfaf7;
+    background: var(--st-paper); color: var(--st-ink);
+    font-family: Georgia, "Times New Roman", serif;
+    padding: 56px 62px 54px;
+  }
+  .t-sterling .st-mast { text-align: center; margin-bottom: 34px; }
+  .t-sterling .st-rule-d { border-top: 2px solid var(--st-ink); border-bottom: 1px solid var(--st-ink); height: 4px; }
+  .t-sterling .st-name { font-size: 34px; color: var(--st-green); letter-spacing: .01em; margin: 16px 0 8px; font-weight: 700; }
+  .t-sterling .st-tag { font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--st-mut); margin-bottom: 16px; font-family: var(--ui); }
+  .t-sterling .st-doc { font-size: 12px; letter-spacing: .32em; text-transform: uppercase; color: var(--st-faint); font-family: var(--ui); margin: 22px 0 4px; }
+  .t-sterling .st-info { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 30px 0 26px; }
+  .t-sterling .sc { font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--st-green); font-weight: 700; font-family: var(--ui); margin-bottom: 9px; }
+  .t-sterling .st-info .who b { font-size: 15px; display: block; margin-bottom: 3px; }
+  .t-sterling .st-info .who { font-size: 12.5px; line-height: 1.5; color: var(--st-mut); }
+  .t-sterling .st-info .who .an { color: var(--st-ink); }
+  .t-sterling .st-dl { display: grid; grid-template-columns: auto 1fr; gap: 5px 16px; font-size: 12.5px; }
+  .t-sterling .st-dl dt { color: var(--st-mut); }
+  .t-sterling .st-dl dd { margin: 0; text-align: right; font-family: var(--ui); font-variant-numeric: tabular-nums; }
+  .t-sterling table.st-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .t-sterling .st-table thead th {
+    font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--st-green);
+    font-family: var(--ui); font-weight: 700; text-align: left; padding: 0 12px 8px;
+    border-bottom: 1.5px solid var(--st-green);
+  }
+  .t-sterling .st-table th.r, .t-sterling .st-table td.r { text-align: right; }
+  .t-sterling .st-table tbody td { padding: 13px 12px; border-bottom: 1px solid var(--st-line); font-size: 13px; vertical-align: top; }
+  .t-sterling .st-table tbody td + td { border-left: 1px solid var(--st-line); }
+  .t-sterling .st-table .desc b { font-weight: 700; }
+  .t-sterling .st-table .desc span { display: block; font-size: 11.5px; font-style: italic; color: var(--st-mut); margin-top: 3px; }
+  .t-sterling .st-table .num { font-family: var(--ui); font-variant-numeric: tabular-nums; }
+  .t-sterling .st-totals { width: 320px; margin-left: auto; margin-top: 20px; }
+  .t-sterling .st-trow { display: flex; justify-content: space-between; font-size: 12.5px; padding: 6px 0; color: var(--st-mut); }
+  .t-sterling .st-trow .num { font-family: var(--ui); font-variant-numeric: tabular-nums; color: var(--st-ink); }
+  .t-sterling .st-trow.total { color: var(--st-green); font-weight: 700; font-size: 14px; border-top: 1px solid var(--st-ink); margin-top: 6px; padding-top: 10px; }
+  .t-sterling .st-balance { display: flex; justify-content: space-between; align-items: baseline; margin-top: 12px; padding: 12px 0 4px; border-top: 2px solid var(--st-gold); border-bottom: 1px solid var(--st-gold); }
+  .t-sterling .st-balance .l { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--st-ink); font-weight: 700; font-family: var(--ui); align-self: center; }
+  .t-sterling .st-balance .v { font-size: 22px; font-weight: 700; color: var(--st-green); font-family: var(--ui); font-variant-numeric: tabular-nums; }
+  .t-sterling .st-foot { margin-top: 40px; text-align: center; font-size: 12px; font-style: italic; color: var(--st-mut); line-height: 1.6; }
+  .t-sterling .st-foot .st-rule-thin { width: 60px; height: 1px; background: var(--st-gold); margin: 0 auto 14px; }
+
+  /* ------------------------------ PRISM (bold creative) ------------------ */
+  .t-prism {
+    --pr-teal: #124e48; --pr-teal-d: #0d3f3a; --pr-cream: #f4efe6;
+    --pr-coral: #ff6f59; --pr-ink: #181613; --pr-mut: #6f6c65; --pr-line: #e7e3da;
+    display: flex; background: #fff; color: var(--pr-ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; min-height: 983px;
+  }
+  .t-prism .pr-rail { width: 228px; flex: none; background: var(--pr-teal); color: var(--pr-cream); padding: 44px 26px; display: flex; flex-direction: column; }
+  .t-prism .pr-mark { width: 52px; height: 52px; border: 2px solid var(--pr-cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 19px; letter-spacing: .02em; }
+  .t-prism .pr-from { margin-top: 30px; font-size: 11.5px; line-height: 1.6; color: rgba(244,239,230,.72); }
+  .t-prism .pr-from b { display: block; color: var(--pr-cream); font-size: 15px; margin-bottom: 3px; }
+  .t-prism .pr-spacer { flex: 1; }
+  .t-prism .pr-invword { font-size: 42px; font-weight: 800; letter-spacing: -.045em; line-height: .9; color: var(--pr-cream); }
+  .t-prism .pr-num { margin-top: 12px; font-size: 12px; letter-spacing: .1em; color: var(--pr-coral); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .t-prism .pr-body { flex: 1; padding: 44px 38px; display: flex; flex-direction: column; }
+  .t-prism .pr-billrow { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+  .t-prism .pr-k { font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--pr-teal); font-weight: 700; margin-bottom: 7px; }
+  .t-prism .pr-billrow .to b { font-size: 15px; display: block; margin-bottom: 2px; }
+  .t-prism .pr-billrow .to { font-size: 12.5px; line-height: 1.5; color: var(--pr-mut); }
+  .t-prism .pr-dates { text-align: right; font-size: 12.5px; line-height: 1.7; }
+  .t-prism .pr-dates .num { font-weight: 600; }
+  .t-prism .pr-cols { display: grid; grid-template-columns: 1fr 44px 82px 94px; gap: 12px; font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--pr-mut); font-weight: 700; padding-bottom: 10px; border-bottom: 2px solid var(--pr-ink); }
+  .t-prism .pr-row { display: grid; grid-template-columns: 1fr 44px 82px 94px; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--pr-line); align-items: baseline; }
+  .t-prism .pr-row .d b { font-size: 13px; font-weight: 700; }
+  .t-prism .pr-row .d span { display: block; font-size: 11px; color: var(--pr-mut); margin-top: 2px; }
+  .t-prism .pr-r { text-align: right; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .t-prism .pr-tot { width: 300px; margin-left: auto; margin-top: 22px; }
+  .t-prism .pr-tr { display: flex; justify-content: space-between; font-size: 12.5px; padding: 5px 0; color: var(--pr-mut); }
+  .t-prism .pr-tr .num { color: var(--pr-ink); font-variant-numeric: tabular-nums; }
+  .t-prism .pr-tr.sum { border-top: 1px solid var(--pr-ink); margin-top: 6px; padding-top: 9px; color: var(--pr-ink); font-weight: 700; }
+  .t-prism .pr-chip { display: flex; justify-content: space-between; align-items: center; background: var(--pr-coral); color: #2a0f09; border-radius: 10px; padding: 14px 18px; margin-top: 16px; }
+  .t-prism .pr-chip .l { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; font-weight: 800; }
+  .t-prism .pr-chip .v { font-size: 24px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .t-prism .pr-foot { margin-top: auto; padding-top: 28px; display: flex; gap: 28px; font-size: 10.5px; line-height: 1.55; color: var(--pr-mut); }
+  .t-prism .pr-foot > div { flex: 1; }
+  .t-prism .pr-foot b { color: var(--pr-ink); }
+
+  /* ------------------------------ BUREAU (corporate) --------------------- */
+  .t-bureau {
+    --bu-ink: #1f2733; --bu-mut: #5a6472; --bu-faint: #8a93a1;
+    --bu-line: #d6dbe2; --bu-zebra: #f5f7fa; --bu-blue: #1e52c8; --bu-panel: #1f2733;
+    background: #fff; color: var(--bu-ink);
+    font-family: var(--ui); padding: 44px 46px 46px;
+  }
+  .t-bureau .bu-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 26px; margin-bottom: 26px; }
+  .t-bureau .bu-logo { display: flex; gap: 14px; align-items: center; }
+  .t-bureau .bu-logo .box { width: 46px; height: 46px; background: var(--bu-panel); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 17px; }
+  .t-bureau .bu-logo b { font-size: 15px; }
+  .t-bureau .bu-logo span { display: block; font-size: 11px; color: var(--bu-mut); line-height: 1.45; }
+  .t-bureau .bu-doc { text-align: right; }
+  .t-bureau .bu-doc .word { font-size: 24px; font-weight: 800; letter-spacing: .02em; }
+  .t-bureau .bu-doc .no { font-size: 12px; color: var(--bu-mut); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .t-bureau .bu-pill { display: inline-block; margin-top: 9px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: #fff; background: var(--bu-blue); border-radius: 999px; padding: 5px 11px; }
+  .t-bureau .bu-grid { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--bu-line); border-radius: 8px; overflow: hidden; margin-bottom: 22px; }
+  .t-bureau .bu-cell { padding: 15px 18px; }
+  .t-bureau .bu-cell + .bu-cell { border-left: 1px solid var(--bu-line); }
+  .t-bureau .bu-k { font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--bu-faint); font-weight: 700; margin-bottom: 8px; }
+  .t-bureau .bu-cell.who b { font-size: 14px; display: block; margin-bottom: 2px; }
+  .t-bureau .bu-cell.who { font-size: 12px; color: var(--bu-mut); line-height: 1.5; }
+  .t-bureau .bu-cell.who .an { color: var(--bu-ink); }
+  .t-bureau .bu-dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 12px; }
+  .t-bureau .bu-dl dt { color: var(--bu-mut); }
+  .t-bureau .bu-dl dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
+  .t-bureau table.bu-table { width: 100%; border-collapse: collapse; border: 1px solid var(--bu-line); border-radius: 8px; overflow: hidden; }
+  .t-bureau .bu-table thead th { background: var(--bu-panel); color: #fff; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; text-align: left; padding: 11px 14px; }
+  .t-bureau .bu-table th.r, .t-bureau .bu-table td.r { text-align: right; }
+  .t-bureau .bu-table tbody tr:nth-child(even) { background: var(--bu-zebra); }
+  .t-bureau .bu-table tbody td { padding: 12px 14px; font-size: 12.5px; border-top: 1px solid var(--bu-line); vertical-align: top; }
+  .t-bureau .bu-table .desc b { font-weight: 600; }
+  .t-bureau .bu-table .desc span { display: block; font-size: 11px; color: var(--bu-mut); margin-top: 2px; }
+  .t-bureau .bu-table .mono { font-family: var(--mono); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .t-bureau .bu-foot { display: grid; grid-template-columns: 1fr 300px; gap: 26px; margin-top: 22px; align-items: start; }
+  .t-bureau .bu-pay { border: 1px solid var(--bu-line); border-radius: 8px; padding: 15px 18px; font-size: 11.5px; line-height: 1.6; color: var(--bu-mut); }
+  .t-bureau .bu-pay b { color: var(--bu-ink); }
+  .t-bureau .bu-pay .mono { font-family: var(--mono); }
+  .t-bureau .bu-panel { background: var(--bu-panel); color: #fff; border-radius: 8px; padding: 16px 18px; }
+  .t-bureau .bu-panel .r { display: flex; justify-content: space-between; font-size: 12px; padding: 5px 0; color: rgba(255,255,255,.72); }
+  .t-bureau .bu-panel .r .mono { font-family: var(--mono); color: #fff; font-variant-numeric: tabular-nums; }
+  .t-bureau .bu-panel .r.sum { border-top: 1px solid rgba(255,255,255,.2); margin-top: 6px; padding-top: 9px; color: #fff; }
+  .t-bureau .bu-panel .r.bal { border-top: 2px solid var(--bu-blue); margin-top: 8px; padding-top: 12px; align-items: center; }
+  .t-bureau .bu-panel .r.bal .l { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+  .t-bureau .bu-panel .r.bal .mono { font-size: 20px; font-weight: 700; }
+  .t-bureau .bu-notes { margin-top: 20px; font-size: 11px; color: var(--bu-faint); line-height: 1.6; border-top: 1px solid var(--bu-line); padding-top: 14px; }
+</style>
+
+<div class="page">
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle light or dark theme">Theme</button>
+  <div class="wrap">
+    <header class="masthead">
+      <p class="eyebrow">papersfly · draft demos</p>
+      <h1>Invoice templates — four directions</h1>
+      <p>The same invoice, rendered across four design systems for the client-side builder. Each is a distinct visual identity, not a recolor: different grid, type, and signature device. All render at true US-Letter proportions from selectable HTML/CSS — the exact source the vector PDF is drawn from.</p>
+      <p class="lede-note">Sample: a design studio (Atelier Nord) billing a coffee roaster. It deliberately exercises every field of the full data model — line-item detail, a returning-client discount, sales tax, a purchase-order number, a deposit already received, and the resulting balance due. The sheets stay on white paper in dark mode on purpose; only this page's chrome follows your theme.</p>
+    </header>
+
+    <section class="entry">
+      <div class="rationale">
+        <div>
+          <p class="tag">Minimal · Swiss</p>
+          <h2>Nordic</h2>
+          <p class="why">International-typographic restraint: a hairline grid, a spec-sheet metadata column, and generous air. Boldness spent in one place — the balance due, set large in signal red.</p>
+          <p class="meta-fonts"><b>Production type:</b> IBM Plex Sans (tight) · tabular figures</p>
+        </div>
+        <div class="swatches" aria-hidden="true">
+          <i style="background:#fcfcfb"></i><i style="background:#0f1115"></i><i style="background:#e5342a"></i><i style="background:#e0e0dc"></i>
+        </div>
+      </div>
+      <div class="stage"><div class="sheet t-nordic" data-tpl="nordic"></div></div>
+    </section>
+
+    <section class="entry">
+      <div class="rationale">
+        <div>
+          <p class="tag">Classic · Serif</p>
+          <h2>Sterling</h2>
+          <p class="why">The engraved letterhead of an old accounting house: a centered masthead framed by double rules, small-caps column heads, and a ruled table. Bottle green and a single restrained gold rule do the accenting.</p>
+          <p class="meta-fonts"><b>Production type:</b> Playfair Display · Source Serif 4 · sans for figures</p>
+        </div>
+        <div class="swatches" aria-hidden="true">
+          <i style="background:#fbfaf7"></i><i style="background:#20463a"></i><i style="background:#a6853f"></i><i style="background:#1e1b16"></i>
+        </div>
+      </div>
+      <div class="stage"><div class="sheet t-sterling" data-tpl="sterling"></div></div>
+    </section>
+
+    <section class="entry">
+      <div class="rationale">
+        <div>
+          <p class="tag">Bold · Creative</p>
+          <h2>Prism</h2>
+          <p class="why">A studio's invoice with a point of view: a solid teal brand rail carries the sender and an oversized wordmark, while the worksheet stays calm. The balance due lands in a coral chip — the one loud note.</p>
+          <p class="meta-fonts"><b>Production type:</b> IBM Plex Sans (heavy display) · Inter body</p>
+        </div>
+        <div class="swatches" aria-hidden="true">
+          <i style="background:#124e48"></i><i style="background:#f4efe6"></i><i style="background:#ff6f59"></i><i style="background:#181613"></i>
+        </div>
+      </div>
+      <div class="stage"><div class="sheet t-prism" data-tpl="prism"></div></div>
+    </section>
+
+    <section class="entry">
+      <div class="rationale">
+        <div>
+          <p class="tag">Structured · Corporate</p>
+          <h2>Bureau</h2>
+          <p class="why">Built for finance departments: a boxed metadata grid, a fully ruled zebra table, and a filled totals panel. Monospaced tabular figures keep every column aligned; corporate blue flags status and balance.</p>
+          <p class="meta-fonts"><b>Production type:</b> Inter · IBM Plex Mono for figures</p>
+        </div>
+        <div class="swatches" aria-hidden="true">
+          <i style="background:#1f2733"></i><i style="background:#1e52c8"></i><i style="background:#f5f7fa"></i><i style="background:#d6dbe2"></i>
+        </div>
+      </div>
+      <div class="stage"><div class="sheet t-bureau" data-tpl="bureau"></div></div>
+    </section>
+
+    <footer class="foot">
+      Demos are static mockups at true page proportions, using system fonts as stand-ins for the production faces named above. Once you approve a direction, the four become real templates in the builder — each editable, theme-variant-aware, and exported as a true-vector PDF.
+    </footer>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // ---- shared invoice content ----
+    var inv = {
+      from: { name: "Atelier Nord", tag: "Design & Brand Studio",
+        lines: ["42 Warehouse Lane, Studio 3", "Portland, OR 97209", "hello@ateliernord.co", "(503) 555-0172"], ref: "EIN 47-2938471" },
+      to: { name: "Cascadia Coffee Roasters", attn: "Attn: Mara Whitfield",
+        lines: ["1180 SE Belmont Street", "Portland, OR 97214"] },
+      meta: { number: "INV-2026-0114", issued: "Jul 8, 2026", due: "Aug 7, 2026", terms: "Net 30", po: "PO-4471" },
+      items: [
+        { d: "Brand identity system", s: "Logo suite, type & color palette", q: "1", r: 6800, a: 6800 },
+        { d: "Packaging design", s: "Three retail SKUs", q: "3", r: 1450, a: 4350 },
+        { d: "Website design", s: "Six responsive pages", q: "1", r: 5200, a: 5200 },
+        { d: "Photography art direction", s: "On-site, half day", q: "8 hrs", r: 145, a: 1160 }
+      ],
+      t: { subtotal: 17510, discL: "Returning client (5%)", disc: 875.50, taxL: "Sales tax (8.5%)", tax: 1413.93,
+        total: 18048.43, paidL: "Deposit received", paid: 5000, balance: 13048.43 },
+      pay: { method: "Cascade Credit Union", lines: ["Routing 123 456 789", "Account 000 112 223"], online: "ateliernord.co/pay" },
+      notes: "Thank you for your business. Balances unpaid after the due date accrue interest at 1.5% per month."
+    };
+
+    function money(n) { return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function rate(n) { return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+    // ---- NORDIC ----
+    function nordic() {
+      var rows = inv.items.map(function (it) {
+        return '<div class="nd-row"><div class="nd-desc"><b>' + it.d + '</b><span>' + it.s + '</span></div>' +
+          '<div class="nd-r num">' + it.q + '</div><div class="nd-r num">' + rate(it.r) + '</div>' +
+          '<div class="nd-r num">' + money(it.a) + '</div></div>';
+      }).join("");
+      return '' +
+        '<div class="nd-topbar"></div>' +
+        '<div class="nd-head"><div class="nd-title">Invoice</div>' +
+          '<div class="nd-from"><b>' + inv.from.name + '</b><div class="nd-tag">' + inv.from.tag + '</div>' +
+          inv.from.lines.map(function (l) { return '<div>' + l + '</div>'; }).join("") + '</div></div>' +
+        '<div class="nd-meta">' +
+          '<div><div class="nd-lbl">Billed to</div><div class="nd-val"><b>' + inv.to.name + '</b><br>' + inv.to.attn + '<br>' + inv.to.lines.join("<br>") + '</div></div>' +
+          '<div><div class="nd-lbl">Invoice no.</div><div class="nd-val num">' + inv.meta.number + '</div><div class="nd-lbl" style="margin-top:14px">P.O.</div><div class="nd-val num">' + inv.meta.po + '</div></div>' +
+          '<div><div class="nd-lbl">Issued</div><div class="nd-val num">' + inv.meta.issued + '</div><div class="nd-lbl" style="margin-top:14px">Terms</div><div class="nd-val">' + inv.meta.terms + '</div></div>' +
+          '<div><div class="nd-lbl">Due</div><div class="nd-val num">' + inv.meta.due + '</div></div>' +
+        '</div>' +
+        '<div class="nd-items"><div class="nd-cols"><div>Description</div><div class="nd-r">Qty</div><div class="nd-r">Rate</div><div class="nd-r">Amount</div></div>' + rows + '</div>' +
+        '<div class="nd-totals">' +
+          '<div class="nd-tr"><span>Subtotal</span><b class="num">' + money(inv.t.subtotal) + '</b></div>' +
+          '<div class="nd-tr"><span>' + inv.t.discL + '</span><b class="num">−' + money(inv.t.disc) + '</b></div>' +
+          '<div class="nd-tr"><span>' + inv.t.taxL + '</span><b class="num">' + money(inv.t.tax) + '</b></div>' +
+          '<div class="nd-tr strong"><span>Total</span><b class="num">' + money(inv.t.total) + '</b></div>' +
+          '<div class="nd-tr"><span>' + inv.t.paidL + '</span><b class="num">−' + money(inv.t.paid) + '</b></div>' +
+        '</div>' +
+        '<div class="nd-totals" style="margin-top:0"><div class="nd-balance"><span class="l">Balance due</span><span class="v num">' + money(inv.t.balance) + '</span></div></div>' +
+        '<div class="nd-foot">' +
+          '<div style="flex:1"><div class="nd-lbl">Payment</div><b>' + inv.pay.method + '</b><br>' + inv.pay.lines.join("<br>") + '<br>' + inv.pay.online + '</div>' +
+          '<div style="flex:1"><div class="nd-lbl">Notes</div>' + inv.notes + '</div>' +
+        '</div>';
+    }
+
+    // ---- STERLING ----
+    function sterling() {
+      var rows = inv.items.map(function (it) {
+        return '<tr><td class="desc"><b>' + it.d + '</b><span>' + it.s + '</span></td>' +
+          '<td class="r num">' + it.q + '</td><td class="r num">' + rate(it.r) + '</td>' +
+          '<td class="r num">' + money(it.a) + '</td></tr>';
+      }).join("");
+      return '' +
+        '<div class="st-mast"><div class="st-rule-d"></div><div class="st-name">' + inv.from.name + '</div>' +
+          '<div class="st-tag">' + inv.from.tag + ' &nbsp;·&nbsp; Portland, Oregon</div><div class="st-rule-d"></div>' +
+          '<div class="st-doc">Invoice</div></div>' +
+        '<div class="st-info">' +
+          '<div class="who"><div class="sc">Billed to</div><b class="an">' + inv.to.name + '</b>' + inv.to.attn + '<br>' + inv.to.lines.join("<br>") + '</div>' +
+          '<div><div class="sc">Particulars</div><dl class="st-dl">' +
+            '<dt>Invoice No.</dt><dd>' + inv.meta.number + '</dd>' +
+            '<dt>Date issued</dt><dd>' + inv.meta.issued + '</dd>' +
+            '<dt>Due date</dt><dd>' + inv.meta.due + '</dd>' +
+            '<dt>Terms</dt><dd>' + inv.meta.terms + '</dd>' +
+            '<dt>P.O. number</dt><dd>' + inv.meta.po + '</dd></dl></div>' +
+        '</div>' +
+        '<table class="st-table"><thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Amount</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        '<div class="st-totals">' +
+          '<div class="st-trow"><span>Subtotal</span><span class="num">' + money(inv.t.subtotal) + '</span></div>' +
+          '<div class="st-trow"><span>' + inv.t.discL + '</span><span class="num">−' + money(inv.t.disc) + '</span></div>' +
+          '<div class="st-trow"><span>' + inv.t.taxL + '</span><span class="num">' + money(inv.t.tax) + '</span></div>' +
+          '<div class="st-trow total"><span>Total</span><span class="num">' + money(inv.t.total) + '</span></div>' +
+          '<div class="st-trow"><span>' + inv.t.paidL + '</span><span class="num">−' + money(inv.t.paid) + '</span></div>' +
+          '<div class="st-balance"><span class="l">Balance due</span><span class="v">' + money(inv.t.balance) + '</span></div>' +
+        '</div>' +
+        '<div class="st-foot"><div class="st-rule-thin"></div>Remit to ' + inv.pay.method + ' · ' + inv.pay.lines.join(" · ") + '<br>' + inv.notes + '</div>';
+    }
+
+    // ---- PRISM ----
+    function prism() {
+      var rows = inv.items.map(function (it) {
+        return '<div class="pr-row"><div class="d"><b>' + it.d + '</b><span>' + it.s + '</span></div>' +
+          '<div class="pr-r">' + it.q + '</div><div class="pr-r">' + rate(it.r) + '</div>' +
+          '<div class="pr-r">' + money(it.a) + '</div></div>';
+      }).join("");
+      return '' +
+        '<aside class="pr-rail"><div class="pr-mark">AN</div>' +
+          '<div class="pr-from"><b>' + inv.from.name + '</b>' + inv.from.tag + '<br><br>' + inv.from.lines.join("<br>") + '</div>' +
+          '<div class="pr-spacer"></div>' +
+          '<div class="pr-invword">INVOICE</div><div class="pr-num">' + inv.meta.number + '</div></aside>' +
+        '<section class="pr-body">' +
+          '<div class="pr-billrow"><div class="to"><div class="pr-k">Billed to</div><b>' + inv.to.name + '</b>' + inv.to.attn + '<br>' + inv.to.lines.join("<br>") + '</div>' +
+            '<div class="pr-dates"><div class="pr-k">Issued</div><div class="num">' + inv.meta.issued + '</div>' +
+            '<div class="pr-k" style="margin-top:10px">Due · ' + inv.meta.terms + '</div><div class="num">' + inv.meta.due + '</div></div></div>' +
+          '<div class="pr-cols"><div>Description</div><div class="pr-r">Qty</div><div class="pr-r">Rate</div><div class="pr-r">Amount</div></div>' + rows +
+          '<div class="pr-tot">' +
+            '<div class="pr-tr"><span>Subtotal</span><span class="num">' + money(inv.t.subtotal) + '</span></div>' +
+            '<div class="pr-tr"><span>' + inv.t.discL + '</span><span class="num">−' + money(inv.t.disc) + '</span></div>' +
+            '<div class="pr-tr"><span>' + inv.t.taxL + '</span><span class="num">' + money(inv.t.tax) + '</span></div>' +
+            '<div class="pr-tr sum"><span>Total</span><span class="num">' + money(inv.t.total) + '</span></div>' +
+            '<div class="pr-tr"><span>' + inv.t.paidL + '</span><span class="num">−' + money(inv.t.paid) + '</span></div>' +
+          '</div>' +
+          '<div class="pr-chip" style="width:300px;margin-left:auto"><span class="l">Balance due</span><span class="v">' + money(inv.t.balance) + '</span></div>' +
+          '<div class="pr-foot"><div><div class="pr-k">Payment</div><b>' + inv.pay.method + '</b><br>' + inv.pay.lines.join("<br>") + '<br>' + inv.pay.online + '</div>' +
+            '<div><div class="pr-k">Notes</div>' + inv.notes + '</div></div>' +
+        '</section>';
+    }
+
+    // ---- BUREAU ----
+    function bureau() {
+      var rows = inv.items.map(function (it) {
+        return '<tr><td class="desc"><b>' + it.d + '</b><span>' + it.s + '</span></td>' +
+          '<td class="r mono">' + it.q + '</td><td class="r mono">' + rate(it.r) + '</td>' +
+          '<td class="r mono">' + money(it.a) + '</td></tr>';
+      }).join("");
+      return '' +
+        '<div class="bu-head">' +
+          '<div class="bu-logo"><div class="box">AN</div><div><b>' + inv.from.name + '</b><span>' + inv.from.lines[0] + '<br>' + inv.from.lines[1] + ' · ' + inv.from.ref + '</span></div></div>' +
+          '<div class="bu-doc"><div class="word">INVOICE</div><div class="no">' + inv.meta.number + '</div><span class="bu-pill">Balance due</span></div>' +
+        '</div>' +
+        '<div class="bu-grid">' +
+          '<div class="bu-cell who"><div class="bu-k">Bill to</div><b class="an">' + inv.to.name + '</b>' + inv.to.attn + '<br>' + inv.to.lines.join("<br>") + '</div>' +
+          '<div class="bu-cell"><div class="bu-k">Invoice details</div><dl class="bu-dl">' +
+            '<dt>Issued</dt><dd>' + inv.meta.issued + '</dd>' +
+            '<dt>Due</dt><dd>' + inv.meta.due + '</dd>' +
+            '<dt>Terms</dt><dd>' + inv.meta.terms + '</dd>' +
+            '<dt>P.O.</dt><dd>' + inv.meta.po + '</dd></dl></div>' +
+        '</div>' +
+        '<table class="bu-table"><thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Amount</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        '<div class="bu-foot">' +
+          '<div class="bu-pay"><div class="bu-k">Remit payment</div><b>' + inv.pay.method + '</b><br><span class="mono">' + inv.pay.lines.join("<br>") + '</span><br>Online: ' + inv.pay.online + '</div>' +
+          '<div class="bu-panel">' +
+            '<div class="r"><span>Subtotal</span><span class="mono">' + money(inv.t.subtotal) + '</span></div>' +
+            '<div class="r"><span>' + inv.t.discL + '</span><span class="mono">−' + money(inv.t.disc) + '</span></div>' +
+            '<div class="r"><span>' + inv.t.taxL + '</span><span class="mono">' + money(inv.t.tax) + '</span></div>' +
+            '<div class="r sum"><span>Total</span><span class="mono">' + money(inv.t.total) + '</span></div>' +
+            '<div class="r"><span>' + inv.t.paidL + '</span><span class="mono">−' + money(inv.t.paid) + '</span></div>' +
+            '<div class="r bal"><span class="l">Balance due</span><span class="mono">' + money(inv.t.balance) + '</span></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="bu-notes">' + inv.notes + '</div>';
+    }
+
+    var renderers = { nordic: nordic, sterling: sterling, prism: prism, bureau: bureau };
+    document.querySelectorAll(".sheet[data-tpl]").forEach(function (el) {
+      var fn = renderers[el.getAttribute("data-tpl")];
+      if (fn) { try { el.innerHTML = fn(); } catch (e) { el.innerHTML = '<div style="padding:40px;color:#b00">render error: ' + e.message + '</div>'; } }
+    });
+
+    // ---- fit each fixed-width sheet into its column ----
+    function fit() {
+      document.querySelectorAll(".stage").forEach(function (stage) {
+        var sheet = stage.querySelector(".sheet");
+        if (!sheet) return;
+        sheet.style.transform = "none";
+        var scale = Math.min(1, stage.clientWidth / 760);
+        sheet.style.transform = "scale(" + scale + ")";
+        stage.style.height = (sheet.offsetHeight * scale) + "px";
+      });
+    }
+    window.addEventListener("resize", fit);
+    fit();
+    // re-fit after fonts settle
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(fit); }
+    setTimeout(fit, 60);
+
+    // ---- theme toggle ----
+    var btn = document.getElementById("themeBtn");
+    btn.addEventListener("click", function () {
+      var root = document.documentElement;
+      var isDark = root.getAttribute("data-theme") === "dark" ||
+        (!root.getAttribute("data-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      root.setAttribute("data-theme", isDark ? "light" : "dark");
+    });
+  })();
+</script>

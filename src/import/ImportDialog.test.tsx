@@ -3,12 +3,13 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { ImportDialog } from "./ImportDialog";
 import { resumeDocument } from "../documents/resume/index";
 import { sampleResume } from "../data/resume";
+import type { ResumeData } from "../data/resume";
 import { stripIds } from "./spec";
 
 const validJson = (over: Record<string, unknown> = {}) =>
   JSON.stringify({ ...(stripIds(sampleResume) as object), ...over });
 
-function open(props: Partial<React.ComponentProps<typeof ImportDialog>> = {}) {
+function open(props: Partial<React.ComponentProps<typeof ImportDialog<ResumeData>>> = {}) {
   const onImport = vi.fn();
   const onOpenChange = vi.fn();
   render(

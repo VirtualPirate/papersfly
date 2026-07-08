@@ -6,6 +6,7 @@ function outlineNode(node: ImportNode): string {
   switch (node.type) {
     case "string": return "text";
     case "strings": return "[text, …]";
+    case "number": return "number";
     case "object": return outline(node.fields);
     case "list": return `[ ${outline(node.item)} ]`;
   }

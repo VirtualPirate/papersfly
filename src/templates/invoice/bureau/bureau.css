@@ -1,0 +1,65 @@
+/*
+ * Bureau — structured corporate invoice for finance departments. Ported from the
+ * approved demo (.t-bureau block) with every px length ×0.8 → pt. Corporate blue
+ * (pill + balance rule) is driven by the variant (var(--c-accent)); the slate
+ * panel, borders and zebra stay literals. Body font from the variant via
+ * var(--f-sans); tabular figures use a fixed monospace stack (not variant-driven).
+ */
+.resume-page.t-bureau {
+  --bu-ink: #1f2733;
+  --bu-mut: #5a6472;
+  --bu-faint: #8a93a1;
+  --bu-line: #d6dbe2;
+  --bu-zebra: #f5f7fa;
+  --bu-blue: var(--c-accent);
+  --bu-panel: #1f2733;
+  --bu-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  width: var(--page-w);
+  min-height: var(--page-h);
+  box-sizing: border-box;
+  background: #fff;
+  color: var(--bu-ink);
+  font-family: var(--f-sans);
+  padding: 35.2pt 36.8pt 36.8pt;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+.resume-page.t-bureau .bu-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20.8pt; margin-bottom: 20.8pt; }
+.resume-page.t-bureau .bu-logo { display: flex; gap: 11.2pt; align-items: center; }
+.resume-page.t-bureau .bu-logo .box { width: 36.8pt; height: 36.8pt; background: var(--bu-panel); color: #fff; border-radius: 6.4pt; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13.6pt; }
+.resume-page.t-bureau .bu-logo b { font-size: 12pt; }
+.resume-page.t-bureau .bu-logo span { display: block; font-size: 8.8pt; color: var(--bu-mut); line-height: 1.45; }
+.resume-page.t-bureau .bu-doc { text-align: right; }
+.resume-page.t-bureau .bu-doc .word { font-family: var(--f-serif); font-size: calc(19.2pt * var(--s-font-scale)); font-weight: 800; letter-spacing: 0.02em; }
+.resume-page.t-bureau .bu-doc .no { font-size: 9.6pt; color: var(--bu-mut); margin-top: 1.6pt; font-variant-numeric: tabular-nums; }
+.resume-page.t-bureau .bu-pill { display: inline-block; margin-top: 7.2pt; font-size: 8pt; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; color: #fff; background: var(--c-accent); border-radius: 999px; padding: 4pt 8.8pt; }
+.resume-page.t-bureau .bu-grid { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--bu-line); border-radius: 6.4pt; overflow: hidden; margin-bottom: 17.6pt; }
+.resume-page.t-bureau .bu-cell { padding: 12pt 14.4pt; }
+.resume-page.t-bureau .bu-cell + .bu-cell { border-left: 1px solid var(--bu-line); }
+.resume-page.t-bureau .bu-k { font-size: 7.6pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bu-faint); font-weight: 700; margin-bottom: 6.4pt; }
+.resume-page.t-bureau .bu-cell.who b { font-size: 11.2pt; display: block; margin-bottom: 1.6pt; }
+.resume-page.t-bureau .bu-cell.who { font-size: 9.6pt; color: var(--bu-mut); line-height: 1.5; }
+.resume-page.t-bureau .bu-cell.who .an { color: var(--bu-ink); }
+.resume-page.t-bureau .bu-dl { display: grid; grid-template-columns: auto 1fr; gap: 4.8pt 11.2pt; font-size: 9.6pt; }
+.resume-page.t-bureau .bu-dl dt { color: var(--bu-mut); }
+.resume-page.t-bureau .bu-dl dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
+.resume-page.t-bureau table.bu-table { width: 100%; border-collapse: collapse; border: 1px solid var(--bu-line); border-radius: 6.4pt; overflow: hidden; }
+.resume-page.t-bureau .bu-table thead th { background: var(--bu-panel); color: #fff; font-size: 8pt; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; text-align: left; padding: 8.8pt 11.2pt; }
+.resume-page.t-bureau .bu-table th.r, .resume-page.t-bureau .bu-table td.r { text-align: right; }
+.resume-page.t-bureau .bu-table tbody tr:nth-child(even) { background: var(--bu-zebra); }
+.resume-page.t-bureau .bu-table tbody td { padding: 9.6pt 11.2pt; font-size: 10pt; border-top: 1px solid var(--bu-line); vertical-align: top; }
+.resume-page.t-bureau .bu-table .desc b { font-weight: 600; }
+.resume-page.t-bureau .bu-table .desc span { display: block; font-size: 8.8pt; color: var(--bu-mut); margin-top: 1.6pt; }
+.resume-page.t-bureau .bu-table .mono { font-family: var(--bu-mono); font-size: 9.6pt; font-variant-numeric: tabular-nums; }
+.resume-page.t-bureau .bu-foot { display: grid; grid-template-columns: 1fr 240pt; gap: 20.8pt; margin-top: 17.6pt; align-items: start; }
+.resume-page.t-bureau .bu-pay { border: 1px solid var(--bu-line); border-radius: 6.4pt; padding: 12pt 14.4pt; font-size: 9.2pt; line-height: 1.6; color: var(--bu-mut); }
+.resume-page.t-bureau .bu-pay b { color: var(--bu-ink); }
+.resume-page.t-bureau .bu-pay .mono { font-family: var(--bu-mono); }
+.resume-page.t-bureau .bu-panel { background: var(--bu-panel); color: #fff; border-radius: 6.4pt; padding: 12.8pt 14.4pt; }
+.resume-page.t-bureau .bu-panel .r { display: flex; justify-content: space-between; font-size: 9.6pt; padding: 4pt 0; color: rgba(255, 255, 255, 0.72); }
+.resume-page.t-bureau .bu-panel .r .mono { font-family: var(--bu-mono); color: #fff; font-variant-numeric: tabular-nums; }
+.resume-page.t-bureau .bu-panel .r.sum { border-top: 1px solid rgba(255, 255, 255, 0.2); margin-top: 4.8pt; padding-top: 7.2pt; color: #fff; }
+.resume-page.t-bureau .bu-panel .r.bal { border-top: 1.6pt solid var(--c-accent); margin-top: 6.4pt; padding-top: 9.6pt; align-items: center; }
+.resume-page.t-bureau .bu-panel .r.bal .l { font-size: 8.8pt; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+.resume-page.t-bureau .bu-panel .r.bal .mono { font-size: calc(16pt * var(--s-font-scale)); font-weight: 700; }
+.resume-page.t-bureau .bu-notes { margin-top: 16pt; font-size: 8.8pt; color: var(--bu-faint); line-height: 1.6; border-top: 1px solid var(--bu-line); padding-top: 11.2pt; }

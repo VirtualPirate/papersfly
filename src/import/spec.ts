@@ -6,6 +6,7 @@
 export type ImportNode =
   | { type: "string"; required?: boolean }
   | { type: "strings"; required?: boolean } // string[]
+  | { type: "number"; required?: boolean } // a single number
   | { type: "object"; required?: boolean; fields: ImportSpec }
   | { type: "list"; required?: boolean; item: ImportSpec }; // array of objects
 
@@ -13,6 +14,7 @@ export type ImportSpec = Record<string, ImportNode>;
 
 export const str = (o?: { required?: boolean }): ImportNode => ({ type: "string", ...o });
 export const strings = (o?: { required?: boolean }): ImportNode => ({ type: "strings", ...o });
+export const num = (o?: { required?: boolean }): ImportNode => ({ type: "number", ...o });
 export const obj = (fields: ImportSpec, o?: { required?: boolean }): ImportNode => ({ type: "object", fields, ...o });
 export const list = (item: ImportSpec, o?: { required?: boolean }): ImportNode => ({ type: "list", item, ...o });
 

@@ -5,8 +5,8 @@ import type { FormSchema } from "../forms/schema";
 import type { Variant } from "../theme/variants";
 import type { Template, TemplateVariants } from "./types";
 
-type PreviewModule = {
-  default: ComponentType<{ data: ResumeData; fontOverrides?: FontOverrides; variant?: Variant }>;
+type PreviewModule<T> = {
+  default: ComponentType<{ data: T; fontOverrides?: FontOverrides; variant?: Variant }>;
 };
 
 /**
@@ -23,16 +23,16 @@ type PreviewModule = {
  * component so callers (the PDF export) can mount it synchronously. Adding a
  * template is then just a folder + one `lazyTemplate(meta, () => import(...))`.
  */
-export function lazyTemplate(
+export function lazyTemplate<T = ResumeData>(
   meta: {
     id: string;
     name: string;
     description?: string;
-    schema: FormSchema<ResumeData>;
+    schema: FormSchema<T>;
     variants: TemplateVariants;
   },
-  load: () => Promise<PreviewModule>,
-): Template {
+  load: () => Promise<PreviewModule<T>>,
+): Template<T> {
   return {
     id: meta.id,
     name: meta.name,

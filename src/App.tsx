@@ -10,7 +10,7 @@ import {
 import { SchemaForm } from "./forms/SchemaForm";
 import { documents, defaultDocument } from "./documents/registry";
 import { theme } from "./theme/theme";
-import { collectResumeText, unsupportedChars } from "./fonts/coverage";
+import { unsupportedChars } from "./fonts/coverage";
 import { setFontOverride, type FontOverrides } from "./fonts/overrides";
 import { fontStack, type FontId } from "./fonts/library";
 import { VariantPicker } from "./forms/VariantPicker";
@@ -65,7 +65,7 @@ export function App({ docId, templateId }: AppProps) {
     template.variants.fonts.find((f) => f.id === variant.fontId) ?? template.variants.fonts[0];
 
   // Characters the embedded subset fonts cannot render (e.g. CJK, Cyrillic).
-  const unsupported = useMemo(() => unsupportedChars(collectResumeText(data)), [data]);
+  const unsupported = useMemo(() => unsupportedChars(doc.collectText(data)), [doc, data]);
 
   // Scale the full-size page to fit the preview column.
   const stageRef = useRef<HTMLDivElement>(null);

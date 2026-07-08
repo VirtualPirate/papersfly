@@ -100,15 +100,24 @@ function sizePreset(id: string | undefined): SizePreset {
   return SIZE_BY_ID.get(id ?? DEFAULT_SIZE_ID) ?? SIZE_BY_ID.get(DEFAULT_SIZE_ID)!;
 }
 
-/** Resolve a selection to concrete CSS values for themeCssVars(). Total: unknown ids fall back to the default. */
-export function resolveVariant(v: Variant): {
+/**
+ * Resolve a selection to concrete CSS values for themeCssVars(). Total: unknown
+ * ids fall back to a sensible default.
+ *
+ * `colors` is the color list to resolve `colorId` against. It defaults to the
+ * global COLOR_SCHEMES (résumé templates), but templates whose palette lives
+ * outside that list — e.g. the invoice templates, which also reuse ids like
+ * "teal" with a different hue — pass their own `variants.colors` so the accent
+ * resolves correctly (and per-template id collisions can't cross-contaminate).
+ */
+export function resolveVariant(v: Variant, colors: ColorScheme[] = COLOR_SCHEMES): {
   accent: string;
   displayStack: string;
   bodyStack: string;
   sectionScale: number;
   fontScale: number;
 } {
-  const c = colorScheme(v.colorId);
+  const c = colors.find((x) => x.id === v.colorId) ?? colors[0] ?? colorScheme(v.colorId);
   const f = fontPairing(v.fontId);
   const s = spacingPreset(v.spacingId);
   const z = sizePreset(v.sizeId);
