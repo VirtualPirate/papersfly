@@ -53,4 +53,14 @@ describe("MeridianPreview", () => {
     );
     expect(page().style.getPropertyValue("--sp-section-scale")).toBe("1.75");
   });
+
+  it("flows the size preset to the page root as --s-font-scale", () => {
+    const { container, rerender } = render(<MeridianPreview data={sampleResume} />);
+    const page = () => container.querySelector(".resume-page") as HTMLElement;
+    expect(page().style.getPropertyValue("--s-font-scale")).toBe("1");
+    rerender(
+      <MeridianPreview data={sampleResume} variant={{ colorId: "navy", fontId: "classic", sizeId: "large" }} />,
+    );
+    expect(page().style.getPropertyValue("--s-font-scale")).toBe("1.1");
+  });
 });

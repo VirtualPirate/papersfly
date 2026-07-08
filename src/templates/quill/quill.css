@@ -15,7 +15,7 @@
 .qll-head { text-align: center; }
 .quill .resume-name {
   margin: 0; font-family: var(--f-serif); font-weight: 700;
-  font-size: 26pt; line-height: 1.05; letter-spacing: 0.2pt; color: var(--c-ink);
+  font-size: calc(26pt * var(--s-font-scale, 1)); line-height: 1.05; letter-spacing: 0.2pt; color: var(--c-ink);
 }
 .qll-headline {
   margin: 6pt 0 0; text-transform: uppercase; letter-spacing: 1.2pt;

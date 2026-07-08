@@ -21,24 +21,24 @@
 }
 .atlas .resume-name {
   margin: 0; font-family: var(--f-serif); font-weight: 700;
-  font-size: 20pt; line-height: 1.05; color: var(--c-accent);
+  font-size: calc(20pt * var(--s-font-scale, 1)); line-height: 1.05; color: var(--c-accent);
 }
 .atl-headline {
   margin: 5pt 0 0; font-size: var(--s-headline); text-transform: uppercase;
   letter-spacing: 0.6pt; color: var(--c-muted);
 }
 .atl-block { margin-top: calc(18pt * var(--sp-section-scale, 1)); }
-.atl-h { margin: 0 0 6pt; font-size: 8.6pt; text-transform: uppercase; letter-spacing: 1pt; font-weight: 700; color: var(--c-accent); }
-.atl-contact-line { font-size: 8.6pt; color: var(--c-muted); line-height: var(--lh-contact); margin-top: 3pt; overflow-wrap: anywhere; }
+.atl-h { margin: 0 0 6pt; font-size: calc(8.6pt * var(--s-font-scale, 1)); text-transform: uppercase; letter-spacing: 1pt; font-weight: 700; color: var(--c-accent); }
+.atl-contact-line { font-size: calc(8.6pt * var(--s-font-scale, 1)); color: var(--c-muted); line-height: var(--lh-contact); margin-top: 3pt; overflow-wrap: anywhere; }
 .atl-contact-line:first-of-type { margin-top: 0; }
 .atl-skill { margin-top: 6pt; }
 .atl-skill:first-of-type { margin-top: 0; }
-.atl-skill-label { font-weight: 600; font-size: 8.8pt; color: var(--c-ink); }
-.atl-skill-val { font-size: 8.6pt; color: var(--c-muted); line-height: 1.4; margin-top: 1pt; }
+.atl-skill-label { font-weight: 600; font-size: calc(8.8pt * var(--s-font-scale, 1)); color: var(--c-ink); }
+.atl-skill-val { font-size: calc(8.6pt * var(--s-font-scale, 1)); color: var(--c-muted); line-height: 1.4; margin-top: 1pt; }
 .atl-edu + .atl-edu { margin-top: 8pt; }
-.atl-edu-deg { font-size: 8.8pt; font-weight: 600; color: var(--c-ink); }
-.atl-edu-inst { font-size: 8.6pt; color: var(--c-accent); margin-top: 1pt; }
-.atl-edu-meta { font-size: 8.4pt; color: var(--c-muted); margin-top: 1pt; }
+.atl-edu-deg { font-size: calc(8.8pt * var(--s-font-scale, 1)); font-weight: 600; color: var(--c-ink); }
+.atl-edu-inst { font-size: calc(8.6pt * var(--s-font-scale, 1)); color: var(--c-accent); margin-top: 1pt; }
+.atl-edu-meta { font-size: calc(8.4pt * var(--s-font-scale, 1)); color: var(--c-muted); margin-top: 1pt; }
 .atl-main { padding: 34pt 26pt; }
 .atl-main .atl-block:first-child { margin-top: 0; }
 .atl-main .atl-h { border-bottom: var(--rule-w) solid var(--c-rule); padding-bottom: 4pt; margin-bottom: 8pt; }

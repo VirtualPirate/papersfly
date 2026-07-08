@@ -109,6 +109,7 @@ export function themeCssVars(overrides?: {
   displayStack?: string;
   bodyStack?: string;
   sectionScale?: number;
+  fontScale?: number;
 }): StyleWithVars {
   const t = theme;
   const accent = overrides?.accent ?? t.color.accent;
@@ -129,17 +130,18 @@ export function themeCssVars(overrides?: {
     "--f-sans": overrides?.bodyStack ?? `"${t.font.sans}", system-ui, sans-serif`,
     "--f-serif": overrides?.displayStack ?? `"${t.font.serif}", Georgia, serif`,
 
-    "--s-name": `${t.size.name}pt`,
-    "--s-headline": `${t.size.headline}pt`,
-    "--s-contact": `${t.size.contact}pt`,
-    "--s-section": `${t.size.section}pt`,
-    "--s-role": `${t.size.role}pt`,
-    "--s-org": `${t.size.org}pt`,
-    "--s-date": `${t.size.date}pt`,
-    "--s-body": `${t.size.body}pt`,
+    "--s-font-scale": String(overrides?.fontScale ?? 1),
+    "--s-name": `calc(${t.size.name}pt * var(--s-font-scale))`,
+    "--s-headline": `calc(${t.size.headline}pt * var(--s-font-scale))`,
+    "--s-contact": `calc(${t.size.contact}pt * var(--s-font-scale))`,
+    "--s-section": `calc(${t.size.section}pt * var(--s-font-scale))`,
+    "--s-role": `calc(${t.size.role}pt * var(--s-font-scale))`,
+    "--s-org": `calc(${t.size.org}pt * var(--s-font-scale))`,
+    "--s-date": `calc(${t.size.date}pt * var(--s-font-scale))`,
+    "--s-body": `calc(${t.size.body}pt * var(--s-font-scale))`,
 
-    "--lh-contact": `${t.leading.contact}pt`,
-    "--lh-body": `${t.leading.body}pt`,
+    "--lh-contact": `calc(${t.leading.contact}pt * var(--s-font-scale))`,
+    "--lh-body": `calc(${t.leading.body}pt * var(--s-font-scale))`,
 
     "--sp-after-name": `${t.space.afterName}pt`,
     "--sp-after-headline": `${t.space.afterHeadline}pt`,

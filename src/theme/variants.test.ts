@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   COLOR_SCHEMES, FONT_PAIRINGS, DEFAULT_VARIANT,
   SPACING_PRESETS, DEFAULT_SPACING_ID,
+  SIZE_PRESETS, DEFAULT_SIZE_ID,
   resolveVariant, resolveVariantFontIds, type Variant,
 } from "./variants";
 import { getFont } from "../fonts/library";
@@ -28,6 +29,7 @@ describe("variant catalog", () => {
       displayStack: '"SourceSerif", Georgia, serif',
       bodyStack: '"Inter", system-ui, sans-serif',
       sectionScale: 1,
+      fontScale: 1,
     });
   });
 
@@ -37,6 +39,7 @@ describe("variant catalog", () => {
       displayStack: '"Playfair Display", Georgia, serif',
       bodyStack: '"Inter", system-ui, sans-serif',
       sectionScale: 1,
+      fontScale: 1,
     });
   });
 
@@ -76,5 +79,23 @@ describe("spacing presets", () => {
     expect(
       resolveVariant({ colorId: "navy", fontId: "classic", spacingId: "bogus" }).sectionScale,
     ).toBe(1);
+  });
+});
+
+describe("size presets", () => {
+  it("ships small/medium/large with unique ids and a default id", () => {
+    expect(SIZE_PRESETS.map((s) => s.id)).toEqual(["small", "medium", "large"]);
+    expect(new Set(SIZE_PRESETS.map((s) => s.id)).size).toBe(3);
+    expect(DEFAULT_SIZE_ID).toBe("medium");
+  });
+
+  it("resolves sizeId to a font scale, defaulting to 1 when absent", () => {
+    expect(resolveVariant({ colorId: "navy", fontId: "classic" }).fontScale).toBe(1);
+    expect(resolveVariant({ colorId: "navy", fontId: "classic", sizeId: "small" }).fontScale).toBe(0.9);
+    expect(resolveVariant({ colorId: "navy", fontId: "classic", sizeId: "large" }).fontScale).toBe(1.1);
+  });
+
+  it("falls back to the default scale for an unknown sizeId", () => {
+    expect(resolveVariant({ colorId: "navy", fontId: "classic", sizeId: "bogus" }).fontScale).toBe(1);
   });
 });
