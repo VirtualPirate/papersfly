@@ -21,4 +21,9 @@ describe("themeCssVars", () => {
     // Untouched vars still come from the theme.
     expect(v["--c-ink"]).toBe("#1b1b1f");
   });
+
+  it("derives a light --c-accent-soft tint from the accent", () => {
+    expect(themeCssVars()["--c-accent-soft"]).toBe("#edeff2");
+    expect(themeCssVars({ accent: "#7c2d3a" })["--c-accent-soft"]).toBe("#f5eeef");
+  });
 });

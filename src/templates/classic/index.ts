@@ -1,5 +1,5 @@
 import { lazyTemplate } from "../lazyTemplate";
-import { resumeSchema } from "./schema";
+import { resumeSchema } from "../../documents/resume/schema";
 import { COLOR_SCHEMES, FONT_PAIRINGS, DEFAULT_VARIANT } from "../../theme/variants";
 
 /**

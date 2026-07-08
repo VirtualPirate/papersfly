@@ -82,6 +82,24 @@ export const theme = {
 export type StyleWithVars = CSSProperties & Record<`--${string}`, string>;
 
 /**
+ * Mix a #rrggbb hex toward white by `amount` (0..1); 0 = unchanged, 1 = white.
+ * Used to derive --c-accent-soft (a light tint of the accent) for surfaces like
+ * Atlas's sidebar. Returns a plain hex so the PDF's html2canvas layer can parse
+ * it (unlike CSS color-mix()).
+ */
+function tintTowardWhite(hex: string, amount: number): string {
+  const m = /^#([0-9a-fA-F]{6})$/.exec(hex.trim());
+  if (!m) return hex;
+  const n = parseInt(m[1], 16);
+  const chan = (shift: number) => {
+    const c = (n >> shift) & 0xff;
+    return Math.round(c + (255 - c) * amount);
+  };
+  const to2 = (c: number) => c.toString(16).padStart(2, "0");
+  return `#${to2(chan(16))}${to2(chan(8))}${to2(chan(0))}`;
+}
+
+/**
  * Flatten the theme into CSS custom properties (all in `pt`) so the stylesheet
  * reads the exact same numbers — and doc.html() captures that rendered CSS into
  * the PDF. Applied inline on the `.resume-page` root.
@@ -92,6 +110,7 @@ export function themeCssVars(overrides?: {
   bodyStack?: string;
 }): StyleWithVars {
   const t = theme;
+  const accent = overrides?.accent ?? t.color.accent;
   return {
     "--page-w": `${t.page.width}pt`,
     "--page-h": `${t.page.height}pt`,
@@ -102,7 +121,8 @@ export function themeCssVars(overrides?: {
     "--c-ink": t.color.ink,
     "--c-muted": t.color.muted,
     "--c-faint": t.color.faint,
-    "--c-accent": overrides?.accent ?? t.color.accent,
+    "--c-accent": accent,
+    "--c-accent-soft": tintTowardWhite(accent, 0.92),
     "--c-rule": t.color.rule,
 
     "--f-sans": overrides?.bodyStack ?? `"${t.font.sans}", system-ui, sans-serif`,

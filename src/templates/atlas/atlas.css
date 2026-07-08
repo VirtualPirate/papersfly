@@ -1,0 +1,58 @@
+/* Atlas — two-column: tinted sidebar (contact/skills/education) + main column. */
+.resume-page.atlas {
+  width: var(--page-w);
+  min-height: var(--page-h);
+  box-sizing: border-box;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 200pt 1fr;
+  background: #ffffff;
+  color: var(--c-ink);
+  font-family: var(--f-sans);
+  font-size: var(--s-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+.atl-side {
+  background: var(--c-accent-soft);
+  border-right: var(--rule-w) solid var(--c-rule);
+  padding: 34pt 22pt;
+}
+.atlas .resume-name {
+  margin: 0; font-family: var(--f-serif); font-weight: 700;
+  font-size: 20pt; line-height: 1.05; color: var(--c-accent);
+}
+.atl-headline {
+  margin: 5pt 0 0; font-size: var(--s-headline); text-transform: uppercase;
+  letter-spacing: 0.6pt; color: var(--c-muted);
+}
+.atl-block { margin-top: 18pt; }
+.atl-h { margin: 0 0 6pt; font-size: 8.6pt; text-transform: uppercase; letter-spacing: 1pt; font-weight: 700; color: var(--c-accent); }
+.atl-contact-line { font-size: 8.6pt; color: var(--c-muted); line-height: var(--lh-contact); margin-top: 3pt; overflow-wrap: anywhere; }
+.atl-contact-line:first-of-type { margin-top: 0; }
+.atl-skill { margin-top: 6pt; }
+.atl-skill:first-of-type { margin-top: 0; }
+.atl-skill-label { font-weight: 600; font-size: 8.8pt; color: var(--c-ink); }
+.atl-skill-val { font-size: 8.6pt; color: var(--c-muted); line-height: 1.4; margin-top: 1pt; }
+.atl-edu + .atl-edu { margin-top: 8pt; }
+.atl-edu-deg { font-size: 8.8pt; font-weight: 600; color: var(--c-ink); }
+.atl-edu-inst { font-size: 8.6pt; color: var(--c-accent); margin-top: 1pt; }
+.atl-edu-meta { font-size: 8.4pt; color: var(--c-muted); margin-top: 1pt; }
+.atl-main { padding: 34pt 26pt; }
+.atl-main .atl-block:first-child { margin-top: 0; }
+.atl-main .atl-h { border-bottom: var(--rule-w) solid var(--c-rule); padding-bottom: 4pt; margin-bottom: 8pt; }
+.atl-summary { margin: 0; color: var(--c-ink); }
+.atl-item + .atl-item { margin-top: 10pt; }
+.atl-item-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10pt; }
+.atl-role { font-weight: 600; font-size: var(--s-role); color: var(--c-ink); }
+.atl-date { flex: none; font-size: var(--s-date); color: var(--c-faint); white-space: nowrap; }
+.atl-org { margin-top: var(--sp-after-item-header); font-size: var(--s-org); color: var(--c-accent); }
+.atl-loc { color: var(--c-muted); }
+.atl-bullets { margin: var(--sp-after-org) 0 0; padding: 0; list-style: none; }
+.atl-bullets li { position: relative; padding-left: var(--bullet-indent); color: var(--c-ink); }
+.atl-bullets li + li { margin-top: var(--sp-bullet-gap); }
+.atl-bullets li::before {
+  content: ""; position: absolute; left: 2pt; top: calc(var(--lh-body) / 2 - 1pt);
+  width: 2.4pt; height: 2.4pt; border-radius: 50%; background: var(--c-accent);
+}

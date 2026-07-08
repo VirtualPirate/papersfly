@@ -1,0 +1,54 @@
+/* Meridian — full-bleed accent header band over a single-column body. */
+.resume-page.meridian {
+  width: var(--page-w);
+  min-height: var(--page-h);
+  box-sizing: border-box;
+  padding: 0;
+  background: #ffffff;
+  color: var(--c-ink);
+  font-family: var(--f-sans);
+  font-size: var(--s-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+.mrd-band { background: var(--c-accent); padding: 30pt var(--margin-x) 22pt; }
+.meridian .resume-name {
+  margin: 0; font-family: var(--f-serif); font-weight: 700;
+  font-size: var(--s-name); line-height: 1.02; letter-spacing: -0.2pt; color: #ffffff;
+}
+.mrd-headline {
+  margin: 6pt 0 0; font-weight: 600; font-size: var(--s-headline);
+  letter-spacing: var(--tracking-headline); text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+.mrd-contact { margin: 9pt 0 0; font-size: var(--s-contact); line-height: var(--lh-contact); color: rgba(255, 255, 255, 0.9); }
+.mrd-sep { color: rgba(255, 255, 255, 0.5); padding: 0 5pt; }
+.mrd-body { padding: 20pt var(--margin-x) var(--margin-bottom); }
+.mrd-section { margin-top: var(--sp-section-top); }
+.mrd-section:first-child { margin-top: 0; }
+.mrd-sec-h {
+  margin: 0; font-weight: 600; font-size: var(--s-section);
+  letter-spacing: var(--tracking-section); text-transform: uppercase; color: var(--c-accent);
+  padding-bottom: 4pt; border-bottom: var(--rule-w) solid var(--c-rule);
+}
+.mrd-sec-body { margin-top: var(--sp-after-section-heading); }
+.mrd-summary { margin: 0; color: var(--c-ink); }
+.mrd-item + .mrd-item { margin-top: var(--sp-item-gap); }
+.mrd-item-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12pt; }
+.mrd-role { font-weight: 600; font-size: var(--s-role); color: var(--c-ink); }
+.mrd-date { flex: none; font-size: var(--s-date); color: var(--c-faint); white-space: nowrap; }
+.mrd-org { margin-top: var(--sp-after-item-header); font-size: var(--s-org); color: var(--c-accent); }
+.mrd-org .mrd-loc { color: var(--c-muted); }
+.mrd-detail { margin-top: var(--sp-after-item-header); font-size: var(--s-body); color: var(--c-muted); }
+.mrd-bullets { margin: var(--sp-after-org) 0 0; padding: 0; list-style: none; }
+.mrd-bullets li { position: relative; padding-left: var(--bullet-indent); color: var(--c-ink); }
+.mrd-bullets li + li { margin-top: var(--sp-bullet-gap); }
+.mrd-bullets li::before {
+  content: ""; position: absolute; left: 2pt; top: calc(var(--lh-body) / 2 - 1pt);
+  width: 2.4pt; height: 2.4pt; border-radius: 50%; background: var(--c-accent);
+}
+.mrd-skill-row { display: flex; gap: var(--sp-skill-gap); }
+.mrd-skill-row + .mrd-skill-row { margin-top: var(--sp-skill-row-gap); }
+.mrd-skill-label { flex: none; width: var(--skill-label-w); font-weight: 600; color: var(--c-ink); }
+.mrd-skill-val { color: var(--c-muted); }

@@ -23,7 +23,7 @@ export function TemplateCard({
         <div className="tmpl-thumb-scale">
           <Suspense fallback={<div className="tmpl-thumb-skeleton" aria-hidden="true" />}>
             {/* data is the document's defaultData; its shape matches the template. */}
-            <Preview data={data as never} />
+            <Preview data={data as never} variant={template.variants.default} />
           </Suspense>
         </div>
       </div>
