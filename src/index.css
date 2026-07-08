@@ -154,6 +154,31 @@ body {
   transform-origin: top left;
 }
 
+/* Live-preview page-break dividers (decoration only; never in the exported PDF,
+   which is drawn from the separate .pdf-capture copy). */
+.page-break {
+  position: relative;
+  width: 100%;
+}
+.page-break-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1.5px dashed var(--panel-border);
+  text-align: center;
+}
+.page-break-label {
+  position: relative;
+  top: -0.75em;
+  display: inline-block;
+  padding: 0 8px;
+  background: var(--app-bg);
+  color: var(--text-muted);
+  font: 600 11px/1.4 ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 /* ---- Dark theme (app shell only — the .resume-page sheet stays white) ---- */
 .dark {
   --app-bg: #0f141b;

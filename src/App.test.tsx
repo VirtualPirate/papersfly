@@ -184,4 +184,14 @@ describe("App", () => {
     // The success banner is the only role="alert" present (no PDF error, all-ASCII content).
     expect(screen.getByRole("alert")).toHaveTextContent("Imported");
   });
+
+  it("shows no page-break divider for the single-page sample and still exports the live page", async () => {
+    render(<App docId="resume" templateId="classic" />);
+    await screen.findByRole("heading", { name: "Jordan Avery Chen" });
+    expect(document.querySelectorAll("[data-preview-break]").length).toBe(0);
+
+    fireEvent.click(screen.getByRole("button", { name: /download pdf/i }));
+    await waitFor(() => expect(downloadResumePdf).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(downloadResumePdf).mock.calls[0][0]).toHaveClass("resume-page");
+  });
 });

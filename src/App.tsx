@@ -21,6 +21,8 @@ import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ChevronDown, CircleAlert, CircleCheck, TriangleAlert, Upload, X } from "lucide-react";
 import { ImportDialog } from "./import/ImportDialog";
+import { insertPreviewBreaks } from "./preview/previewBreaks";
+import type { PageMetrics } from "./pdf/paginate";
 
 // The page at true physical size, in CSS px (96dpi): pt * 96 / 72.
 const PX = 96 / 72;
@@ -91,6 +93,9 @@ export function App({ docId, templateId }: AppProps) {
   const [error, setError] = useState<string | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  // Flips (per template id) once the lazy Preview chunk is loaded, so the
+  // pagination effect below re-runs when `.resume-page` is actually mounted.
+  const [previewReady, setPreviewReady] = useState<string | null>(null);
 
   // Auto-dismiss the import success banner.
   useEffect(() => {
@@ -98,6 +103,18 @@ export function App({ docId, templateId }: AppProps) {
     const t = window.setTimeout(() => setNotice(null), 4000);
     return () => window.clearTimeout(t);
   }, [notice]);
+
+  // Preload the template chunk so `.resume-page` is mounted synchronously on the
+  // next render; that render flips `previewReady`, triggering the pagination pass.
+  useEffect(() => {
+    let cancelled = false;
+    template.preload().then(() => {
+      if (!cancelled) setPreviewReady(template.id);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [template]);
 
   const handleImport = (next: any, summary: string) => {
     setData(next);
@@ -172,6 +189,33 @@ export function App({ docId, templateId }: AppProps) {
       cancelled = true;
     };
   }, [capture]);
+
+  // Faithful page-break dividers in the LIVE preview. Mirrors download.ts's
+  // spacer pass (same paginate.ts math) but leaves the dividers visible. Runs
+  // only against the visible preview subtree; `.pdf-capture` is never touched,
+  // so the exported PDF is byte-for-byte unchanged. `scale` is a dependency
+  // because measurement reads scaled rects.
+  useLayoutEffect(() => {
+    const page = pageRef.current?.querySelector<HTMLElement>(".resume-page");
+    if (!page) return;
+    let cleanup = () => {};
+    let cancelled = false;
+    void (async () => {
+      // Guard: jsdom has no FontFaceSet; resolve immediately there.
+      await (document.fonts?.ready ?? Promise.resolve());
+      if (cancelled || !page.isConnected) return;
+      const metrics: PageMetrics = {
+        pageH: theme.page.height * PX,
+        mt: theme.page.marginTop * PX,
+        mb: theme.page.marginTop * PX,
+      };
+      cleanup = insertPreviewBreaks(page, metrics, scale);
+    })();
+    return () => {
+      cancelled = true;
+      cleanup();
+    };
+  }, [data, variant, fontOverrides, previewReady, scale]);
 
   const handleDownload = async () => {
     if (downloading) return;
