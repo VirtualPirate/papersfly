@@ -1,4 +1,5 @@
 import type { Template } from "../templates/types";
+import type { ImportSpec } from "../import/spec";
 
 /**
  * A document type bundles everything needed to edit and render a document:
@@ -12,5 +13,7 @@ export interface DocumentType<T> {
   id: string;
   name: string;
   defaultData: T;
+  /** Content contract the AI-import prompt + validator are generated from. */
+  importSpec: ImportSpec;
   templates: Template[];
 }

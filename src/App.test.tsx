@@ -153,4 +153,35 @@ describe("App", () => {
       new Set(["plexMono", "inter"]),
     );
   });
+
+  it("opens the import dialog from the header", async () => {
+    render(<App docId="resume" templateId="classic" />);
+    await screen.findByRole("heading", { name: "Jordan Avery Chen" });
+    fireEvent.click(screen.getByRole("button", { name: /^import$/i }));
+    expect(await screen.findByRole("heading", { name: /import from ai/i })).toBeInTheDocument();
+  });
+
+  it("imports pasted JSON into the live preview and shows a success alert", async () => {
+    render(<App docId="resume" templateId="classic" />);
+    await screen.findByRole("heading", { name: "Jordan Avery Chen" });
+
+    fireEvent.click(screen.getByRole("button", { name: /^import$/i }));
+    fireEvent.click(await screen.findByRole("button", { name: /next: paste json/i }));
+
+    const json = JSON.stringify({
+      name: "Imported Person",
+      headline: "Imported Headline",
+      contact: { email: "", phone: "", location: "", website: "", linkedin: "" },
+      summary: "",
+      experience: [],
+      education: [],
+      skills: [],
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: /pasted json/i }), { target: { value: json } });
+    fireEvent.click(screen.getByRole("button", { name: /import & replace/i }));
+
+    expect(await screen.findByRole("heading", { name: "Imported Person" })).toBeInTheDocument();
+    // The success banner is the only role="alert" present (no PDF error, all-ASCII content).
+    expect(screen.getByRole("alert")).toHaveTextContent("Imported");
+  });
 });

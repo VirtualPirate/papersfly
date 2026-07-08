@@ -1,5 +1,6 @@
 import {
   Suspense,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -18,7 +19,8 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { ChevronDown, CircleAlert, TriangleAlert, X } from "lucide-react";
+import { ChevronDown, CircleAlert, CircleCheck, TriangleAlert, Upload, X } from "lucide-react";
+import { ImportDialog } from "./import/ImportDialog";
 
 // The page at true physical size, in CSS px (96dpi): pt * 96 / 72.
 const PX = 96 / 72;
@@ -87,6 +89,22 @@ export function App({ docId, templateId }: AppProps) {
   >(null);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  // Auto-dismiss the import success banner.
+  useEffect(() => {
+    if (!notice) return;
+    const t = window.setTimeout(() => setNotice(null), 4000);
+    return () => window.clearTimeout(t);
+  }, [notice]);
+
+  const handleImport = (next: any, summary: string) => {
+    setData(next);
+    setFontOverrides({}); // overrides key off replaced item ids; variant is preserved
+    setImportOpen(false);
+    setNotice(summary);
+  };
 
   // Subscribe ONCE on mount. The observer watches the stage (width) and the
   // page (content height), so data edits still update the frame without
@@ -222,6 +240,10 @@ export function App({ docId, templateId }: AppProps) {
               />
             </PopoverContent>
           </Popover>
+          <Button variant="outline" className="gap-2" onClick={() => setImportOpen(true)}>
+            <Upload className="size-4" aria-hidden />
+            <span className="hidden sm:inline">Import</span>
+          </Button>
           <Button variant="ghost" className="hidden sm:inline-flex" onClick={handleReset}>
             Reset sample
           </Button>
@@ -245,6 +267,23 @@ export function App({ docId, templateId }: AppProps) {
             size="icon"
             className="absolute right-2 top-2 size-7"
             onClick={() => setError(null)}
+            aria-label="Dismiss"
+          >
+            <X className="size-4" />
+          </Button>
+        </Alert>
+      )}
+
+      {notice && (
+        <Alert className="shrink-0 rounded-none border-x-0 border-t-0">
+          <CircleCheck />
+          <AlertTitle>Imported</AlertTitle>
+          <AlertDescription>Loaded {notice}.</AlertDescription>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-2 top-2 size-7"
+            onClick={() => setNotice(null)}
             aria-label="Dismiss"
           >
             <X className="size-4" />
@@ -328,6 +367,15 @@ export function App({ docId, templateId }: AppProps) {
           <capture.Comp data={capture.data} fontOverrides={capture.fontOverrides} variant={capture.variant} />
         </div>
       )}
+
+      <ImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        doc={doc}
+        currentData={data}
+        container={appEl}
+        onImport={handleImport}
+      />
     </div>
   );
 }
