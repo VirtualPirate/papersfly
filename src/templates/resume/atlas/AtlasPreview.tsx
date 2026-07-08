@@ -1,7 +1,7 @@
-import type { ContactInfo, ResumeData } from "../../data/resume";
-import { themeCssVars } from "../../theme/theme";
-import { resolveVariant, DEFAULT_VARIANT, type Variant } from "../../theme/variants";
-import { fontStyleFor, joinPath, type FontOverrides } from "../../fonts/overrides";
+import type { ContactInfo, ResumeData } from "../../../data/resume";
+import { themeCssVars } from "../../../theme/theme";
+import { resolveVariant, DEFAULT_VARIANT, type Variant } from "../../../theme/variants";
+import { fontStyleFor, joinPath, type FontOverrides } from "../../../fonts/overrides";
 import "./atlas.css";
 
 function contactParts(data: ResumeData): { key: keyof ContactInfo; value: string }[] {

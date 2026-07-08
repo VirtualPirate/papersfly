@@ -1,4 +1,4 @@
-import type { Template } from "./types";
+import type { Template } from "../types";
 import { classicTemplate } from "./classic";
 import { meridianTemplate } from "./meridian";
 import { quillTemplate } from "./quill";

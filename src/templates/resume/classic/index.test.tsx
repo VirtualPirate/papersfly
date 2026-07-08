@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { Suspense } from "react";
 import { render, screen } from "@testing-library/react";
 import { classicTemplate } from "./index";
-import { sampleResume } from "../../data/resume";
-import { COLOR_SCHEMES, FONT_PAIRINGS, DEFAULT_VARIANT } from "../../theme/variants";
+import { sampleResume } from "../../../data/resume";
+import { COLOR_SCHEMES, FONT_PAIRINGS, DEFAULT_VARIANT } from "../../../theme/variants";
 
 describe("classic template (lazy-loaded)", () => {
   it("preload() resolves the chunk to a component that renders the resume", async () => {

@@ -1,6 +1,6 @@
-import { lazyTemplate } from "../lazyTemplate";
-import { resumeSchema } from "../../documents/resume/schema";
-import { COLOR_SCHEMES, FONT_PAIRINGS } from "../../theme/variants";
+import { lazyTemplate } from "../../lazyTemplate";
+import { resumeSchema } from "../../../documents/resume/schema";
+import { COLOR_SCHEMES, FONT_PAIRINGS } from "../../../theme/variants";
 
 export const atlasTemplate = lazyTemplate(
   {

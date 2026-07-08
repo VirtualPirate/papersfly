@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { templates, defaultTemplate } from "./registry";
-import { COLOR_SCHEMES, FONT_PAIRINGS } from "../theme/variants";
+import { COLOR_SCHEMES, FONT_PAIRINGS } from "../../theme/variants";
 
 describe("template registry", () => {
   it("ships the five templates in gallery order with unique ids", () => {

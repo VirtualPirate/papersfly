@@ -1,6 +1,6 @@
-import { lazyTemplate } from "../lazyTemplate";
-import { resumeSchema } from "../../documents/resume/schema";
-import { COLOR_SCHEMES, FONT_PAIRINGS, DEFAULT_VARIANT } from "../../theme/variants";
+import { lazyTemplate } from "../../lazyTemplate";
+import { resumeSchema } from "../../../documents/resume/schema";
+import { COLOR_SCHEMES, FONT_PAIRINGS, DEFAULT_VARIANT } from "../../../theme/variants";
 
 /**
  * The classic design. Its component + `classic.css` are reached ONLY through the

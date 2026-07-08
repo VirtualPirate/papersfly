@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { TemplateCard } from "./TemplateCard";
-import { classicTemplate } from "@/templates/classic";
+import { classicTemplate } from "@/templates/resume/classic";
 import { sampleResume } from "@/data/resume";
 import { COLOR_SCHEMES, FONT_PAIRINGS, type Variant } from "@/theme/variants";
 

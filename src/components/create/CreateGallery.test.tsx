@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { CreateGallery } from "./CreateGallery";
-import { classicTemplate } from "@/templates/classic";
+import { classicTemplate } from "@/templates/resume/classic";
 import { sampleResume } from "@/data/resume";
 
 // Two fake docs so we can assert doc-type switching swaps the cards.

@@ -1,11 +1,11 @@
 import type { DocumentType } from "../types";
 import type { ResumeData } from "../../data/resume";
 import { sampleResume } from "../../data/resume";
-import { classicTemplate } from "../../templates/classic";
-import { meridianTemplate } from "../../templates/meridian";
-import { quillTemplate } from "../../templates/quill";
-import { ledgerTemplate } from "../../templates/ledger";
-import { atlasTemplate } from "../../templates/atlas";
+import { classicTemplate } from "../../templates/resume/classic";
+import { meridianTemplate } from "../../templates/resume/meridian";
+import { quillTemplate } from "../../templates/resume/quill";
+import { ledgerTemplate } from "../../templates/resume/ledger";
+import { atlasTemplate } from "../../templates/resume/atlas";
 import { resumeImportSpec } from "./importSpec";
 
 /** Flatten every user-entered résumé string into one blob for coverage scanning. */
