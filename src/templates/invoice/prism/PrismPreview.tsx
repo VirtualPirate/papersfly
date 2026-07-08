@@ -64,7 +64,7 @@ export function PrismPreview({
           <div>Description</div><div className="pr-r">Qty</div><div className="pr-r">Rate</div><div className="pr-r">Amount</div>
         </div>
         {data.items.map((it, i) => (
-          <div className="pr-row" key={it.id}>
+          <div className="pr-row" data-pdf-block key={it.id}>
             <div className="d">
               <b style={f(joinPath(joinPath("items", it.id), "description"))}>{it.description}</b>
               {it.detail && <span>{it.detail}</span>}
@@ -75,20 +75,20 @@ export function PrismPreview({
           </div>
         ))}
 
-        <div className="pr-tot">
+        <div className="pr-tot" data-pdf-block>
           <div className="pr-tr"><span>Subtotal</span><span className="num">{money(t.subtotal)}</span></div>
           {t.discount > 0 && <div className="pr-tr"><span>{data.discountLabel}</span><span className="num">−{money(t.discount)}</span></div>}
           {t.taxes.map((tx) => <div className="pr-tr" key={tx.id}><span>{tx.label}</span><span className="num">{money(tx.amount)}</span></div>)}
           <div className="pr-tr sum"><span>Total</span><span className="num">{money(t.total)}</span></div>
           {hasBalance && <div className="pr-tr"><span>{data.amountPaidLabel}</span><span className="num">−{money(t.amountPaid)}</span></div>}
         </div>
-        <div className="pr-chip">
+        <div className="pr-chip" data-pdf-block>
           <span className="l">{hasBalance ? "Balance due" : "Amount due"}</span>
           <span className="v">{money(t.balanceDue)}</span>
         </div>
 
         {(address(data.paymentLines).length > 0 || data.notes) && (
-          <div className="pr-foot">
+          <div className="pr-foot" data-pdf-block>
             {address(data.paymentLines).length > 0 && (
               <div><div className="pr-k">{data.paymentLabel}</div>{address(data.paymentLines).map((l, i) => <Fragment key={i}>{l}<br /></Fragment>)}</div>
             )}

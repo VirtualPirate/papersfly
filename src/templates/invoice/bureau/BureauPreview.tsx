@@ -68,7 +68,7 @@ export function BureauPreview({
         </thead>
         <tbody>
           {data.items.map((it, i) => (
-            <tr key={it.id}>
+            <tr data-pdf-block key={it.id}>
               <td className="desc">
                 <b style={f(joinPath(joinPath("items", it.id), "description"))}>{it.description}</b>
                 {it.detail && <span>{it.detail}</span>}
@@ -81,7 +81,7 @@ export function BureauPreview({
         </tbody>
       </table>
 
-      <div className="bu-foot">
+      <div className="bu-foot" data-pdf-block>
         {address(data.paymentLines).length > 0 ? (
           <div className="bu-pay">
             <div className="bu-k">{data.paymentLabel}</div>
@@ -98,7 +98,7 @@ export function BureauPreview({
         </div>
       </div>
 
-      {data.notes && <div className="bu-notes">{data.notes}</div>}
+      {data.notes && <div className="bu-notes" data-pdf-block>{data.notes}</div>}
     </div>
   );
 }

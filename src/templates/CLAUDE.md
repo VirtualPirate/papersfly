@@ -42,6 +42,37 @@ interface Template<T = ResumeData> {
 component **and its CSS** in a separate build chunk, so the entry bundle does not
 grow per template.
 
+## Page-break markers — required on every template
+
+The live preview shows a dashed **"Page N" divider** wherever the exported PDF
+will break across pages, and the PDF export keeps those same blocks intact — no
+résumé entry, **invoice line-item row**, or totals box is ever split across a
+page boundary. Both behaviors are driven by two `data-*` attributes you put on
+the design's repeating / keep-together content. **Every template must carry them
+so the divider shows on it** (a template with none shows no divider and its PDF
+slices content mid-block):
+
+- **`data-pdf-block`** — a keep-together unit that must never straddle a page
+  boundary: a résumé entry / skill row, an **invoice line-item row**, the totals
+  box, the footer. Put it on each repeating row and each closing block.
+- **`data-pdf-heading`** *(optional)* — a section title that must stay with the
+  first `data-pdf-block` that follows it (résumé section headings use this).
+  Omit it where there is no such title — the invoices don't use it.
+
+Mechanics: `src/pdf/paginate.ts` measures these blocks and inserts a spacer
+before any that would straddle a page (pushing it below the next page's top
+margin); `src/preview/previewBreaks.ts` runs the identical math but leaves a
+visible divider. You only annotate the markup — no per-template wiring.
+
+- **Table-based item lists** (Bureau, Sterling render items as `<table>`): put
+  `data-pdf-block` on each `<tbody>` `<tr>`. The spacer is emitted as a `<tr>`
+  automatically (a `<div>` sibling would be an invalid table child and render
+  outside the row flow) — mark the row and nothing else.
+- **The one exception is Atlas** (the two-column résumé), left intentionally
+  unmarked: a full-width spacer cannot be inserted into a two-column flow, so it
+  shows no divider until the pre-pass grows column awareness. Any other new
+  single-column template must be marked.
+
 ## Add a new DESIGN to an existing document type
 
 Create a folder `src/templates/<docType>/<name>/` with five files. Copy an
@@ -62,6 +93,10 @@ existing sibling (e.g. `invoice/nordic/`) and adapt.
    - **Empty-field guards**: hide optional content when blank (e.g.
      `{data.poNumber && (...)}`, `{totals.discount > 0 && (...)}`). Render
      computed money via a helper, never inline arithmetic.
+   - **Page-break markers**: tag each keep-together block with `data-pdf-block`
+     (line-item rows, totals, footer) — on `<tr>` for table item lists — so the
+     preview page divider appears and the PDF never splits a block. Required on
+     every template; see **Page-break markers** above.
    - Default-export the component (`export default NordicPreview`).
 
 2. **`<name>.css`** — the design's CSS, **self-contained** and scoped under

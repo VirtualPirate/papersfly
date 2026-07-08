@@ -80,6 +80,34 @@ describe("insertPreviewBreaks", () => {
     root.remove();
   });
 
+  it("inserts a <tr> divider (not a <div>) before a straddling table row", () => {
+    // Table rows can't take a <div> sibling; the divider host must be a <tr>
+    // carrying a full-width cell whose .page-break div holds the line + label.
+    const table = document.createElement("table");
+    const tbody = document.createElement("tbody");
+    const row = marked("tr", "data-pdf-block", 900, 1100); // straddles page 0
+    tbody.appendChild(row);
+    table.appendChild(tbody);
+    const root = document.createElement("div");
+    root.getBoundingClientRect = () => domRect(0, 0);
+    root.appendChild(table);
+    document.body.appendChild(root);
+
+    const cleanup = insertPreviewBreaks(root, M, 1);
+    const brk = root.querySelector<HTMLElement>("[data-preview-break]")!;
+    expect(brk.tagName).toBe("TR");
+    expect(brk.nextElementSibling).toBe(row);
+    const box = brk.querySelector<HTMLElement>(".page-break")!;
+    expect(box.style.height).toBe("150px"); // target 1050 - top 900
+    const line = brk.querySelector<HTMLElement>(".page-break-line")!;
+    expect(line.style.top).toBe("100px"); // height 150 - mt 50
+    expect(brk.querySelector(".page-break-label")!.textContent).toBe("Page 2");
+
+    cleanup();
+    expect(root.querySelectorAll("[data-preview-break]").length).toBe(0);
+    root.remove();
+  });
+
   it("compensates for the display scale when measuring", () => {
     // Same geometry as the straddle case but rects are pre-scaled by 0.5;
     // dividing by scale recovers the true px, so the break is identical.

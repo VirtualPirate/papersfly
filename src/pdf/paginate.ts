@@ -43,6 +43,33 @@ export interface Spacer {
   height: number;
 }
 
+/**
+ * Create an empty page-break spacer `height` px tall, as the correct element for
+ * `target`'s context. When `target` is a table row (<tr>) a <div> sibling would
+ * be an invalid table child and render outside the row flow (breaking layout and
+ * measurement), so emit a <tr><td colspan> whose cell carries the height;
+ * otherwise emit a plain block <div>. Ready to insertBefore(target); the caller
+ * tags it (data-pdf-spacer / data-preview-break) and, for the preview, fills it.
+ */
+export function makeSpacerHost(doc: Document, target: Element, height: number): HTMLElement {
+  if (target.tagName === "TR") {
+    const tr = doc.createElement("tr");
+    const td = doc.createElement("td");
+    td.colSpan = 99; // clamped to the real column count by the user agent
+    td.style.padding = "0";
+    td.style.border = "0";
+    td.style.height = `${height}px`;
+    tr.appendChild(td);
+    return tr;
+  }
+  const div = doc.createElement("div");
+  div.style.height = `${height}px`;
+  div.style.margin = "0";
+  div.style.padding = "0";
+  div.style.display = "block";
+  return div;
+}
+
 /** Sub-pixel tolerance so a block ending exactly on the limit is not pushed. */
 const EPS = 0.5;
 
@@ -119,12 +146,8 @@ export function insertPageBreakSpacers(root: HTMLElement, m: PageMetrics): () =>
   const inserted: HTMLElement[] = [];
   for (const s of spacers) {
     const target = els[s.index];
-    const spacer = root.ownerDocument.createElement("div");
+    const spacer = makeSpacerHost(root.ownerDocument, target, s.height);
     spacer.setAttribute("data-pdf-spacer", "");
-    spacer.style.height = `${s.height}px`;
-    spacer.style.margin = "0";
-    spacer.style.padding = "0";
-    spacer.style.display = "block";
     target.parentNode?.insertBefore(spacer, target);
     inserted.push(spacer);
   }

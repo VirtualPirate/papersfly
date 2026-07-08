@@ -46,11 +46,30 @@ export function insertPreviewBreaks(
   const inserted: HTMLElement[] = [];
   spacers.forEach((sp, i) => {
     const target = els[sp.index];
-    const brk = doc.createElement("div");
-    brk.className = "page-break";
-    brk.setAttribute("data-preview-break", "");
-    brk.setAttribute("aria-hidden", "true");
-    brk.style.height = `${sp.height}px`;
+
+    // The `.page-break` div is the visible divider box (relative-positioned, sized
+    // to the gap). Its host is that div directly, unless the target is a table row
+    // — then the host is a <tr><td> and the box lives inside the cell, so it stays
+    // a valid table child (a <div> sibling would render outside the row flow).
+    const isRow = target.tagName === "TR";
+    const box = doc.createElement("div");
+    box.className = "page-break";
+    box.style.height = `${sp.height}px`;
+
+    let host: HTMLElement;
+    if (isRow) {
+      host = doc.createElement("tr");
+      const td = doc.createElement("td");
+      td.colSpan = 99;
+      td.style.padding = "0";
+      td.style.border = "0";
+      td.appendChild(box);
+      host.appendChild(td);
+    } else {
+      host = box;
+    }
+    host.setAttribute("data-preview-break", "");
+    host.setAttribute("aria-hidden", "true");
 
     const line = doc.createElement("div");
     line.className = "page-break-line";
@@ -61,9 +80,9 @@ export function insertPreviewBreaks(
     label.textContent = `Page ${i + 2}`; // the i-th break starts page i+2
 
     line.appendChild(label);
-    brk.appendChild(line);
-    target.parentNode?.insertBefore(brk, target);
-    inserted.push(brk);
+    box.appendChild(line);
+    target.parentNode?.insertBefore(host, target);
+    inserted.push(host);
   });
 
   return () => {

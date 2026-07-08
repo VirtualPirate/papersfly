@@ -57,7 +57,7 @@ export function SterlingPreview({
         </thead>
         <tbody>
           {data.items.map((it, i) => (
-            <tr key={it.id}>
+            <tr data-pdf-block key={it.id}>
               <td className="desc">
                 <b style={f(joinPath(joinPath("items", it.id), "description"))}>{it.description}</b>
                 {it.detail && <span>{it.detail}</span>}
@@ -70,7 +70,7 @@ export function SterlingPreview({
         </tbody>
       </table>
 
-      <div className="st-totals">
+      <div className="st-totals" data-pdf-block>
         <div className="st-trow"><span>Subtotal</span><span className="num">{money(t.subtotal)}</span></div>
         {t.discount > 0 && <div className="st-trow"><span>{data.discountLabel}</span><span className="num">−{money(t.discount)}</span></div>}
         {t.taxes.map((tx) => <div className="st-trow" key={tx.id}><span>{tx.label}</span><span className="num">{money(tx.amount)}</span></div>)}
@@ -83,7 +83,7 @@ export function SterlingPreview({
       </div>
 
       {(address(data.paymentLines).length > 0 || data.notes) && (
-        <div className="st-foot">
+        <div className="st-foot" data-pdf-block>
           <div className="st-rule-thin" />
           {address(data.paymentLines).length > 0 && <div>{data.paymentLabel}: {address(data.paymentLines).join(" · ")}</div>}
           {data.notes && <div>{data.notes}</div>}

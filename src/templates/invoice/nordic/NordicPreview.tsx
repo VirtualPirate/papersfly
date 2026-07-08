@@ -64,7 +64,7 @@ export function NordicPreview({
           <div>Description</div><div className="nd-r">Qty</div><div className="nd-r">Rate</div><div className="nd-r">Amount</div>
         </div>
         {data.items.map((it, i) => (
-          <div className="nd-row" key={it.id}>
+          <div className="nd-row" data-pdf-block key={it.id}>
             <div className="nd-desc">
               <b style={f(joinPath(joinPath("items", it.id), "description"))}>{it.description}</b>
               {it.detail && <span>{it.detail}</span>}
@@ -76,14 +76,14 @@ export function NordicPreview({
         ))}
       </div>
 
-      <div className="nd-totals">
+      <div className="nd-totals" data-pdf-block>
         <div className="nd-tr"><span>Subtotal</span><b>{money(t.subtotal)}</b></div>
         {t.discount > 0 && <div className="nd-tr"><span>{data.discountLabel}</span><b>−{money(t.discount)}</b></div>}
         {t.taxes.map((tx) => <div className="nd-tr" key={tx.id}><span>{tx.label}</span><b>{money(tx.amount)}</b></div>)}
         <div className="nd-tr strong"><span>Total</span><b>{money(t.total)}</b></div>
         {hasBalance && <div className="nd-tr"><span>{data.amountPaidLabel}</span><b>−{money(t.amountPaid)}</b></div>}
       </div>
-      <div className="nd-totals nd-balance-wrap">
+      <div className="nd-totals nd-balance-wrap" data-pdf-block>
         <div className="nd-balance">
           <span className="l">{hasBalance ? "Balance due" : "Amount due"}</span>
           <span className="v">{money(t.balanceDue)}</span>
@@ -91,7 +91,7 @@ export function NordicPreview({
       </div>
 
       {(address(data.paymentLines).length > 0 || data.notes) && (
-        <div className="nd-foot">
+        <div className="nd-foot" data-pdf-block>
           {address(data.paymentLines).length > 0 && (
             <div className="nd-foot-col">
               <div className="nd-lbl">{data.paymentLabel}</div>

@@ -129,4 +129,31 @@ describe("insertPageBreakSpacers", () => {
 
     document.body.removeChild(root);
   });
+
+  it("inserts a <tr> spacer (not a <div>) before a straddling table row", () => {
+    // A <div> sibling would be an invalid table child; the spacer must be a <tr>
+    // so it survives in the tbody and pushes the row down.
+    const root = document.createElement("div");
+    root.getBoundingClientRect = () => domRect(0, 0);
+    const table = document.createElement("table");
+    const tbody = document.createElement("tbody");
+    const row = marked("tr", "data-pdf-block", 900, 1100); // straddles page 0
+    tbody.appendChild(row);
+    table.appendChild(tbody);
+    root.appendChild(table);
+    document.body.appendChild(root);
+
+    const cleanup = insertPageBreakSpacers(root, M);
+    const spacer = root.querySelector<HTMLElement>("[data-pdf-spacer]")!;
+    expect(spacer.tagName).toBe("TR");
+    expect(spacer.parentElement).toBe(tbody);
+    expect(spacer.nextElementSibling).toBe(row);
+    const cell = spacer.querySelector<HTMLTableCellElement>("td")!;
+    expect(cell.style.height).toBe("150px"); // target 1050 - top 900
+
+    cleanup();
+    expect(root.querySelectorAll("[data-pdf-spacer]").length).toBe(0);
+
+    document.body.removeChild(root);
+  });
 });
