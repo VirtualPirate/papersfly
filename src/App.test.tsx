@@ -116,6 +116,18 @@ describe("App", () => {
     expect(page.style.getPropertyValue("--c-accent")).toBe("#1f3a5f");
   });
 
+  it("applies a section-spacing preset to the live preview from the Style popover", async () => {
+    render(<App docId="resume" templateId="classic" />);
+    await screen.findByRole("heading", { name: "Jordan Avery Chen" });
+    const page = document.querySelector(".resume-page") as HTMLElement;
+    expect(page.style.getPropertyValue("--sp-section-scale")).toBe("1");
+
+    fireEvent.click(screen.getByRole("button", { name: /variants/i }));
+    fireEvent.click(await screen.findByRole("button", { name: "Relaxed" }));
+
+    expect(page.style.getPropertyValue("--sp-section-scale")).toBe("1.75");
+  });
+
   it("passes the variant's fonts to the PDF export", async () => {
     render(<App docId="resume" templateId="classic" />);
     await screen.findByRole("heading", { name: "Jordan Avery Chen" });

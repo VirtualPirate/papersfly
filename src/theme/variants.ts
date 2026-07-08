@@ -26,10 +26,19 @@ export interface FontPairing {
   body: FontId;
 }
 
+export interface SpacingPreset {
+  id: string;
+  name: string;
+  /** Unitless multiplier applied to each template's base section gap. */
+  scale: number;
+}
+
 /** The current variant selection. */
 export interface Variant {
   colorId: string;
   fontId: string;
+  /** Section-spacing preset id; absent ⇒ DEFAULT_SPACING_ID (scale 1). */
+  spacingId?: string;
 }
 
 export const COLOR_SCHEMES: ColorScheme[] = [
@@ -46,10 +55,19 @@ export const FONT_PAIRINGS: FontPairing[] = [
   { id: "mono", name: "Mono", display: "plexMono", body: "inter" },
 ];
 
+export const SPACING_PRESETS: SpacingPreset[] = [
+  { id: "compact", name: "Compact", scale: 0.5 },
+  { id: "default", name: "Default", scale: 1 },
+  { id: "relaxed", name: "Relaxed", scale: 1.75 },
+];
+
 export const DEFAULT_VARIANT: Variant = { colorId: "navy", fontId: "classic" };
+
+export const DEFAULT_SPACING_ID = "default";
 
 const COLOR_BY_ID = new Map(COLOR_SCHEMES.map((c) => [c.id, c]));
 const FONT_BY_ID = new Map(FONT_PAIRINGS.map((f) => [f.id, f]));
+const SPACING_BY_ID = new Map(SPACING_PRESETS.map((s) => [s.id, s]));
 
 function colorScheme(id: string): ColorScheme {
   return COLOR_BY_ID.get(id) ?? COLOR_BY_ID.get(DEFAULT_VARIANT.colorId)!;
@@ -57,19 +75,25 @@ function colorScheme(id: string): ColorScheme {
 function fontPairing(id: string): FontPairing {
   return FONT_BY_ID.get(id) ?? FONT_BY_ID.get(DEFAULT_VARIANT.fontId)!;
 }
+function spacingPreset(id: string | undefined): SpacingPreset {
+  return SPACING_BY_ID.get(id ?? DEFAULT_SPACING_ID) ?? SPACING_BY_ID.get(DEFAULT_SPACING_ID)!;
+}
 
 /** Resolve a selection to concrete CSS values for themeCssVars(). Total: unknown ids fall back to the default. */
 export function resolveVariant(v: Variant): {
   accent: string;
   displayStack: string;
   bodyStack: string;
+  sectionScale: number;
 } {
   const c = colorScheme(v.colorId);
   const f = fontPairing(v.fontId);
+  const s = spacingPreset(v.spacingId);
   return {
     accent: c.accent,
     displayStack: fontStack(f.display),
     bodyStack: fontStack(f.body),
+    sectionScale: s.scale,
   };
 }
 

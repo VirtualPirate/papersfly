@@ -25,7 +25,7 @@
 .mrd-contact { margin: 9pt 0 0; font-size: var(--s-contact); line-height: var(--lh-contact); color: rgba(255, 255, 255, 0.9); }
 .mrd-sep { color: rgba(255, 255, 255, 0.5); padding: 0 5pt; }
 .mrd-body { padding: 20pt var(--margin-x) var(--margin-bottom); }
-.mrd-section { margin-top: var(--sp-section-top); }
+.mrd-section { margin-top: calc(var(--sp-section-top) * var(--sp-section-scale, 1)); }
 .mrd-section:first-child { margin-top: 0; }
 .mrd-sec-h {
   margin: 0; font-weight: 600; font-size: var(--s-section);

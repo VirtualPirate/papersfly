@@ -1,11 +1,13 @@
 import { Check } from "lucide-react";
-import type { ColorScheme, FontPairing, Variant } from "@/theme/variants";
+import type { ColorScheme, FontPairing, SpacingPreset, Variant } from "@/theme/variants";
+import { DEFAULT_SPACING_ID } from "@/theme/variants";
 import { fontStack, getFont } from "@/fonts/library";
 import { cn } from "@/lib/utils";
 
 export interface VariantPickerProps {
   colors: ColorScheme[];
   fonts: FontPairing[];
+  spacings: SpacingPreset[];
   value: Variant;
   onChange: (next: Variant) => void;
 }
@@ -24,7 +26,7 @@ function pairingSubtitle(fp: FontPairing): string {
  * new Variant with only the changed axis replaced; the live preview re-renders
  * instantly (no apply step — the change lands on click).
  */
-export function VariantPicker({ colors, fonts, value, onChange }: VariantPickerProps) {
+export function VariantPicker({ colors, fonts, spacings, value, onChange }: VariantPickerProps) {
   return (
     <div className="flex flex-col gap-4">
       <section className="flex flex-col gap-2.5">
@@ -93,6 +95,37 @@ export function VariantPicker({ colors, fonts, value, onChange }: VariantPickerP
                 <span className="text-[10px] leading-tight text-muted-foreground">
                   {pairingSubtitle(fp)}
                 </span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <div className="h-px bg-border" />
+
+      <section className="flex flex-col gap-2.5">
+        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+          Spacing
+        </span>
+        <div role="group" aria-label="Section spacing" className="grid grid-cols-3 gap-2">
+          {spacings.map((s) => {
+            const active = (value.spacingId ?? DEFAULT_SPACING_ID) === s.id;
+            return (
+              <button
+                key={s.id}
+                type="button"
+                aria-label={s.name}
+                aria-pressed={active}
+                onClick={() => onChange({ ...value, spacingId: s.id })}
+                className={cn(
+                  "rounded-lg border px-2.5 py-1.5 text-xs font-medium transition",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  active
+                    ? "border-foreground bg-accent text-foreground"
+                    : "border-border text-muted-foreground hover:border-foreground/40",
+                )}
+              >
+                {s.name}
               </button>
             );
           })}

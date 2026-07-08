@@ -108,6 +108,7 @@ export function themeCssVars(overrides?: {
   accent?: string;
   displayStack?: string;
   bodyStack?: string;
+  sectionScale?: number;
 }): StyleWithVars {
   const t = theme;
   const accent = overrides?.accent ?? t.color.accent;
@@ -144,6 +145,7 @@ export function themeCssVars(overrides?: {
     "--sp-after-headline": `${t.space.afterHeadline}pt`,
     "--sp-after-contact": `${t.space.afterContact}pt`,
     "--sp-section-top": `${t.space.sectionTop}pt`,
+    "--sp-section-scale": String(overrides?.sectionScale ?? 1),
     "--sp-after-section-heading": `${t.space.afterSectionHeading}pt`,
     "--sp-item-gap": `${t.space.itemGap}pt`,
     "--sp-after-item-header": `${t.space.afterItemHeader}pt`,

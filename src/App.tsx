@@ -13,7 +13,7 @@ import { collectResumeText, unsupportedChars } from "./fonts/coverage";
 import { setFontOverride, type FontOverrides } from "./fonts/overrides";
 import { fontStack, type FontId } from "./fonts/library";
 import { VariantPicker } from "./forms/VariantPicker";
-import { resolveVariantFontIds, type Variant } from "./theme/variants";
+import { resolveVariantFontIds, SPACING_PRESETS, type Variant } from "./theme/variants";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
@@ -215,6 +215,7 @@ export function App({ docId, templateId }: AppProps) {
               <VariantPicker
                 colors={template.variants.colors}
                 fonts={template.variants.fonts}
+                spacings={SPACING_PRESETS}
                 value={variant}
                 onChange={setVariant}
               />

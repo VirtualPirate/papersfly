@@ -25,7 +25,7 @@
 .qll-sep { color: var(--c-faint); padding: 0 5pt; }
 .qll-rule { margin: 12pt 0 0; height: var(--rule-w); background: var(--c-rule); }
 .qll-body { margin-top: 2pt; }
-.qll-section { margin-top: 14pt; }
+.qll-section { margin-top: calc(14pt * var(--sp-section-scale, 1)); }
 .qll-sec-h {
   display: flex; align-items: center; gap: 10pt; margin: 0;
   text-transform: uppercase; letter-spacing: 1.2pt; font-size: var(--s-section);

@@ -42,4 +42,15 @@ describe("MeridianPreview", () => {
       fontFamily: '"IBM Plex Mono", ui-monospace, monospace',
     });
   });
+
+  it("flows the section-spacing preset to the page root as --sp-section-scale", () => {
+    const { container, rerender } = render(<MeridianPreview data={sampleResume} />);
+    const page = () => container.querySelector(".resume-page") as HTMLElement;
+    // Absent spacingId defaults to scale 1.
+    expect(page().style.getPropertyValue("--sp-section-scale")).toBe("1");
+    rerender(
+      <MeridianPreview data={sampleResume} variant={{ colorId: "navy", fontId: "classic", spacingId: "relaxed" }} />,
+    );
+    expect(page().style.getPropertyValue("--sp-section-scale")).toBe("1.75");
+  });
 });

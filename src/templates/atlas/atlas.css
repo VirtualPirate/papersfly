@@ -27,7 +27,7 @@
   margin: 5pt 0 0; font-size: var(--s-headline); text-transform: uppercase;
   letter-spacing: 0.6pt; color: var(--c-muted);
 }
-.atl-block { margin-top: 18pt; }
+.atl-block { margin-top: calc(18pt * var(--sp-section-scale, 1)); }
 .atl-h { margin: 0 0 6pt; font-size: 8.6pt; text-transform: uppercase; letter-spacing: 1pt; font-weight: 700; color: var(--c-accent); }
 .atl-contact-line { font-size: 8.6pt; color: var(--c-muted); line-height: var(--lh-contact); margin-top: 3pt; overflow-wrap: anywhere; }
 .atl-contact-line:first-of-type { margin-top: 0; }

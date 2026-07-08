@@ -62,7 +62,7 @@
 
 /* ---- Sections -------------------------------------------------------- */
 .resume-section {
-  margin-top: var(--sp-section-top);
+  margin-top: calc(var(--sp-section-top) * var(--sp-section-scale, 1));
 }
 .section-heading {
   margin: 0;

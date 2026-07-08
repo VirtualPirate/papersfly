@@ -29,7 +29,7 @@
   line-height: 1.5; font-variant-numeric: tabular-nums;
 }
 .ldg-body { margin-top: 10pt; }
-.ldg-section { margin-top: 10pt; }
+.ldg-section { margin-top: calc(10pt * var(--sp-section-scale, 1)); }
 .ldg-section:first-child { margin-top: 0; }
 .ldg-sec-h {
   margin: 0; font-size: 8.4pt; text-transform: uppercase; letter-spacing: 0.8pt;

@@ -26,4 +26,10 @@ describe("themeCssVars", () => {
     expect(themeCssVars()["--c-accent-soft"]).toBe("#edeff2");
     expect(themeCssVars({ accent: "#7c2d3a" })["--c-accent-soft"]).toBe("#f5eeef");
   });
+
+  it("emits a default section-spacing scale of 1, overridable via sectionScale", () => {
+    expect(themeCssVars()["--sp-section-scale"]).toBe("1");
+    expect(themeCssVars({ sectionScale: 0.5 })["--sp-section-scale"]).toBe("0.5");
+    expect(themeCssVars({ sectionScale: 1.75 })["--sp-section-scale"]).toBe("1.75");
+  });
 });
