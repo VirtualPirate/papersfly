@@ -2,6 +2,7 @@
   "name": "vector-resume-builder",
   "private": true,
   "version": "1.0.0",
+  "packageManager": "pnpm@11.10.0",
   "type": "module",
   "description": "Fully client-side resume builder that exports a true-vector PDF (selectable text, embedded fonts) with no backend.",
   "scripts": {
