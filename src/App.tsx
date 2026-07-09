@@ -9,6 +9,7 @@ import {
 } from "react";
 import { SchemaForm } from "./forms/SchemaForm";
 import { documents, defaultDocument } from "./documents/registry";
+import { createHref } from "./lib/routing";
 import { theme } from "./theme/theme";
 import { unsupportedChars } from "./fonts/coverage";
 import { setFontOverride, type FontOverrides } from "./fonts/overrides";
@@ -244,7 +245,7 @@ export function App({ docId, templateId }: AppProps) {
       <header className="flex shrink-0 items-center justify-between gap-2 border-b bg-background px-3 py-3 sm:gap-4 sm:px-5">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <a
-            href="/create"
+            href={createHref(doc.id)}
             className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
             aria-label="Templates"
           >

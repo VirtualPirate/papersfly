@@ -1,6 +1,6 @@
-import { useState } from "react";
 import type { DocumentType } from "@/documents/types";
 import { documents as registryDocuments } from "@/documents/registry";
+import { createHref } from "@/lib/routing";
 import { TemplateCard } from "./TemplateCard";
 
 /**
@@ -11,26 +11,30 @@ const COMING_SOON_TYPES = ["Cover letter"];
 
 export function CreateGallery({
   documents = registryDocuments,
+  activeDocId,
 }: {
   documents?: DocumentType<unknown>[];
+  activeDocId?: string;
 }) {
-  const [selectedId, setSelectedId] = useState(documents[0]?.id);
-  const selected = documents.find((d) => d.id === selectedId) ?? documents[0];
+  const selected = documents.find((d) => d.id === activeDocId) ?? documents[0];
 
   return (
     <div className="gallery">
       <div className="picker-label">Document type</div>
       <div className="pills">
-        {documents.map((doc) => (
-          <button
-            key={doc.id}
-            type="button"
-            className={`pill${doc.id === selected.id ? " active" : ""}`}
-            onClick={() => setSelectedId(doc.id)}
-          >
-            {doc.name}
-          </button>
-        ))}
+        {documents.map((doc) => {
+          const isActive = doc.id === selected.id;
+          return (
+            <a
+              key={doc.id}
+              href={createHref(doc.id)}
+              className={`pill${isActive ? " active" : ""}`}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {doc.name}
+            </a>
+          );
+        })}
         {COMING_SOON_TYPES.map((label) => (
           <span key={label} className="pill soon" aria-disabled="true">
             {label} <span className="tag">Soon</span>

@@ -20,6 +20,10 @@ export default defineConfig({
   // brings back the bug where the name/headline/contact render as side-by-side
   // columns instead of stacked. Production is unaffected (no toolbar there).
   devToolbar: { enabled: false },
+  // The résumé/invoice picker split /create into /create-resume and
+  // /create-invoice. Keep the old URL alive: the static build emits a
+  // <meta http-equiv="refresh"> stub here. A true 301 needs host-level rules.
+  redirects: { "/create": "/create-resume" },
   integrations: [react(), sitemap()],
   build: {
     // Inline small stylesheets into <head> to avoid a render-blocking request.

@@ -5,6 +5,11 @@ export function builderHref(docId: string, templateId: string): string {
   return `/build/${docId}/${templateId}`;
 }
 
+/** The doc-type picker route for a given document type, e.g. /create-resume. */
+export function createHref(docId: string): string {
+  return `/create-${docId}`;
+}
+
 /**
  * Flatten the registry into one { doc, template } pair per template of each
  * document — the static params for the /build/[doc]/[template] route.

@@ -30,7 +30,7 @@ describe("App", () => {
   it("shows a back link to the gallery and the active document · template", async () => {
     render(<App docId="resume" templateId="classic" />);
     const back = screen.getByRole("link", { name: /templates/i });
-    expect(back).toHaveAttribute("href", "/create");
+    expect(back).toHaveAttribute("href", "/create-resume");
     const title = screen.getByTestId("builder-title");
     expect(title).toHaveTextContent("Résumé");
     expect(title).toHaveTextContent("Classic");

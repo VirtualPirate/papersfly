@@ -1,0 +1,43 @@
+---
+// src/pages/create-invoice.astro
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import { CreateGallery } from "../components/create/CreateGallery";
+import "../styles/marketing.css";
+
+const title = "Free invoice generator — papersfly";
+const description =
+  "Create a professional invoice in your browser and export a true-vector PDF with selectable text and embedded fonts. No signup, no upload — works offline.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Vector Invoice Generator",
+  description,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any (modern web browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  featureList: [
+    "Live invoice preview with automatic totals",
+    "True-vector PDF export with selectable text and embedded fonts",
+    "Works fully offline in the browser",
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <div class="site">
+    <div class="wrap">
+      <SiteHeader />
+      <div class="create-head">
+        <h1 class="create-title">Create an invoice</h1>
+        <p class="create-sub">
+          Pick an invoice template, fill in your line items, and export a
+          true-vector PDF — selectable text, embedded fonts. Everything renders
+          in your browser — nothing is uploaded.
+        </p>
+      </div>
+      <CreateGallery client:only="react" activeDocId="invoice" />
+    </div>
+  </div>
+</BaseLayout>

@@ -7,14 +7,20 @@ import interRegular from "../fonts/inter-regular.ttf?url";
 interface Props {
   title: string;
   description: string;
+  /**
+   * Page-specific JSON-LD. When omitted, the shared résumé-builder
+   * WebApplication schema below is used. Its `url` is always set to the
+   * page's canonical URL, so callers don't need to supply it.
+   */
+  jsonLd?: Record<string, unknown>;
 }
-const { title, description } = Astro.props;
+const { title, description, jsonLd: jsonLdOverride } = Astro.props;
 
 // All absolute URLs derive from the `site` config (astro.config.mjs).
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL("/og-image.png", Astro.site).href;
 
-const jsonLd = {
+const defaultJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "Vector Résumé Builder",
@@ -27,8 +33,9 @@ const jsonLd = {
     "True-vector PDF export with selectable text and embedded fonts",
     "Works fully offline in the browser",
   ],
-  url: canonical,
 };
+
+const jsonLd = { ...(jsonLdOverride ?? defaultJsonLd), url: canonical };
 ---
 
 <!doctype html>
