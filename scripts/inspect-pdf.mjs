@@ -1,15 +1,25 @@
 /*
  * Forensic vector-vs-raster classifier for any PDF: reports the producer,
- * embedded-font subtypes, text-vs-image operator counts, extracted text, and a
+ * embedded-font subtypes, text-vs-image operator counts, any non-embedded
+ * (standard-14) fonts actually used to draw text, the extracted text, and a
  * VECTOR/RASTER verdict.
  *
- * Usage: node scripts/inspect-pdf.mjs <path-to.pdf>
+ * Usage: node scripts/inspect-pdf.mjs <path-to.pdf> [--strict]
+ *
+ * --strict exits non-zero unless the PDF is a clean vector document: 0 images,
+ * a VECTOR verdict, and NO fallback font (Courier/Helvetica/Times…) drawing
+ * text. This is the CI gate for the browser-only PDF export — it catches a
+ * template asking for a font the pipeline can't embed (which jsPDF silently
+ * renders in a standard font), the exact class of bug the static CSS test
+ * (src/templates/fonts.test.ts) cannot see because it only reads source.
  */
 import { readFileSync } from "node:fs";
 
-const FILE = process.argv[2];
+const args = process.argv.slice(2);
+const STRICT = args.includes("--strict");
+const FILE = args.find((a) => !a.startsWith("--"));
 if (!FILE) {
-  console.error("Usage: node scripts/inspect-pdf.mjs <path-to.pdf>");
+  console.error("Usage: node scripts/inspect-pdf.mjs <path-to.pdf> [--strict]");
   process.exit(1);
 }
 const bytes = new Uint8Array(readFileSync(FILE));
@@ -51,15 +61,31 @@ for (const [name, code] of Object.entries(pdfjs.OPS)) opName[code] = name;
 let allText = "";
 let totalTextItems = 0;
 const opTally = {};
+// Fonts actually used to draw selectable text, and whether their font file is
+// present. jsPDF's standard-14 fallbacks (Courier/Helvetica/Times) come back
+// with `missingFile: true` — i.e. text drawn in a non-embedded font.
+const fallbackFonts = new Map(); // BaseFont name -> sample strings
 for (let p = 1; p <= doc.numPages; p++) {
   const page = await doc.getPage(p);
-  const content = await page.getTextContent();
-  totalTextItems += content.items.length;
-  allText += content.items.map((i) => i.str).join(" ") + "\n";
+  // getOperatorList first: it resolves fonts into page.commonObjs so the
+  // getTextContent fontNames below can be looked up.
   const ops = await page.getOperatorList();
   for (const fn of ops.fnArray) {
     const n = opName[fn] ?? String(fn);
     opTally[n] = (opTally[n] || 0) + 1;
+  }
+  const content = await page.getTextContent();
+  totalTextItems += content.items.length;
+  allText += content.items.map((i) => i.str).join(" ") + "\n";
+  for (const it of content.items) {
+    if (!it.str.trim()) continue;
+    let font;
+    try { font = page.commonObjs.get(it.fontName); } catch { font = null; }
+    if (font && font.missingFile) {
+      const arr = fallbackFonts.get(font.name) || [];
+      if (arr.length < 5) arr.push(it.str.trim());
+      fallbackFonts.set(font.name, arr);
+    }
   }
 }
 const text = allText.replace(/\s+/g, " ").trim();
@@ -86,6 +112,11 @@ console.log(`Image paint ops:             ${imageOps}`);
 console.log(`Selectable text items:       ${totalTextItems}`);
 console.log(`Extracted text length:       ${text.length} chars`);
 console.log("");
+console.log(`Fallback fonts drawing text: ${fallbackFonts.size === 0 ? "none ✓" : ""}`);
+for (const [name, samples] of fallbackFonts) {
+  console.log(`   ✗ ${name} (NOT embedded) e.g. ${JSON.stringify(samples)}`);
+}
+console.log("");
 console.log("First 300 chars of extracted text:");
 console.log("  " + JSON.stringify(text.slice(0, 300)));
 console.log("");
@@ -98,3 +129,17 @@ const verdict =
       : "MIXED / INCONCLUSIVE — see numbers above";
 console.log(`VERDICT: ${verdict}`);
 console.log("===============================================");
+
+if (STRICT) {
+  const problems = [];
+  if (!verdict.startsWith("VECTOR")) problems.push(`verdict is not VECTOR (${verdict})`);
+  if (images.length > 0) problems.push(`${images.length} image XObject(s) — export must be image-free`);
+  if (fallbackFonts.size > 0)
+    problems.push(`text drawn in non-embedded font(s): ${[...fallbackFonts.keys()].join(", ")}`);
+  if (problems.length) {
+    console.error("\n✗ STRICT FAIL:");
+    for (const p of problems) console.error(`   - ${p}`);
+    process.exit(1);
+  }
+  console.log("\n✓ STRICT PASS — clean vector PDF, all text in embedded fonts");
+}

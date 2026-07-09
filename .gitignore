@@ -5,6 +5,7 @@ coverage
 .DS_Store
 .astro
 .superpowers
+.pdf-out
 
 design-demos
 design-demos/*

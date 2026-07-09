@@ -123,10 +123,14 @@ that same markup is what the PDF captures. Switching doc type loads that type's 
 
 ## Verifying an exported PDF
 
-Generation is browser-only, so there is no Node `verify` script. Download the PDF, then:
+Generation is browser-only, so it cannot run in vitest — but `pnpm verify:pdf`
+drives a real headless browser end to end: it builds, exports every template ×
+font pairing, and strict-inspects each (fails on any raster or non-embedded
+fallback font). This is the automated gate (also run in CI). For a single
+downloaded PDF:
 
 ```bash
-pdffonts resume.pdf                       # expect Inter/SourceSerif "emb yes ... uni yes"
+pdffonts resume.pdf                        # expect Inter/SourceSerif "emb yes ... uni yes"
 pdftotext resume.pdf -                     # prints real selectable text (proves not an image)
-node scripts/inspect-pdf.mjs resume.pdf    # pdf.js forensic VECTOR/RASTER verdict + font/text/image counts
+node scripts/inspect-pdf.mjs resume.pdf --strict   # forensic VECTOR/RASTER verdict; --strict fails on fallback fonts
 ```

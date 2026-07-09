@@ -114,6 +114,21 @@ existing sibling (e.g. `invoice/nordic/`) and adapt.
      If you send all text through `--f-sans`, switching the font pairing only
      changes the body and the display face is silently ignored — a real bug we
      hit. The résumé name (`.resume-name`) is the reference: it uses `--f-serif`.
+   - **Stay inside the embeddable font set.** The PDF embeds ONLY what the font
+     library ships (`fonts/library.ts`): weights **400/600/700** and the
+     **normal** style, reached exclusively through the two slots above. Anything
+     else degrades silently in the exported PDF — an unshipped `font-weight`
+     (e.g. `800`, `500`) snaps to the nearest embedded weight, `font-style:
+     italic` has no face (faux-italic on screen, **upright** in the PDF), and any
+     literal or system `font-family` (e.g. `ui-monospace`, a raw stack) is never
+     embedded and falls back to a jsPDF standard font — Courier for a monospace
+     stack. **When porting a standalone HTML demo, its fonts are unconstrained:
+     clamp every weight to {400,600,700}, drop italic, and replace every literal
+     `font-family` with `var(--f-serif)`/`var(--f-sans)`.** For tabular figures
+     use `font-variant-numeric: tabular-nums` on a slot font, not a mono stack.
+     Two guards enforce this: `src/templates/fonts.test.ts` (scans every
+     template's CSS in `pnpm test`) and `pnpm verify:pdf` (exports every template
+     × font pairing and fails on any fallback font — the browser-only backstop).
    - **Accent** comes from the variant: use `var(--c-accent)` (and the derived
      light tint `var(--c-accent-soft)`) for the design's primary accent. Keep
      genuinely secondary literals (a gold rule, a coral chip) as hex.
@@ -212,8 +227,14 @@ how `App.tsx` and `documents/registry.ts` are already typed.
   build; confirms every route generates.
 - **PDF is browser-only** and dev-sensitive: `pnpm build && pnpm preview` is the
   source of truth (the dev toolbar must stay disabled — see root `CLAUDE.md`).
-- Forensic checks on a downloaded PDF: `pdffonts` (designer faces `emb yes`),
-  `pdftotext` (real selectable text ⇒ not a raster), and
-  `node scripts/inspect-pdf.mjs file.pdf` (expects `VERDICT: VECTOR`, 0 images).
+- `pnpm verify:pdf` — the automated forensic gate: builds, exports every
+  template × font pairing headlessly, and fails on any raster or fallback font.
+  Run it after adding/editing a template. (CI runs it too — see
+  `.github/workflows/pdf-forensics.yml`.)
+- Forensic checks on a single downloaded PDF: `pdffonts` (designer faces
+  `emb yes`), `pdftotext` (real selectable text ⇒ not a raster), and
+  `node scripts/inspect-pdf.mjs file.pdf [--strict]` (expects `VERDICT: VECTOR`,
+  0 images; `--strict` also exits non-zero if any text is drawn in a
+  non-embedded fallback font).
 - Confirm each template fits **one page** at true size (`.resume-page`
   `offsetHeight ≤ 1056px`); tune `pt` values if content overflows.

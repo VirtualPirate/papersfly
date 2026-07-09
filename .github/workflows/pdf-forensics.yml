@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main, v2]
+  pull_request:
+
+jobs:
+  test-and-pdf-forensics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Static gate: types + unit tests, including src/templates/fonts.test.ts
+      # (weights/style/family must stay inside the embeddable set).
+      - run: pnpm test
+
+      # Chrome for the headless PDF export (puppeteer-core drives a system Chrome).
+      - id: chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          install-dependencies: true
+
+      - run: pnpm build
+
+      # Forensic gate: export every template × font pairing and assert each PDF
+      # is a clean vector document with no fallback fonts. This is the only check
+      # that exercises the browser-only PDF path end to end.
+      - name: PDF forensic gate
+        env:
+          PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: pnpm verify:pdf
+
+      - name: Upload generated PDFs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exported-pdfs
+          path: .pdf-out/
+          if-no-files-found: ignore
