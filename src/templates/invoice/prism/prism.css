@@ -24,11 +24,11 @@
 }
 .resume-page.t-prism .num { font-variant-numeric: tabular-nums; }
 .resume-page.t-prism .pr-rail { width: 182.4pt; flex: none; background: var(--c-accent); color: var(--pr-cream); padding: 35.2pt 20.8pt; display: flex; flex-direction: column; }
-.resume-page.t-prism .pr-mark { width: 41.6pt; height: 41.6pt; border: 1.6pt solid var(--pr-cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15.2pt; letter-spacing: 0.02em; }
+.resume-page.t-prism .pr-mark { width: 41.6pt; height: 41.6pt; border: 1.6pt solid var(--pr-cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15.2pt; letter-spacing: 0.02em; }
 .resume-page.t-prism .pr-from { margin-top: 24pt; font-size: 9.2pt; line-height: 1.6; color: rgba(244, 239, 230, 0.72); }
 .resume-page.t-prism .pr-from b { display: block; color: var(--pr-cream); font-size: 12pt; margin-bottom: 2.4pt; }
 .resume-page.t-prism .pr-spacer { flex: 1; }
-.resume-page.t-prism .pr-invword { font-family: var(--f-serif); font-size: calc(33.6pt * var(--s-font-scale)); font-weight: 800; letter-spacing: -0.045em; line-height: 0.9; color: var(--pr-cream); }
+.resume-page.t-prism .pr-invword { font-family: var(--f-serif); font-size: calc(33.6pt * var(--s-font-scale)); font-weight: 700; letter-spacing: -0.045em; line-height: 0.9; color: var(--pr-cream); }
 .resume-page.t-prism .pr-num { margin-top: 9.6pt; font-size: 9.6pt; letter-spacing: 0.1em; color: var(--pr-coral); font-weight: 700; font-variant-numeric: tabular-nums; }
 .resume-page.t-prism .pr-body { flex: 1; padding: 35.2pt 30.4pt; display: flex; flex-direction: column; }
 .resume-page.t-prism .pr-billrow { display: flex; justify-content: space-between; gap: 19.2pt; margin-bottom: 24pt; }
@@ -48,8 +48,8 @@
 .resume-page.t-prism .pr-tr .num { color: var(--pr-ink); font-variant-numeric: tabular-nums; }
 .resume-page.t-prism .pr-tr.sum { border-top: 1px solid var(--pr-ink); margin-top: 4.8pt; padding-top: 7.2pt; color: var(--pr-ink); font-weight: 700; }
 .resume-page.t-prism .pr-chip { display: flex; justify-content: space-between; align-items: center; width: 240pt; margin-left: auto; background: var(--pr-coral); color: #2a0f09; border-radius: 8pt; padding: 11.2pt 14.4pt; margin-top: 12.8pt; }
-.resume-page.t-prism .pr-chip .l { font-size: 8.4pt; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; }
-.resume-page.t-prism .pr-chip .v { font-size: calc(19.2pt * var(--s-font-scale)); font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.resume-page.t-prism .pr-chip .l { font-size: 8.4pt; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; }
+.resume-page.t-prism .pr-chip .v { font-size: calc(19.2pt * var(--s-font-scale)); font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .resume-page.t-prism .pr-foot { margin-top: auto; padding-top: 22.4pt; display: flex; gap: 22.4pt; font-size: 8.4pt; line-height: 1.55; color: var(--pr-mut); }
 .resume-page.t-prism .pr-foot > div { flex: 1; }
 .resume-page.t-prism .pr-foot b { color: var(--pr-ink); }
