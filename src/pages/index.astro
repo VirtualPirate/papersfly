@@ -2,10 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SiteHeader from "../components/site/SiteHeader.astro";
 import SiteFooter from "../components/site/SiteFooter.astro";
-import ClassicPreview from "../templates/resume/classic/ClassicPreview";
-import { sampleResume } from "../data/resume";
 import "../styles/marketing.css";
-import "../templates/resume/classic/classic.css";
 
 const title = "papersfly — beautiful documents that never leave your browser";
 const description =
@@ -33,14 +30,44 @@ const description =
           <p class="cta-note">Free<span class="dotsep"></span>No sign-up<span class="dotsep"></span>Works offline</p>
         </div>
         <div class="showcase">
-          <span class="chip">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect width="18" height="11" x="3" y="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
-            Stays on your device
-          </span>
-          <div class="hero-showcase">
-            <ClassicPreview data={sampleResume} />
+          <div class="stage" aria-hidden="true">
+            <div class="ext" style="left:104px;top:44px;width:1px;height:30px"></div>
+            <div class="ext" style="left:374px;top:44px;width:1px;height:30px"></div>
+            <div class="ext" style="left:74px;top:74px;width:30px;height:1px"></div>
+            <div class="ext" style="left:74px;top:423px;width:30px;height:1px"></div>
+            <div class="dim-h" style="left:104px;top:48px;width:270px"></div>
+            <div class="dimlabel" style="left:200px;top:39px">612 pt</div>
+            <div class="dim-v" style="left:78px;top:74px;height:349px"></div>
+            <div class="dimlabel rot" style="left:52px;top:240px">792 pt</div>
+
+            <div class="sheet">
+              <div class="doc-name">Jordan Avery Chen</div>
+              <div class="doc-role">Senior Software Engineer</div>
+              <div class="doc-meta">jordan.chen@example.com · (415) 555-0148 · San Francisco, CA</div>
+              <div class="doc-rule"></div>
+              <div class="doc-sec">Summary</div>
+              <div class="doc-line l"></div><div class="doc-line m"></div><div class="doc-line s"></div>
+              <div class="doc-rule"></div>
+              <div class="doc-sec">Experience</div>
+              <div class="doc-item">
+                <div class="h">Staff Software Engineer — Northwind Labs</div>
+                <div class="sub">2021 – Present · San Francisco</div>
+                <div class="doc-line l"></div><div class="doc-line m"></div>
+              </div>
+              <div class="doc-item">
+                <div class="h">Senior Software Engineer — Brightwave</div>
+                <div class="sub">2018 – 2021 · Remote</div>
+                <div class="doc-line m"></div>
+              </div>
+              <div class="titleblock">
+                <div class="row"><div class="cell" style="flex:2"><span class="k">Drawing</span><span class="v big">papersfly</span></div><div class="cell"><span class="k">Rev</span><span class="v">2.0</span></div></div>
+                <div class="row"><div class="cell"><span class="k">Dwg no</span><span class="v">RB-01</span></div><div class="cell"><span class="k">Scale</span><span class="v">1:1</span></div><div class="cell"><span class="k">Units</span><span class="v">pt</span></div></div>
+              </div>
+            </div>
+
+            <div class="callout-tag" style="left:388px;top:88px">Inter · 25 pt</div>
+            <div class="callout-line" style="left:300px;top:96px;width:88px"></div>
+            <div class="callout-dot" style="left:296px;top:92px"></div>
           </div>
         </div>
       </section>

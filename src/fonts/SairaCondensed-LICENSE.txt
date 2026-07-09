@@ -1,0 +1,4 @@
+Saira Condensed is licensed under the SIL Open Font License, Version 1.1.
+Copyright The Saira Project Authors (https://github.com/OmnibusType/Saira).
+Added for papersfly UI display type (Direction B "Studio" rebrand).
+Full license: https://openfontlicense.org  ·  SPDX: OFL-1.1

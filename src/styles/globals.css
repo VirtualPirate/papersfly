@@ -10,49 +10,53 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Builder UI tokens — "Studio" blueprint. Light = amber-vellum surfaces + blue
+   accent; dark = cyanotype navy + cyan accent. These drive every shadcn control
+   (buttons, popovers, alerts, inputs). --destructive stays a red (semantic,
+   separate from the accent). */
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --radius: 0.5rem;
+  --background: #fffefa;
+  --foreground: #12233c;
+  --card: #fffefa;
+  --card-foreground: #12233c;
+  --popover: #fffefa;
+  --popover-foreground: #12233c;
+  --primary: #23588f;
+  --primary-foreground: #ffffff;
+  --secondary: #f8f4e6;
+  --secondary-foreground: #12233c;
+  --muted: #f8f4e6;
+  --muted-foreground: #5d6b7f;
+  --accent: #f3eede;
+  --accent-foreground: #12233c;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: rgba(18, 35, 60, 0.18);
+  --input: rgba(18, 35, 60, 0.22);
+  --ring: #23588f;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: #0f1826;
+  --foreground: #eaf3ff;
+  --card: #0f1826;
+  --card-foreground: #eaf3ff;
+  --popover: #0f1826;
+  --popover-foreground: #eaf3ff;
+  --primary: #7ad4ea;
+  --primary-foreground: #070d16;
+  --secondary: #0b111c;
+  --secondary-foreground: #eaf3ff;
+  --muted: #0b111c;
+  --muted-foreground: #8ea9c6;
+  --accent: #14202e;
+  --accent-foreground: #eaf3ff;
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --border: rgba(226, 238, 255, 0.14);
+  --input: rgba(226, 238, 255, 0.18);
+  --ring: #7ad4ea;
 }
 
 @theme inline {

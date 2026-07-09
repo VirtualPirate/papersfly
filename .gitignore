@@ -5,3 +5,8 @@ coverage
 .DS_Store
 .astro
 .superpowers
+
+design-demos
+design-demos/*
+design-brainstorming
+design-brainstorming/*

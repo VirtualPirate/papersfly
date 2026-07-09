@@ -1,11 +1,19 @@
 :root {
-  --app-bg: #eef0f4;
-  --panel-bg: #ffffff;
-  --panel-border: #e2e5ec;
-  --text: #1b1b1f;
-  --text-muted: #61636b;
-  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 8px 24px rgba(16, 24, 40, 0.08);
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  /* Builder shell — "Studio" blueprint (light = near-white with the faintest yellow tint). */
+  --app-bg: #fdfbf0;
+  --app-hi: #fffefb;
+  --panel-bg: #fffefa;
+  --panel-border: rgba(18, 35, 60, 0.16);
+  --panel-rule-strong: #12233c;
+  --text: #12233c;
+  --text-muted: #5d6b7f;
+  --accent: #23588f;
+  --on-accent: #ffffff;
+  --line: #23588f;
+  --grid-min: rgba(48, 64, 90, 0.05);
+  --grid-maj: rgba(48, 64, 90, 0.10);
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 8px 24px rgba(16, 24, 40, 0.1);
+  font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -45,22 +53,41 @@ body {
   gap: 6px;
   padding: 24px;
   text-align: center;
-  background: var(--app-bg);
+  background-color: var(--app-bg);
+  background-image:
+    linear-gradient(var(--grid-maj) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-maj) 1px, transparent 1px),
+    radial-gradient(120% 90% at 50% -8%, var(--app-hi), var(--app-bg) 72%);
+  background-size: 96px 96px, 96px 96px, 100% 100%;
 }
 .app-skeleton h1 {
   margin: 0;
-  font-size: 20px;
+  font-family: "Saira Condensed", "Arial Narrow", sans-serif;
+  font-size: 30px;
   font-weight: 700;
-  letter-spacing: -0.2px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .app-skeleton p {
   margin: 0;
-  font-size: 13px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--text-muted);
 }
 .app-skeleton__hint {
   margin-top: 8px;
   opacity: 0.8;
+}
+
+/* ---- Builder title (chrome header only; never the résumé) ------------ */
+.app > header h1 {
+  font-family: "Saira Condensed", "Arial Narrow", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 16px;
 }
 
 /* ---- Edit / Preview toggle (shown only in the single-column range) --- */
@@ -74,20 +101,22 @@ body {
   border-bottom: 1px solid var(--panel-border);
 }
 .view-toggle button {
-  font: inherit;
-  font-size: 14px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
   font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   padding: 9px 12px;
   border: 1px solid var(--panel-border);
-  border-radius: 8px;
+  border-radius: 999px;
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
 }
 .view-toggle button[aria-selected="true"] {
-  background: var(--text);
-  border-color: var(--text);
-  color: var(--panel-bg);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
 }
 
 /* ---- Two-pane layout ------------------------------------------------- */
@@ -134,22 +163,44 @@ body {
   background: var(--panel-bg);
 }
 
-/* ---- Preview pane ---------------------------------------------------- */
+/* ---- Preview pane (the blueprint drafting canvas) -------------------- */
 .preview {
   overflow: auto;
   /* Reserve the scrollbar gutter so toggling the scrollbar never changes the
      measured width (prevents a ResizeObserver/scrollbar feedback loop). */
   scrollbar-gutter: stable;
-  padding: 28px;
+  padding: 32px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  background-color: var(--app-bg);
+  background-image:
+    linear-gradient(var(--grid-maj) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-maj) 1px, transparent 1px),
+    linear-gradient(var(--grid-min) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-min) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 16px 16px, 16px 16px;
 }
+/* The white document sheet, floated on the canvas with corner registration
+   ticks. The sheet itself stays untouched (it is the exported PDF source). */
 .page-frame {
+  position: relative;
   box-shadow: var(--shadow);
   background: #fff;
   flex: none;
 }
+.page-frame::before,
+.page-frame::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--line);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.page-frame::before { left: -7px; top: -7px; border-right: 0; border-bottom: 0; }
+.page-frame::after { right: -7px; bottom: -7px; border-left: 0; border-top: 0; }
 .page-scaler {
   transform-origin: top left;
 }
@@ -164,8 +215,9 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  border-top: 1.5px dashed var(--panel-border);
+  border-top: 1.5px dashed var(--line);
   text-align: center;
+  opacity: 0.7;
 }
 .page-break-label {
   position: relative;
@@ -174,17 +226,24 @@ body {
   padding: 0 8px;
   background: var(--app-bg);
   color: var(--text-muted);
-  font: 600 11px/1.4 ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: 0.04em;
+  font: 500 10px/1.4 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 /* ---- Dark theme (app shell only — the .resume-page sheet stays white) ---- */
 .dark {
-  --app-bg: #0f141b;
-  --panel-bg: #161c26;
-  --panel-border: #283041;
-  --text: #e7e9ee;
-  --text-muted: #a3acba;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5);
+  --app-bg: #070d16;
+  --app-hi: #0b1220;
+  --panel-bg: #0f1826;
+  --panel-border: rgba(226, 238, 255, 0.14);
+  --panel-rule-strong: #eaf3ff;
+  --text: #eaf3ff;
+  --text-muted: #8ea9c6;
+  --accent: #7ad4ea;
+  --on-accent: #070d16;
+  --line: #7ad4ea;
+  --grid-min: rgba(150, 200, 255, 0.045);
+  --grid-maj: rgba(150, 200, 255, 0.09);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.65);
 }
