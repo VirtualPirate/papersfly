@@ -1,18 +1,11 @@
 ---
 // src/components/site/SiteHeader.astro
 import ThemeToggle from "./ThemeToggle.astro";
+import Logo from "./Logo.astro";
 import "../../styles/marketing.css";
 ---
 <nav class="nav">
-  <a class="brand" href="/">
-    <span class="mark">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-        <path d="M6 2h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" />
-      </svg>
-    </span>
-    papersfly
-  </a>
+  <Logo href="/" size={22} />
   <div class="nav-links">
     <a href="/create-resume">Templates</a>
     <a href="/#how">How it works</a>

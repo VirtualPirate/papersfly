@@ -4,6 +4,7 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { App } from "../../../App";
 import { documents } from "../../../documents/registry";
 import { buildBuilderPaths } from "../../../lib/routing";
+import Logo from "../../../components/site/Logo.astro";
 
 export function getStaticPaths() {
   return buildBuilderPaths(documents).map(({ doc, template }) => ({
@@ -23,7 +24,7 @@ const description =
   {/* The builder is browser-only (jsPDF + live layout measurement); this static
       skeleton gives an instant paint and is removed when the React app mounts. */}
   <div id="app-skeleton" class="app-skeleton">
-    <h1>papersfly</h1>
+    <h1><Logo size={32} /></h1>
     <p>Live preview · true-vector PDF · 100% offline</p>
     <p class="app-skeleton__hint">Loading the editor…</p>
   </div>

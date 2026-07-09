@@ -86,9 +86,6 @@
 
 /* ---- nav ---- */
 .nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; border-bottom: 1.5px solid var(--rule-strong); }
-.brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 700; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); text-decoration: none; }
-.brand .mark { display: grid; place-items: center; width: 28px; height: 28px; border: 1.5px solid var(--line); color: var(--accent); }
-.brand .mark svg { width: 16px; height: 16px; }
 .nav-links { display: flex; align-items: center; gap: 26px; font-family: var(--f-mono); }
 .nav-links a { color: var(--muted); text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
 .nav-links a:hover { color: var(--ink); }
@@ -192,7 +189,6 @@
 /* ---- footer (drawing title-block bar) ---- */
 .foot { border-top: 1.5px solid var(--rule-strong); padding: 30px 0; margin-top: 8px; }
 .foot-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-.foot .brand { font-size: 20px; }
 .foot-badge { display: inline-flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--rule); padding: 7px 13px; border-radius: 999px; }
 .foot-badge svg { width: 14px; height: 14px; }
 .foot-note { color: var(--faint); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.06em; }
