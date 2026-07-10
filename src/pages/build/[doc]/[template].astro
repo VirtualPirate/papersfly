@@ -3,7 +3,7 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { App } from "../../../App";
 import { documents } from "../../../documents/registry";
-import { buildBuilderPaths } from "../../../lib/routing";
+import { buildBuilderPaths, createHref } from "../../../lib/routing";
 import Logo from "../../../components/site/Logo.astro";
 
 export function getStaticPaths() {
@@ -14,17 +14,44 @@ export function getStaticPaths() {
 
 const { doc, template } = Astro.params;
 
-const docName = documents.find((d) => d.id === doc)?.name ?? "Document";
-const title = `${docName} builder — papersfly`;
-const description =
-  "Build your document in the browser and export a true-vector PDF. 100% client-side, works offline, no signup.";
+const docType = documents.find((d) => d.id === doc);
+const tmpl = docType?.templates.find((t) => t.id === template);
+const docName = docType?.name ?? "Document";
+const docLower = docName.toLowerCase();
+const templateName = tmpl?.name ?? "Document";
+const templateDesc = tmpl?.description;
+
+// Unique per template so each of the /build/* pages is distinct to crawlers
+// (previously all résumé pages shared one title + description).
+const title = `${templateName} ${docLower} template — free vector PDF | papersfly`;
+const description = `Build a ${docLower} with the ${templateName} template${
+  templateDesc ? ` — ${templateDesc}` : ""
+}. Export a true-vector PDF with selectable text and embedded fonts. No signup, works offline.`;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const breadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).href },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: `${docName} builder`,
+      item: new URL(createHref(doc), Astro.site).href,
+    },
+    { "@type": "ListItem", position: 3, name: `${templateName} template`, item: canonical },
+  ],
+};
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} extraJsonLd={[breadcrumb]}>
   {/* The builder is browser-only (jsPDF + live layout measurement); this static
-      skeleton gives an instant paint and is removed when the React app mounts. */}
+      skeleton gives an instant paint and is removed when the React app mounts.
+      It also carries the page's real, crawlable <h1> for non-JS/AI crawlers. */}
   <div id="app-skeleton" class="app-skeleton">
-    <h1><Logo size={32} /></h1>
+    <Logo size={32} />
+    <h1>{templateName} {docLower} builder</h1>
     <p>Live preview · true-vector PDF · 100% offline</p>
     <p class="app-skeleton__hint">Loading the editor…</p>
   </div>

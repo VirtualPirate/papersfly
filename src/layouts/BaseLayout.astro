@@ -8,34 +8,62 @@ interface Props {
   title: string;
   description: string;
   /**
-   * Page-specific JSON-LD. When omitted, the shared résumé-builder
+   * Page-specific JSON-LD. When omitted, the shared papersfly
    * WebApplication schema below is used. Its `url` is always set to the
    * page's canonical URL, so callers don't need to supply it.
    */
   jsonLd?: Record<string, unknown>;
+  /**
+   * Extra JSON-LD nodes emitted alongside the page's primary schema and the
+   * site-wide Organization/WebSite — e.g. a BreadcrumbList. Each is rendered
+   * in its own <script>, which Google accepts.
+   */
+  extraJsonLd?: Record<string, unknown>[];
 }
-const { title, description, jsonLd: jsonLdOverride } = Astro.props;
+const {
+  title,
+  description,
+  jsonLd: jsonLdOverride,
+  extraJsonLd = [],
+} = Astro.props;
 
 // All absolute URLs derive from the `site` config (astro.config.mjs).
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL("/og-image.png", Astro.site).href;
+const siteUrl = new URL("/", Astro.site).href;
+
+// Site-wide entity schema — emitted on every page for entity clarity.
+const organization = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "papersfly",
+  url: siteUrl,
+  logo: new URL("/favicon.svg", Astro.site).href,
+};
+const webSite = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "papersfly",
+  url: siteUrl,
+};
 
 const defaultJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "Vector Résumé Builder",
+  name: "papersfly",
   description,
   applicationCategory: "BusinessApplication",
   operatingSystem: "Any (modern web browser)",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   featureList: [
-    "Live résumé preview",
+    "Live document preview at true page size",
     "True-vector PDF export with selectable text and embedded fonts",
     "Works fully offline in the browser",
   ],
 };
 
-const jsonLd = { ...(jsonLdOverride ?? defaultJsonLd), url: canonical };
+const primaryJsonLd = { ...(jsonLdOverride ?? defaultJsonLd), url: canonical };
+const jsonLdGraphs = [organization, webSite, primaryJsonLd, ...extraJsonLd];
 ---
 
 <!doctype html>
@@ -79,10 +107,14 @@ const jsonLd = { ...(jsonLdOverride ?? defaultJsonLd), url: canonical };
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {
+      jsonLdGraphs.map((node) => (
+        <script type="application/ld+json" set:html={JSON.stringify(node)} />
+      ))
+    }
   </head>
   <body>
     <slot />
-    <noscript>This résumé builder requires JavaScript to run in your browser.</noscript>
+    <noscript>papersfly requires JavaScript to run in your browser.</noscript>
   </body>
 </html>

@@ -192,6 +192,15 @@
 .foot-badge { display: inline-flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--rule); padding: 7px 13px; border-radius: 999px; }
 .foot-badge svg { width: 14px; height: 14px; }
 .foot-note { color: var(--faint); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.06em; }
+.foot-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 40px; flex-wrap: wrap; padding-bottom: 24px; }
+.foot-brand { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.foot-nav { display: flex; gap: 48px; flex-wrap: wrap; }
+.foot-col { display: flex; flex-direction: column; gap: 10px; }
+.foot-col-title { color: var(--ink); text-decoration: none; font-family: var(--f-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.foot-col-title:hover { color: var(--accent); }
+.foot-links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.foot-links a { color: var(--muted); text-decoration: none; font-family: var(--f-body); font-size: 13px; }
+.foot-links a:hover { color: var(--ink); }
 
 /* ---- create / gallery ---- */
 .create-head { padding: 44px 0 8px; }

@@ -8,6 +8,9 @@ import { fileURLToPath } from "node:url";
 // sitemap, and robots.txt all derive from this. Replace with the real domain
 // once chosen (must start with http:// or https://). For a subpath deploy
 // (e.g. GitHub Pages project site) also set `base: "/repo-name/"`.
+// TODO(seo,CRITICAL): still the placeholder. Until this is the real domain,
+// every canonical/og:url/og:image/sitemap <loc>/robots Sitemap points to a
+// domain you don't own, which blocks correct indexing site-wide.
 const SITE = "https://example.com";
 
 // Fully static output (Astro default). The résumé tool is a browser-only React

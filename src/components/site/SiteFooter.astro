@@ -1,18 +1,39 @@
 ---
 // src/components/site/SiteFooter.astro
 import Logo from "./Logo.astro";
+import { documents } from "../../documents/registry";
+import { builderHref, createHref } from "../../lib/routing";
 import "../../styles/marketing.css";
 ---
 <footer class="foot">
+  <div class="wrap foot-main">
+    <div class="foot-brand">
+      <Logo href="/" size={20} />
+      <span class="foot-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect width="18" height="11" x="3" y="11" rx="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        100% client-side
+      </span>
+    </div>
+    {/* Real, crawler-followable links to every document type and template —
+        the in-app gallery links are injected client-side, so these are what
+        search/AI crawlers use to discover /create-* and every /build/* page. */}
+    <nav class="foot-nav" aria-label="Templates">
+      {documents.map((doc) => (
+        <div class="foot-col">
+          <a class="foot-col-title" href={createHref(doc.id)}>{doc.name} builder</a>
+          <ul class="foot-links">
+            {doc.templates.map((t) => (
+              <li><a href={builderHref(doc.id, t.id)}>{t.name}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  </div>
   <div class="wrap foot-row">
-    <Logo href="/" size={20} />
-    <span class="foot-badge">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect width="18" height="11" x="3" y="11" rx="2" />
-        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-      </svg>
-      100% client-side
-    </span>
     <small class="foot-note">Free &amp; open source · No data collected</small>
   </div>
 </footer>
