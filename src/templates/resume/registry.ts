@@ -4,6 +4,7 @@ import { meridianTemplate } from "./meridian";
 import { quillTemplate } from "./quill";
 import { ledgerTemplate } from "./ledger";
 import { atlasTemplate } from "./atlas";
+import { vantageTemplate } from "./vantage";
 
 /**
  * The list of available designs. To add a template: build a new module that
@@ -11,7 +12,7 @@ import { atlasTemplate } from "./atlas";
  * Content stays in `data/resume.ts`; only the design differs.
  */
 export const templates: Template[] = [
-  classicTemplate, meridianTemplate, quillTemplate, ledgerTemplate, atlasTemplate,
+  classicTemplate, meridianTemplate, quillTemplate, ledgerTemplate, atlasTemplate, vantageTemplate,
 ];
 
 export const defaultTemplate = templates[0];

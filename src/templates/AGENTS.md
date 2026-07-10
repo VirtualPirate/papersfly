@@ -88,8 +88,9 @@ existing sibling (e.g. `invoice/nordic/`) and adapt.
        palette is NOT the global `COLOR_SCHEMES` (see Variants below).
    - Font-override hook: `const f = (p) => fontStyleFor(fontOverrides, p);` and
      apply `style={f("path")}` to the fields users can restyle per-field
-     (title/name, party names, line-item descriptions). Build paths with
-     `joinPath("items", item.id, "description")`.
+     (title/name, party names, line-item descriptions). `joinPath` takes exactly
+     two args, so nest it for deeper paths:
+     `joinPath(joinPath("items", item.id), "description")`.
    - **Empty-field guards**: hide optional content when blank (e.g.
      `{data.poNumber && (...)}`, `{totals.discount > 0 && (...)}`). Render
      computed money via a helper, never inline arithmetic.

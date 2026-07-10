@@ -3,9 +3,9 @@ import { templates, defaultTemplate } from "./registry";
 import { COLOR_SCHEMES, FONT_PAIRINGS } from "../../theme/variants";
 
 describe("template registry", () => {
-  it("ships the five templates in gallery order with unique ids", () => {
+  it("ships the templates in gallery order with unique ids", () => {
     expect(templates.map((t) => t.id)).toEqual([
-      "classic", "meridian", "quill", "ledger", "atlas",
+      "classic", "meridian", "quill", "ledger", "atlas", "vantage",
     ]);
     expect(new Set(templates.map((t) => t.id)).size).toBe(templates.length);
     expect(defaultTemplate).toBe(templates[0]);

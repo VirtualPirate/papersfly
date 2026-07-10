@@ -6,6 +6,7 @@ import { meridianTemplate } from "../../templates/resume/meridian";
 import { quillTemplate } from "../../templates/resume/quill";
 import { ledgerTemplate } from "../../templates/resume/ledger";
 import { atlasTemplate } from "../../templates/resume/atlas";
+import { vantageTemplate } from "../../templates/resume/vantage";
 import { resumeImportSpec } from "./importSpec";
 
 /** Flatten every user-entered résumé string into one blob for coverage scanning. */
@@ -22,6 +23,6 @@ export const resumeDocument: DocumentType<ResumeData> = {
   name: "Résumé",
   defaultData: sampleResume,
   importSpec: resumeImportSpec,
-  templates: [classicTemplate, meridianTemplate, quillTemplate, ledgerTemplate, atlasTemplate],
+  templates: [classicTemplate, meridianTemplate, quillTemplate, ledgerTemplate, atlasTemplate, vantageTemplate],
   collectText: collectResumeText,
 };

@@ -6,6 +6,7 @@ import LedgerPreview from "./ledger/LedgerPreview";
 import MeridianPreview from "./meridian/MeridianPreview";
 import QuillPreview from "./quill/QuillPreview";
 import AtlasPreview from "./atlas/AtlasPreview";
+import VantagePreview from "./vantage/VantagePreview";
 
 const expectedBlocks =
   sampleResume.experience.length +
@@ -25,8 +26,11 @@ describe("pdf page-break markers", () => {
     expect(container.querySelectorAll("[data-pdf-block]").length).toBe(expectedBlocks);
   });
 
-  it("does not mark Atlas (two-column, excluded from the pre-pass)", () => {
-    const { container } = render(<AtlasPreview data={sampleResume} />);
+  it.each([
+    ["Atlas", AtlasPreview],
+    ["Vantage", VantagePreview],
+  ] as const)("does not mark %s (two-column, excluded from the pre-pass)", (_name, Preview) => {
+    const { container } = render(<Preview data={sampleResume} />);
     expect(container.querySelectorAll("[data-pdf-heading]").length).toBe(0);
     expect(container.querySelectorAll("[data-pdf-block]").length).toBe(0);
   });

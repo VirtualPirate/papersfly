@@ -1,0 +1,98 @@
+/* Vantage — two-column résumé: full-width header band + centered tab, wide main
+   column (summary / experience / education) beside a narrow contact/skills rail.
+   Self-contained: each template chunk loads alone, so scope everything here. */
+.resume-page.t-vantage {
+  width: var(--page-w);
+  min-height: var(--page-h);
+  box-sizing: border-box;
+  padding: 0;
+  background: #ffffff;
+  color: var(--c-ink);
+  font-family: var(--f-sans);
+  font-size: calc(9.5pt * var(--s-font-scale, 1));
+  line-height: 1.32;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+/* Header band + decorative centered tab (rounded rects — vector-safe, no image) */
+.t-vantage .vt-topband { position: relative; height: 22pt; background: var(--c-accent-soft); }
+.t-vantage .vt-tab {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 96pt; height: 15pt; background: #dbe0e7; border-radius: 0 0 7pt 7pt;
+}
+
+.t-vantage .vt-header { padding: 20pt 46pt 0; }
+.t-vantage .resume-name {
+  margin: 0;
+  font-family: var(--f-serif);
+  font-weight: 700;
+  font-size: calc(26pt * var(--s-font-scale, 1));
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5pt;
+  color: var(--c-ink);
+}
+.t-vantage .vt-headline {
+  margin: 4pt 0 0;
+  font-size: calc(11.5pt * var(--s-font-scale, 1));
+  font-weight: 400;
+  color: var(--c-muted);
+}
+.t-vantage .vt-rule { margin: 12pt 46pt 0; border-top: 1.2pt solid #c3c9d1; }
+
+/* Two-column body: wide main + narrow rail */
+.t-vantage .vt-body {
+  margin-top: 15pt;
+  padding: 0 46pt 40pt;
+  display: grid;
+  grid-template-columns: 1fr 166pt;
+  column-gap: 26pt;
+}
+
+.t-vantage .vt-section { margin-top: calc(15pt * var(--sp-section-scale, 1)); }
+.t-vantage .vt-main > .vt-section:first-child,
+.t-vantage .vt-aside > .vt-section:first-child { margin-top: 0; }
+
+/* Section heading: label + flat accent-tint bar to the right */
+.t-vantage .vt-h {
+  display: flex;
+  align-items: center;
+  gap: 8pt;
+  margin: 0 0 7pt;
+  font-size: calc(10pt * var(--s-font-scale, 1));
+  text-transform: uppercase;
+  letter-spacing: 0.9pt;
+  font-weight: 700;
+  color: var(--c-ink);
+}
+.t-vantage .vt-h-bar { flex: 1; height: 5pt; background: var(--c-accent-soft); border-radius: 2.5pt; }
+
+.t-vantage .vt-summary { margin: 0; color: var(--c-muted); line-height: 1.42; }
+
+.t-vantage .vt-item + .vt-item { margin-top: 9pt; }
+.t-vantage .vt-role { font-weight: 700; font-size: calc(9.5pt * var(--s-font-scale, 1)); color: var(--c-ink); }
+.t-vantage .vt-org { margin-top: 1.5pt; font-weight: 700; font-size: calc(9pt * var(--s-font-scale, 1)); color: var(--c-accent); }
+.t-vantage .vt-loc { color: var(--c-muted); font-weight: 600; }
+.t-vantage .vt-bullets { list-style: none; margin: 4pt 0 0; padding: 0; }
+.t-vantage .vt-bullets li { position: relative; padding-left: 12pt; color: var(--c-muted); line-height: 1.36; }
+.t-vantage .vt-bullets li + li { margin-top: 2.5pt; }
+.t-vantage .vt-bullets li::before {
+  content: ""; position: absolute; left: 1pt; top: calc(0.66em - 1.1pt);
+  width: 2.6pt; height: 2.6pt; background: var(--c-accent); transform: rotate(45deg);
+}
+
+.t-vantage .vt-edu + .vt-edu { margin-top: 8pt; }
+.t-vantage .vt-edu-deg { font-weight: 700; font-size: calc(9.3pt * var(--s-font-scale, 1)); color: var(--c-ink); }
+.t-vantage .vt-edu-inst { margin-top: 1pt; font-weight: 600; color: var(--c-accent); }
+.t-vantage .vt-edu-meta { margin-top: 1pt; font-size: calc(8.8pt * var(--s-font-scale, 1)); color: var(--c-muted); }
+
+/* Narrow rail */
+.t-vantage .vt-contact-line { margin-top: 4pt; font-size: calc(9pt * var(--s-font-scale, 1)); color: var(--c-muted); overflow-wrap: anywhere; }
+.t-vantage .vt-contact-line:first-of-type { margin-top: 0; }
+.t-vantage .vt-contact-label { font-weight: 700; color: var(--c-ink); }
+
+.t-vantage .vt-skillgroup + .vt-skillgroup { margin-top: 7pt; }
+.t-vantage .vt-skill-label { font-weight: 700; font-size: calc(9pt * var(--s-font-scale, 1)); color: var(--c-ink); }
+.t-vantage .vt-skill-line { margin-top: 2pt; font-size: calc(9pt * var(--s-font-scale, 1)); color: var(--c-muted); line-height: 1.4; }
+.t-vantage .vt-skills-end { margin-top: 8pt; border-top: 1.2pt solid var(--c-rule); }
