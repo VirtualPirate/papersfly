@@ -24,6 +24,12 @@ html,
 body {
   height: 100%;
   margin: 0;
+  /* Stop iOS Safari / Android Chrome from auto-inflating font sizes ("font
+     boosting") on the fixed-width résumé sheet, which would otherwise leak the
+     inflated computed sizes into the doc.html()-captured PDF. See
+     .resume-page below and src/pdf/textSizeAdjust.test.ts. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -203,6 +209,17 @@ body {
 .page-frame::after { right: -7px; bottom: -7px; border-left: 0; border-top: 0; }
 .page-scaler {
   transform-origin: top left;
+}
+
+/* The document sheet (every template's capture root) renders at a fixed 816px
+   width regardless of device. Pin text-size-adjust here — not just on html/body
+   — so the value is a COMPUTED style on the captured subtree, and therefore
+   survives into the offscreen copy doc.html() draws the PDF from. Without it,
+   mobile browsers inflate the sheet's fonts and the exported PDF text is too
+   big. See src/pdf/textSizeAdjust.test.ts. */
+.resume-page {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* Live-preview page-break dividers (decoration only; never in the exported PDF,
