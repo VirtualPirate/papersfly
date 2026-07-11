@@ -1,20 +1,25 @@
 import { describe, it, expect } from "vitest";
-import { FONT_DATA } from "./fontData";
+import { FONT_LOADERS } from "./fontData";
+import { FONT_LIBRARY, type FontId } from "./library";
 
-const EXPECTED_FILES = [
-  "inter-regular.ttf", "inter-semibold.ttf", "inter-bold.ttf",
-  "serif-regular.ttf", "serif-semibold.ttf", "serif-bold.ttf",
-  "lora-regular.ttf", "lora-semibold.ttf", "lora-bold.ttf",
-  "playfair-regular.ttf", "playfair-semibold.ttf", "playfair-bold.ttf",
-  "plexsans-regular.ttf", "plexsans-semibold.ttf", "plexsans-bold.ttf",
-  "plexmono-regular.ttf", "plexmono-semibold.ttf", "plexmono-bold.ttf",
-];
-
-describe("FONT_DATA", () => {
-  it("contains base64 for every expected font file", () => {
-    for (const file of EXPECTED_FILES) {
-      expect(FONT_DATA[file], file).toBeTypeOf("string");
-      expect(FONT_DATA[file].length, file).toBeGreaterThan(1000);
+// Each family's weight files must resolve to base64 through its own loader
+// chunk. Driven off FONT_LIBRARY so it can't drift from the shipped families.
+describe("FONT_LOADERS", () => {
+  it("has a loader for every library family", () => {
+    for (const font of FONT_LIBRARY) {
+      expect(FONT_LOADERS[font.id], font.id).toBeTypeOf("function");
     }
   });
+
+  it.each(FONT_LIBRARY.map((f) => f.id as FontId))(
+    "loads base64 for every weight of %s",
+    async (id) => {
+      const font = FONT_LIBRARY.find((f) => f.id === id)!;
+      const data = await FONT_LOADERS[id]();
+      for (const w of font.weights) {
+        expect(data[w.file], w.file).toBeTypeOf("string");
+        expect(data[w.file].length, w.file).toBeGreaterThan(1000);
+      }
+    },
+  );
 });

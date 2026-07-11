@@ -31,7 +31,7 @@ async function renderResumeDoc(
   // Embed only the fonts this résumé actually uses BEFORE rendering so
   // doc.html() can resolve the preview's inline font-family to them.
   const used = usedFontIds(overrides, baseFontIds);
-  registerFonts(doc, used);
+  await registerFonts(doc, used);
 
   const name = element.querySelector(".resume-name")?.textContent?.trim() || "Résumé";
   doc.setProperties({

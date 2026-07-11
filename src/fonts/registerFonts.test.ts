@@ -7,9 +7,9 @@ function fakeDoc() {
 }
 
 describe("registerFonts", () => {
-  it("embeds only the used families (all their weights)", () => {
+  it("embeds only the used families (all their weights)", async () => {
     const doc = fakeDoc();
-    registerFonts(doc, ["inter", "sourceSerif"]);
+    await registerFonts(doc, ["inter", "sourceSerif"]);
     // 2 families × 3 weights = 6 VFS additions.
     expect(doc.addFileToVFS).toHaveBeenCalledTimes(6);
     expect(doc.addFileToVFS).toHaveBeenCalledWith("inter-bold.ttf", expect.any(String));
@@ -18,9 +18,9 @@ describe("registerFonts", () => {
     expect(files).not.toContain("lora-regular.ttf");
   });
 
-  it("uses each file name as both VFS key and addFont path (invariant)", () => {
+  it("uses each file name as both VFS key and addFont path (invariant)", async () => {
     const doc = fakeDoc();
-    registerFonts(doc, ["inter"]);
+    await registerFonts(doc, ["inter"]);
     const vfsKeys = (doc.addFileToVFS as any).mock.calls.map((c: any[]) => c[0]);
     const fontPaths = (doc.addFont as any).mock.calls.map((c: any[]) => c[0]);
     expect(new Set(fontPaths)).toEqual(new Set(vfsKeys));
