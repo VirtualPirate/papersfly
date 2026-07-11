@@ -122,6 +122,10 @@ export function App({ docId, templateId }: AppProps) {
     setFontOverrides({}); // overrides key off replaced item ids; variant is preserved
     setImportOpen(false);
     setNotice(summary);
+    (window as any).posthog?.capture('import_completed', {
+      doc_type: doc.id,
+      template_id: template.id,
+    });
   };
 
   // Subscribe ONCE on mount. The observer watches the stage (width) and the
@@ -176,9 +180,32 @@ export function App({ docId, templateId }: AppProps) {
       try {
         const { downloadResumePdf } = await import("./pdf/download");
         await downloadResumePdf(host, "resume.pdf", capture.fontOverrides, resolveVariantFontIds(capture.variant));
+        if (!cancelled) {
+          (window as any).posthog?.capture('pdf_downloaded', {
+            doc_type: doc.id,
+            template_id: template.id,
+            template_name: template.name,
+            color_id: capture.variant.colorId,
+            font_id: capture.variant.fontId,
+            spacing_id: capture.variant.spacingId ?? null,
+            size_id: capture.variant.sizeId ?? null,
+          });
+        }
       } catch (err) {
         console.error("PDF generation failed:", err);
-        if (!cancelled) setError("Could not generate the PDF. Please try again.");
+        if (!cancelled) {
+          setError("Could not generate the PDF. Please try again.");
+          (window as any).posthog?.captureException(err, {
+            additionalProperties: {
+              doc_type: doc.id,
+              template_id: template.id,
+            },
+          });
+          (window as any).posthog?.capture('pdf_download_failed', {
+            doc_type: doc.id,
+            template_id: template.id,
+          });
+        }
       } finally {
         if (!cancelled) {
           setDownloading(false);
@@ -281,7 +308,21 @@ export function App({ docId, templateId }: AppProps) {
                 spacings={SPACING_PRESETS}
                 sizes={SIZE_PRESETS}
                 value={variant}
-                onChange={setVariant}
+                onChange={(next) => {
+                  const changed: string[] = [];
+                  if (next.colorId !== variant.colorId) changed.push('color');
+                  if (next.fontId !== variant.fontId) changed.push('font');
+                  if ((next.spacingId ?? '') !== (variant.spacingId ?? '')) changed.push('spacing');
+                  if ((next.sizeId ?? '') !== (variant.sizeId ?? '')) changed.push('size');
+                  (window as any).posthog?.capture('variant_changed', {
+                    doc_type: doc.id,
+                    template_id: template.id,
+                    color_id: next.colorId,
+                    font_id: next.fontId,
+                    changed_fields: changed,
+                  });
+                  setVariant(next);
+                }}
               />
             </PopoverContent>
           </Popover>

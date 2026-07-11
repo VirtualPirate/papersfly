@@ -132,3 +132,9 @@ const description =
     <SiteFooter />
   </div>
 </BaseLayout>
+
+<script is:inline>
+  document.querySelector('.btn-primary[href="/create-resume"]')?.addEventListener('click', function () {
+    window.posthog?.capture('cta_clicked', { location: 'hero' });
+  });
+</script>

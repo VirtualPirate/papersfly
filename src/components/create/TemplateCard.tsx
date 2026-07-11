@@ -19,8 +19,15 @@ export function TemplateCard({
   data: unknown;
 }) {
   const Preview = template.Preview;
+  const handleClick = () => {
+    (window as any).posthog?.capture('template_selected', {
+      doc_type: docId,
+      template_id: template.id,
+      template_name: template.name,
+    });
+  };
   return (
-    <a className="tmpl-card" href={builderHref(docId, template.id)}>
+    <a className="tmpl-card" href={builderHref(docId, template.id)} onClick={handleClick}>
       <div className="tmpl-thumb">
         <div className="tmpl-thumb-scale">
           <Suspense fallback={<div className="tmpl-thumb-skeleton" aria-hidden="true" />}>

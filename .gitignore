@@ -14,3 +14,4 @@ design-brainstorming/*
 
 # SEO audit artifacts
 *-audit/
+.env

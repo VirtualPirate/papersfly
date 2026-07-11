@@ -3,6 +3,7 @@ import "../index.css";
 import "../fonts/fonts.css";
 import "../styles/globals.css";
 import interRegular from "../fonts/inter-regular.ttf?url";
+import PostHog from "../components/posthog.astro";
 
 interface Props {
   title: string;
@@ -127,6 +128,7 @@ const jsonLdGraphs = [organization, webSite, primaryJsonLd, ...extraJsonLd];
         <script type="application/ld+json" set:html={JSON.stringify(node)} />
       ))
     }
+    <PostHog />
   </head>
   <body>
     <slot />
