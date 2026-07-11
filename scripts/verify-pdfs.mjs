@@ -47,13 +47,21 @@ try {
   const pdfs = readdirSync(OUT).filter((f) => f.endsWith(".pdf"));
   console.log(`\n================ STRICT INSPECT (${pdfs.length} PDFs) ================`);
   for (const f of pdfs) {
+    // Every template draws at least body + one heavier weight, so <2 distinct
+    // fonts drawing text means a weight-matching collapse. Résumés are designed
+    // to fit one page, so >1 page means a layout overflow (e.g. a font-size
+    // regression) — invoices vary in length, so only the page gate is skipped
+    // for them.
+    const flags = ["--strict", "--min-weights=2"];
+    if (f.startsWith("resume-")) flags.push("--max-pages=1");
+    const inspect = [resolve(OUT, f), ...flags];
     try {
-      await run("node", ["scripts/inspect-pdf.mjs", resolve(OUT, f), "--strict"], { stdio: "ignore" });
+      await run("node", ["scripts/inspect-pdf.mjs", ...inspect], { stdio: "ignore" });
       console.log(`✓ ${f}`);
     } catch {
       failures++;
       console.error(`✗ ${f} — FAILED strict forensic check`);
-      await run("node", ["scripts/inspect-pdf.mjs", resolve(OUT, f), "--strict"]).catch(() => {});
+      await run("node", ["scripts/inspect-pdf.mjs", ...inspect]).catch(() => {});
     }
   }
 } finally {

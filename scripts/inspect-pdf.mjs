@@ -17,6 +17,17 @@ import { readFileSync } from "node:fs";
 
 const args = process.argv.slice(2);
 const STRICT = args.includes("--strict");
+const numFlag = (name) => {
+  const a = args.find((x) => x.startsWith(`${name}=`));
+  return a ? Number(a.split("=")[1]) : undefined;
+};
+// Optional strict thresholds (see verify-pdfs.mjs):
+//   --min-weights=N  distinct embedded fonts drawing text must be >= N (a
+//                    weight-matching collapse renders every role in one font).
+//   --max-pages=N    page count must be <= N (catches layout overflow, e.g. a
+//                    size regression pushing a one-page résumé onto a second).
+const MIN_WEIGHTS = numFlag("--min-weights");
+const MAX_PAGES = numFlag("--max-pages");
 const FILE = args.find((a) => !a.startsWith("--"));
 if (!FILE) {
   console.error("Usage: node scripts/inspect-pdf.mjs <path-to.pdf> [--strict]");
@@ -65,6 +76,9 @@ const opTally = {};
 // present. jsPDF's standard-14 fallbacks (Courier/Helvetica/Times) come back
 // with `missingFile: true` — i.e. text drawn in a non-embedded font.
 const fallbackFonts = new Map(); // BaseFont name -> sample strings
+// Distinct embedded fonts that actually draw text — a proxy for weights in use.
+// A weight-matching collapse (every role resolving to one font) drops this to 1.
+const fontsDrawing = new Set();
 for (let p = 1; p <= doc.numPages; p++) {
   const page = await doc.getPage(p);
   // getOperatorList first: it resolves fonts into page.commonObjs so the
@@ -81,6 +95,7 @@ for (let p = 1; p <= doc.numPages; p++) {
     if (!it.str.trim()) continue;
     let font;
     try { font = page.commonObjs.get(it.fontName); } catch { font = null; }
+    if (font && !font.missingFile) fontsDrawing.add(it.fontName);
     if (font && font.missingFile) {
       const arr = fallbackFonts.get(font.name) || [];
       if (arr.length < 5) arr.push(it.str.trim());
@@ -112,6 +127,7 @@ console.log(`Image paint ops:             ${imageOps}`);
 console.log(`Selectable text items:       ${totalTextItems}`);
 console.log(`Extracted text length:       ${text.length} chars`);
 console.log("");
+console.log(`Distinct fonts drawing text: ${fontsDrawing.size}`);
 console.log(`Fallback fonts drawing text: ${fallbackFonts.size === 0 ? "none ✓" : ""}`);
 for (const [name, samples] of fallbackFonts) {
   console.log(`   ✗ ${name} (NOT embedded) e.g. ${JSON.stringify(samples)}`);
@@ -136,6 +152,10 @@ if (STRICT) {
   if (images.length > 0) problems.push(`${images.length} image XObject(s) — export must be image-free`);
   if (fallbackFonts.size > 0)
     problems.push(`text drawn in non-embedded font(s): ${[...fallbackFonts.keys()].join(", ")}`);
+  if (MIN_WEIGHTS !== undefined && fontsDrawing.size < MIN_WEIGHTS)
+    problems.push(`only ${fontsDrawing.size} distinct font(s) draw text, expected >= ${MIN_WEIGHTS} (weight collapse?)`);
+  if (MAX_PAGES !== undefined && doc.numPages > MAX_PAGES)
+    problems.push(`${doc.numPages} pages, expected <= ${MAX_PAGES} (layout overflow?)`);
   if (problems.length) {
     console.error("\n✗ STRICT FAIL:");
     for (const p of problems) console.error(`   - ${p}`);
