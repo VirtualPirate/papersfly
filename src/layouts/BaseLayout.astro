@@ -30,6 +30,8 @@ const {
 // All absolute URLs derive from the `site` config (astro.config.mjs).
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL("/og-image.png", Astro.site).href;
+const ogImageAlt =
+  "papersfly — beautiful documents that never leave your browser";
 const siteUrl = new URL("/", Astro.site).href;
 
 // Site-wide entity schema — emitted on every page for entity clarity.
@@ -88,8 +90,17 @@ const jsonLdGraphs = [organization, webSite, primaryJsonLd, ...extraJsonLd];
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#1f3a5f" />
+    <meta name="theme-color" content="#12233c" />
+    <!-- Favicons. favicon.svg is theme-adaptive (embedded prefers-color-scheme);
+         the 96px PNGs back it up for PNG-only browsers that honour `media`. The
+         .ico / apple-touch / manifest icons can't theme-switch, so they use an
+         opaque navy mark that stays legible under either OS theme. -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96-light.png" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96-dark.png" media="(prefers-color-scheme: dark)" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Preload the body font so first paint uses the correct typeface. -->
     <link rel="preload" href={interRegular} as="font" type="font/ttf" crossorigin />
@@ -100,12 +111,16 @@ const jsonLdGraphs = [organization, webSite, primaryJsonLd, ...extraJsonLd];
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     {
       jsonLdGraphs.map((node) => (
