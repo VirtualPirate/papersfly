@@ -13,7 +13,8 @@
     "gen:og": "node scripts/gen-og.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify:pdf": "node scripts/verify-pdfs.mjs"
+    "verify:pdf": "node scripts/verify-pdfs.mjs",
+    "gen:favicons": "node scripts/gen-favicons.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.1",
