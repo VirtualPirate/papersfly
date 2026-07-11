@@ -9,6 +9,37 @@ import { insertPageBreakSpacers, type PageMetrics } from "./paginate";
 const PX = 96 / 72;
 
 /**
+ * Pin `text-size-adjust: 100%` INLINE on the capture root before `doc.html()`,
+ * returning a restore fn.
+ *
+ * iOS Safari and Android Chrome auto-inflate ("font boosting" / text
+ * autosizing) any block far wider than the phone viewport — and the résumé sheet
+ * is a fixed 816px (612pt) regardless of device. `doc.html()` deep-CLONES the
+ * node into html2canvas's own measurement document, where a CLASS-based pin
+ * (index.css `.resume-page`) from an external stylesheet is NOT guaranteed to
+ * apply — so the browser re-enables autosizing there and the inflated computed
+ * font-size bakes straight into the vector PDF (on iPhone, 9pt body text is
+ * measured as ~12.75pt, overflowing a one-page résumé onto a second page and
+ * overlapping columns). An INLINE style is copied node-for-node by the clone and
+ * inherits to every descendant, so it reliably reaches that measurement context
+ * where the class rule cannot. Both the standard and `-webkit-` properties are
+ * set (Safari still needs the prefix). See src/pdf/textSizeAdjust.test.ts.
+ */
+export function pinTextSizeAdjust(element: HTMLElement): () => void {
+  const s = element.style;
+  const prevStd = s.getPropertyValue("text-size-adjust");
+  const prevWebkit = s.getPropertyValue("-webkit-text-size-adjust");
+  s.setProperty("text-size-adjust", "100%");
+  s.setProperty("-webkit-text-size-adjust", "100%");
+  return () => {
+    const set = (prop: string, val: string) =>
+      val ? s.setProperty(prop, val) : s.removeProperty(prop);
+    set("text-size-adjust", prevStd);
+    set("-webkit-text-size-adjust", prevWebkit);
+  };
+}
+
+/**
  * Render the résumé into a jsPDF document directly from the rendered HTML/CSS.
  *
  * Unlike a hand-drawn writer, this walks the live DOM via `doc.html()`: jsPDF
@@ -54,6 +85,11 @@ async function renderResumeDoc(
   const prevMinHeight = element.style.minHeight;
   element.style.minHeight = "0px";
 
+  // Stop iOS/Android font-boosting from inflating the captured text (see
+  // pinTextSizeAdjust). Must be inline so it survives doc.html()'s clone into
+  // html2canvas's measurement document, where the class-based pin may not reach.
+  const restoreTextSizeAdjust = pinTextSizeAdjust(element);
+
   // Block-aware page breaks: insert spacers so no keep-together block (a résumé
   // entry, a skill row, or a heading + its first item) straddles a page boundary,
   // and so pushed blocks land below a top margin with a bottom margin on the page
@@ -81,6 +117,7 @@ async function renderResumeDoc(
     });
   } finally {
     removeSpacers();
+    restoreTextSizeAdjust();
     element.style.minHeight = prevMinHeight;
   }
 

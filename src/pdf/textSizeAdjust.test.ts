@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { pinTextSizeAdjust } from "./download";
 
 /**
  * Guard against mobile text auto-inflation corrupting the exported PDF.
@@ -12,17 +13,30 @@ import { dirname, join } from "node:path";
  * boosting" / Text Autosizing), a block far wider than the layout viewport has
  * its COMPUTED font-size inflated to keep wide text legible. `doc.html()` draws
  * the vector PDF from those computed styles, so the inflation flows straight
- * into the PDF — text comes out too big on phones while desktop is correct.
+ * into the PDF — text comes out too big on phones while desktop is correct
+ * (measured on iPhone: 9pt body text baked in at ~12.75pt, spilling a one-page
+ * résumé onto a second page).
  *
- * The fix is to pin `text-size-adjust: 100%` so browsers honour the authored
- * `pt` sizes. It must land on the capture root (`.resume-page`, carried by every
- * template) so it survives into the offscreen copy `doc.html()` captures. This
- * behaviour is platform-gated and cannot be reproduced in headless Chrome /
- * jsdom, so this static guard is the regression backstop.
+ * The pin (`text-size-adjust: 100%`) lands in TWO places, and both matter:
+ *
+ *  1. The index.css `.resume-page` / html+body rules protect the on-screen
+ *     preview (which renders in the main document, where the stylesheet applies).
+ *
+ *  2. `doc.html()` deep-clones the capture node into html2canvas's OWN
+ *     measurement document, and an external-stylesheet class rule is not
+ *     guaranteed to apply in that clone — which is why the class-only pin left
+ *     the exported PDF inflated on iPhone. So download.ts also pins it INLINE on
+ *     the capture root (`pinTextSizeAdjust`); inline styles are copied
+ *     node-for-node by the clone and inherit to every descendant, reaching the
+ *     measurement context the class rule cannot.
+ *
+ * The autosizing behaviour is platform-gated and cannot be reproduced in
+ * headless Chrome / jsdom, so these guards (static CSS + inline-pin mechanics)
+ * are the regression backstop.
  */
 const GLOBAL_CSS = join(dirname(fileURLToPath(import.meta.url)), "..", "index.css");
 
-describe("text auto-inflation guard (mobile PDF fidelity)", () => {
+describe("text auto-inflation guard: index.css (preview)", () => {
   const css = readFileSync(GLOBAL_CSS, "utf8");
 
   it("pins text-size-adjust: 100% on the résumé sheet capture root", () => {
@@ -37,5 +51,33 @@ describe("text auto-inflation guard (mobile PDF fidelity)", () => {
     expect(css).toMatch(/(-webkit-)?text-size-adjust:\s*100%/);
     // The webkit-prefixed form must be present for iOS Safari specifically.
     expect(css).toMatch(/-webkit-text-size-adjust:\s*100%/);
+  });
+});
+
+describe("text auto-inflation guard: inline pin on the capture root (PDF)", () => {
+  // jsdom (cssstyle) drops the unprefixed `text-size-adjust` but keeps the
+  // -webkit- form, so assertions target the webkit property that is observable
+  // here; the helper sets both for real browsers.
+  it("sets -webkit-text-size-adjust: 100% inline on the element", () => {
+    const el = document.createElement("div");
+    pinTextSizeAdjust(el);
+    expect(el.style.getPropertyValue("-webkit-text-size-adjust")).toBe("100%");
+  });
+
+  it("restores the previous inline value (none) when the returned fn runs", () => {
+    const el = document.createElement("div");
+    const restore = pinTextSizeAdjust(el);
+    restore();
+    expect(el.style.getPropertyValue("-webkit-text-size-adjust")).toBe("");
+    expect(el.getAttribute("style") ?? "").not.toMatch(/text-size-adjust/);
+  });
+
+  it("restores a pre-existing inline value rather than clearing it", () => {
+    const el = document.createElement("div");
+    el.style.setProperty("-webkit-text-size-adjust", "80%");
+    const restore = pinTextSizeAdjust(el);
+    expect(el.style.getPropertyValue("-webkit-text-size-adjust")).toBe("100%");
+    restore();
+    expect(el.style.getPropertyValue("-webkit-text-size-adjust")).toBe("80%");
   });
 });
