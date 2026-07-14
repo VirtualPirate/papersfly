@@ -20,17 +20,23 @@ interface Props {
    * in its own <script>, which Google accepts.
    */
   extraJsonLd?: Record<string, unknown>[];
+  /**
+   * Absolute-from-root path to a page-specific 1200×630 social image (e.g.
+   * "/og/vs-zety.png"). Defaults to the shared /og-image.png when omitted.
+   */
+  ogImagePath?: string;
 }
 const {
   title,
   description,
   jsonLd: jsonLdOverride,
   extraJsonLd = [],
+  ogImagePath = "/og-image.png",
 } = Astro.props;
 
 // All absolute URLs derive from the `site` config (astro.config.mjs).
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogImage = new URL("/og-image.png", Astro.site).href;
+const ogImage = new URL(ogImagePath, Astro.site).href;
 const ogImageAlt =
   "papersfly — beautiful documents that never leave your browser";
 const siteUrl = new URL("/", Astro.site).href;

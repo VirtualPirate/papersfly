@@ -13,6 +13,19 @@
 /** Human-readable date the pricing/feature facts were last verified. */
 export const PRICING_AS_OF = "July 2026";
 
+/**
+ * The `PRICING_AS_OF` year as a number, for page titles/copy. A plain constant
+ * (rather than parsing PRICING_AS_OF at runtime) so it never depends on
+ * non-standard `Date` string parsing across build environments.
+ */
+export const PRICING_YEAR = 2026;
+
+/**
+ * `PRICING_AS_OF` as an ISO date, for machine-readable `dateModified` freshness
+ * signals in JSON-LD. Keep in sync with PRICING_AS_OF / PRICING_YEAR.
+ */
+export const PRICING_ISO = "2026-07-01";
+
 /** Outcome for one capability: ✓ (yes), ✗ (no), or – (partial/conditional). */
 export type CapValue = "yes" | "no" | "partial";
 
@@ -40,6 +53,14 @@ export interface Competitor {
   description: string;
   /** Lede paragraph (1-2 sentences) under the H1. */
   lede: string;
+  /**
+   * 1-2 sentences answering "is there a free <name> alternative?" — the body of
+   * the "The free <name> alternative" section. Site-authored copy about
+   * papersfly (our own product) and the specific trade vs this competitor, so it
+   * introduces no new factual claims about the competitor beyond those already
+   * sourced elsewhere in this entry.
+   */
+  altSummary: string;
   /**
    * 2-4 short paragraphs of honest, sourced prose comparing the two. HTML is
    * NOT allowed; plain text only (rendered into <p> by the template).
@@ -108,6 +129,25 @@ export const PAPERSFLY_GAINS = [
   "Works offline after the first load",
 ];
 
+/**
+ * The "How to switch to papersfly" steps, shared across every comparison page.
+ * The `{name}` token is replaced with the competitor's name by the template.
+ * Process content about papersfly's own flow — no claims about the competitor.
+ */
+export const SWITCH_STEPS = [
+  "Keep your current resume from {name} open, or just have your details to hand — there's nothing to export, upload, or import.",
+  "Open papersfly and start typing into the form. There's no signup and no account — it loads straight into the editor.",
+  "Pick a template and watch the live preview update at true page size as you go.",
+  "Click Download for a free, watermark-free, true-vector PDF. Export as many times as you like — nothing ever leaves your browser.",
+];
+
+/**
+ * How the comparisons are made — a short methodology + affiliation disclosure
+ * shown on every comparison page for transparency (E-E-A-T). Site-authored.
+ */
+export const METHODOLOGY =
+  "How we compare: we build a real resume on each tool's free tier, attempt the PDF download, and record pricing from the vendor's own public pricing page — re-checked each quarter. papersfly is our own product, and we call out where a competitor genuinely wins.";
+
 export const competitors: Competitor[] = [
   {
     slug: "zety",
@@ -124,7 +164,9 @@ export const competitors: Competitor[] = [
       "Zety's free plan only exports plain text — the PDF is paywalled. papersfly's PDF is free and unlimited.",
     title: "papersfly vs Zety: free PDF vs pay-to-download (2026)",
     description:
-      "Zety lets you build a resume free but only exports TXT — the PDF is paywalled behind a paid subscription. Compare with papersfly, which exports a free, unlimited, watermark-free vector PDF with no signup.",
+      "Looking for a free Zety alternative? papersfly exports an unlimited, watermark-free vector PDF with no signup — while Zety's free tier only downloads plain text and paywalls the formatted PDF.",
+    altSummary:
+      "Yes — papersfly is a free, no-signup Zety alternative that exports an unlimited, watermark-free true-vector PDF entirely in your browser. You give up Zety's AI writing help, but there's no paywall, no auto-renewing trial, and no account to cancel.",
     lede:
       "Zety is a polished, content-rich resume builder — but its free plan only downloads plain text, and the formatted PDF sits behind a paid trial that auto-renews. papersfly gives you the real PDF for free.",
     body: [
@@ -180,7 +222,9 @@ export const competitors: Competitor[] = [
       "Resume.io's free tier exports TXT only; the PDF is locked behind an auto-renewing trial. papersfly's is free.",
     title: "papersfly vs Resume.io: free vector PDF, no trial (2026)",
     description:
-      "Resume.io is the most-used resume builder, but downloading the PDF requires a paid, auto-renewing plan. Compare with papersfly's free, unlimited, watermark-free vector PDF — no account, works offline.",
+      "Want a free Resume.io alternative with no trial? papersfly downloads an unlimited, watermark-free vector PDF — no account, works offline — while Resume.io paywalls its PDF behind an auto-renewing plan.",
+    altSummary:
+      "Yes — papersfly is a free Resume.io alternative that hands you the real PDF with no card-on-file trial and no subscription. You give up Resume.io's larger template library, but exports are unlimited and watermark-free, nothing is uploaded, and it works offline.",
     lede:
       "Resume.io is the highest-traffic resume builder on the web, with smooth UX and strong default templates. But the formatted PDF is paywalled behind a trial that auto-renews — papersfly hands you the PDF for free.",
     body: [
@@ -236,7 +280,9 @@ export const competitors: Competitor[] = [
       "Canva's resumes are free and gorgeous — but multi-column, graphic-heavy PDFs often confuse ATS. papersfly stays readable.",
     title: "papersfly vs Canva resumes: ATS-safe vector text (2026)",
     description:
-      "Canva resumes are free to download but their multi-column, graphic-heavy layouts often fail applicant tracking systems. Compare with papersfly's true-vector, single-column, ATS-readable PDF that works offline.",
+      "A free, ATS-safe Canva alternative for resumes: papersfly exports single-column, real-text vector PDFs that applicant tracking systems can read — no account, works offline. Canva's graphic layouts often break ATS.",
+    altSummary:
+      "Yes — if you're applying online, papersfly is a free Canva alternative built for applicant tracking systems: single-column, real selectable text, exported as a true-vector PDF. You give up Canva's visual flair, but you gain output a recruiter's software can actually parse.",
     lede:
       "Canva is genuinely free and its resume templates look stunning. The problem is downstream: many of those designs are hard for applicant tracking systems (ATS) to parse. papersfly trades some design flourish for text a recruiter's software can actually read.",
     body: [
@@ -292,7 +338,9 @@ export const competitors: Competitor[] = [
       "FlowCV is genuinely free but requires an account and stores your resume on its servers. papersfly stores nothing.",
     title: "papersfly vs FlowCV: no account, nothing uploaded (2026)",
     description:
-      "FlowCV offers an excellent free resume builder, but it requires an account and stores your data on its servers. Compare with papersfly, which needs no signup, uploads nothing, and works fully offline.",
+      "papersfly is a free FlowCV alternative that needs no account: nothing is uploaded and it works fully offline, while FlowCV stores your resume in the cloud. Free, unlimited, watermark-free PDF.",
+    altSummary:
+      "Yes — papersfly is a free FlowCV alternative that's private by architecture: no account to create and nothing uploaded, with unlimited local documents and full offline use. You give up FlowCV's cloud sync, but your data never leaves your browser.",
     lede:
       "FlowCV is the closest thing to papersfly: genuinely free, watermark-free PDFs, ATS-friendly templates. The difference is what happens to your data — FlowCV requires an account and stores your resume on its servers; papersfly stores nothing, anywhere.",
     body: [
@@ -348,7 +396,9 @@ export const competitors: Competitor[] = [
       "Novoresume's free downloads carry a watermark and cap you at one page. papersfly exports clean, unlimited PDFs.",
     title: "papersfly vs Novoresume: no watermark, no page cap (2026)",
     description:
-      "Novoresume's free tier limits you to one page and stamps a watermark on downloads. Compare with papersfly's free, unlimited, watermark-free vector PDF — no account, works offline.",
+      "A free Novoresume alternative with no watermark and no page cap: papersfly exports an unlimited, clean vector PDF — no account, works offline. Novoresume watermarks free downloads and limits you to one page.",
+    altSummary:
+      "Yes — papersfly is a free Novoresume alternative with no watermark on your download and no one-page cap. You export a clean true-vector PDF as many times as you like, with no account and nothing uploaded.",
     lede:
       "Novoresume makes clean, modern one-page designs, but its free tier watermarks your download and caps you at a single page. papersfly exports a clean, unlimited PDF with no watermark and no page limit.",
     body: [
@@ -404,7 +454,9 @@ export const competitors: Competitor[] = [
       "Enhancv's free downloads carry its branding; removing it needs Pro. papersfly's export is always unbranded.",
     title: "papersfly vs Enhancv: unbranded free PDF (2026)",
     description:
-      "Enhancv offers strong content coaching, but free downloads carry Enhancv branding and clean export requires Pro. Compare with papersfly's free, unbranded, true-vector PDF — no account, works offline.",
+      "A free Enhancv alternative with an unbranded PDF: papersfly exports an unlimited, watermark-free vector PDF — no account, works offline. Enhancv brands free downloads and gates clean export behind Pro.",
+    altSummary:
+      "Yes — papersfly is a free Enhancv alternative that never brands your resume: the export is unbranded, unlimited, and watermark-free. You give up Enhancv's content coaching, but there's no trial, no Pro plan, and nothing uploaded.",
     lede:
       "Enhancv is one of the best builders for content coaching and standout sections — but its free downloads carry Enhancv branding, and exporting a clean file requires the Pro plan. papersfly's export is unbranded, free, and unlimited.",
     body: [
@@ -460,7 +512,9 @@ export const competitors: Competitor[] = [
       "Rezi's free tier allows only a few PDF downloads before you hit Pro. papersfly's downloads are unlimited.",
     title: "papersfly vs Rezi: unlimited free downloads (2026)",
     description:
-      "Rezi's free plan caps you at a handful of PDF downloads and limited AI before Pro ($29/mo or $149 lifetime). Compare with papersfly's unlimited, free, private vector PDF that works offline.",
+      "A free Rezi alternative with unlimited downloads: papersfly exports an unlimited, watermark-free vector PDF — no account, works offline. Rezi caps free PDF downloads before pushing you to Pro.",
+    altSummary:
+      "Yes — papersfly is a free Rezi alternative with no download cap: export a clean, ATS-readable true-vector PDF as many times as you need. You give up Rezi's ATS scoring, but there's no Pro plan, no account, and nothing uploaded.",
     lede:
       "Rezi is built around ATS scoring and keyword targeting, which is its real value. But the free tier caps you at just a few PDF downloads before pushing you to Pro. papersfly's exports are unlimited and free.",
     body: [
@@ -515,7 +569,9 @@ export const competitors: Competitor[] = [
       "Kickresume's free tier limits templates and gates AI/formatting behind premium. papersfly has no feature gates.",
     title: "papersfly vs Kickresume: no feature gates, private (2026)",
     description:
-      "Kickresume's free tier limits templates and locks AI and full formatting behind premium. Compare with papersfly's free, private, true-vector PDF — no account, works offline, no gates.",
+      "A free Kickresume alternative with no feature gates: every template and unlimited vector-PDF export is free — no account, works offline, nothing uploaded. Kickresume gates its best templates and AI behind premium.",
+    altSummary:
+      "Yes — papersfly is a free Kickresume alternative with nothing gated: every template and unlimited watermark-free export is free. You give up Kickresume's AI writing and ATS checker, but there's no premium tier, no account, and nothing uploaded.",
     lede:
       "Kickresume has a usable free tier and strong AI writing tools, but the best templates, the ATS checker, and full formatting are gated behind premium. papersfly gives you the whole thing free — minus the AI.",
     body: [
@@ -570,7 +626,9 @@ export const competitors: Competitor[] = [
       "Teal bundles a builder with job tracking at a premium subscription. papersfly is a focused, free, private PDF builder.",
     title: "papersfly vs Teal: focused free builder vs job suite (2026)",
     description:
-      "Teal is a full job-search suite (builder + tracker + Chrome extension) on a premium subscription with no annual plan. Compare with papersfly's focused, free, private, offline resume PDF builder.",
+      "A free, focused Teal alternative: papersfly builds a private resume PDF in your browser — no subscription, no account, works offline. Teal bundles a builder into a paid job-search suite.",
+    altSummary:
+      "Yes — if you just want the document, papersfly is a free Teal alternative: a focused resume PDF builder with no subscription and no account. You give up Teal's job tracking and tailoring suite, but the PDF is free, unlimited, and never uploaded.",
     lede:
       "Teal is really a job-search platform — resume builder, job tracker, and a Chrome extension — with a genuinely useful free tier and a premium plan. papersfly does one thing: a free, private resume PDF, in your browser.",
     body: [
@@ -625,7 +683,9 @@ export const competitors: Competitor[] = [
       "VisualCV's free PDF carries a watermark; a clean file needs Pro. papersfly's export is always unbranded and free.",
     title: "papersfly vs VisualCV: unbranded free PDF (2026)",
     description:
-      "VisualCV's free tier watermarks your PDF and unlocks clean export, analytics and portfolios only on Pro. Compare with papersfly's free, unbranded, private, offline vector PDF.",
+      "A free VisualCV alternative with an unbranded PDF: papersfly exports an unlimited, watermark-free vector PDF — no account, works offline. VisualCV watermarks free downloads and gates clean export behind Pro.",
+    altSummary:
+      "Yes — papersfly is a free VisualCV alternative that exports a clean, unbranded true-vector PDF with no watermark. You give up VisualCV's hosted web resume and analytics, but there's no Pro plan, no account, and nothing uploaded.",
     lede:
       "VisualCV pairs a resume builder with analytics and web-resume features, but its free download carries a VisualCV watermark, and a clean file requires Pro. papersfly's export is unbranded, free, and unlimited.",
     body: [
@@ -680,7 +740,9 @@ export const competitors: Competitor[] = [
       "Standard Resume's free tier includes PDF downloads, but requires an account and stores your data. papersfly needs neither.",
     title: "papersfly vs Standard Resume: no account, offline (2026)",
     description:
-      "Standard Resume offers free PDF downloads with a clean tech-friendly design, but requires an account and cloud storage. Compare with papersfly, which needs no signup, uploads nothing, and works offline.",
+      "A free Standard Resume alternative that needs no account: papersfly exports the PDF with nothing uploaded and full offline use, while Standard Resume stores your resume in the cloud behind a signup.",
+    altSummary:
+      "Yes — papersfly is a free Standard Resume alternative that keeps everything on your device: the same free PDF and clean single-column layout, but with no signup and nothing uploaded. You give up LinkedIn import and a hosted web resume, and gain full offline use.",
     lede:
       "Standard Resume is one of the few builders with genuinely free PDF downloads and a clean, tech-friendly single-column design. The difference from papersfly is the account and the cloud — Standard Resume needs both; papersfly needs neither.",
     body: [

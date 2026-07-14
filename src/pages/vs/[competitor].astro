@@ -5,7 +5,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SiteHeader from "../../components/site/SiteHeader.astro";
 import SiteFooter from "../../components/site/SiteFooter.astro";
-import { competitors, CAPABILITIES, PAPERSFLY_GAINS, PRICING_AS_OF, faqPageJsonLd } from "../../data/competitors";
+import { competitors, CAPABILITIES, PAPERSFLY_GAINS, SWITCH_STEPS, METHODOLOGY, PRICING_AS_OF, PRICING_ISO, faqPageJsonLd } from "../../data/competitors";
 import type { CapValue } from "../../data/competitors";
 import "../../styles/marketing.css";
 
@@ -56,14 +56,34 @@ const breadcrumb = {
 
 const faqPage = faqPageJsonLd(c.faq);
 
-const related = competitors.filter((o) => o.slug !== c.slug);
+// A page-level WebPage node carries a machine-readable freshness signal
+// (dateModified) that the SoftwareApplication (which describes the app, not the
+// page) shouldn't. Mirrors the visible "Verified {PRICING_AS_OF}".
+const webPage = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: c.title,
+  description: c.description,
+  url: canonical,
+  dateModified: PRICING_ISO,
+};
+
+// "Keep comparing": show the 4 most-similar comparisons (same free-download
+// story first), not all ten — keeps each page mostly unique rather than a full
+// repeated mesh. The hub link below covers the rest.
+const others = competitors.filter((o) => o.slug !== c.slug);
+const related = [
+  ...others.filter((o) => o.quick.freeDownload === c.quick.freeDownload),
+  ...others.filter((o) => o.quick.freeDownload !== c.quick.freeDownload),
+].slice(0, 4);
 ---
 
 <BaseLayout
   title={c.title}
   description={c.description}
   jsonLd={jsonLd}
-  extraJsonLd={[breadcrumb, faqPage]}
+  extraJsonLd={[breadcrumb, faqPage, webPage]}
+  ogImagePath={`/og/vs-${c.slug}.png`}
 >
   <div class="site">
     <div class="wrap">
@@ -143,8 +163,14 @@ const related = competitors.filter((o) => o.slug !== c.slug);
 
     <section class="section section-alt">
       <div class="wrap">
-        <div class="cmp-rule-h"><span class="lbl">The difference</span><span class="ln"></span></div>
+        <div class="cmp-rule-h"><h2 class="lbl">The free {c.name} alternative</h2><span class="ln"></span></div>
         <div class="cmp-prose">
+          <p>{c.altSummary}</p>
+          <p>
+            papersfly is free — verified {PRICING_AS_OF} — next to {c.name} at {c.quick.price}. Your data{" "}
+            <a href="/privacy">never leaves your browser</a>, and you can{" "}
+            <a href="/create-resume">start building for free</a> with no account.
+          </p>
           {c.body.map((para) => <p>{para}</p>)}
         </div>
       </div>
@@ -152,7 +178,7 @@ const related = competitors.filter((o) => o.slug !== c.slug);
 
     <section class="section">
       <div class="wrap">
-        <div class="cmp-rule-h"><span class="lbl">What changes when you switch</span><span class="ln"></span></div>
+        <div class="cmp-rule-h"><h2 class="lbl">What changes when you switch</h2><span class="ln"></span></div>
         <div class="cmp-redline">
           <div class="cmp-rl-col them">
             <h3>{c.name}</h3>
@@ -174,7 +200,7 @@ const related = competitors.filter((o) => o.slug !== c.slug);
 
     <section class="section section-alt">
       <div class="wrap">
-        <div class="cmp-rule-h"><span class="lbl">An honest read · where each wins</span><span class="ln"></span></div>
+        <div class="cmp-rule-h"><h2 class="lbl">An honest read · where each wins</h2><span class="ln"></span></div>
         <div class="cmp-split">
           <div class="t-card">
             <h3 class="t-title">Choose papersfly if…</h3>
@@ -196,9 +222,24 @@ const related = competitors.filter((o) => o.slug !== c.slug);
       </div>
     </section>
 
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="cmp-rule-h"><h2 class="lbl">How to switch from {c.name} to papersfly</h2><span class="ln"></span></div>
+        <ol class="cmp-steps">
+          {SWITCH_STEPS.map((s) => <li>{s.replace("{name}", c.name)}</li>)}
+        </ol>
+        <div class="cta-row" style="margin-top:28px">
+          <a class="btn btn-primary" href="/create-resume">
+            Start free — no signup
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <section class="section">
       <div class="wrap">
-        <div class="cmp-rule-h"><span class="lbl">FAQ</span><span class="ln"></span></div>
+        <div class="cmp-rule-h"><h2 class="lbl">FAQ</h2><span class="ln"></span></div>
         <div class="cmp-faq">
           {c.faq.map((f) => (
             <div class="cmp-faq-item">
@@ -212,7 +253,7 @@ const related = competitors.filter((o) => o.slug !== c.slug);
 
     <section class="section section-alt">
       <div class="wrap">
-        <div class="cmp-rule-h"><span class="lbl">Keep comparing</span><span class="ln"></span></div>
+        <div class="cmp-rule-h"><h2 class="lbl">Keep comparing</h2><span class="ln"></span></div>
         <div class="cmp-cards">
           {related.map((o) => (
             <a class="cmp-card" href={`/vs/${o.slug}`}>
@@ -223,6 +264,9 @@ const related = competitors.filter((o) => o.slug !== c.slug);
             </a>
           ))}
         </div>
+        <div class="cta-row" style="margin-top:22px">
+          <a class="btn btn-ghost" href="/alternatives">See all comparisons</a>
+        </div>
         <div class="cmp-prose" style="margin-top:36px">
           <p><strong>Sources.</strong> Pricing and feature claims about {c.name} are drawn from public sources, verified {PRICING_AS_OF}:{" "}
             {c.sources.map((s, i) => (
@@ -232,6 +276,8 @@ const related = competitors.filter((o) => o.slug !== c.slug);
             ))}
             {" "}papersfly is our own product; comparisons are made in good faith and updated when {c.name} ships major changes.
           </p>
+          <p>{METHODOLOGY}</p>
+          <p class="cmp-caption">Reviewed by the papersfly team · verified {PRICING_AS_OF}</p>
         </div>
       </div>
     </section>

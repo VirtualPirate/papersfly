@@ -5,10 +5,10 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SiteHeader from "../components/site/SiteHeader.astro";
 import SiteFooter from "../components/site/SiteFooter.astro";
-import { competitors, PRICING_AS_OF, ALTERNATIVES_FAQ, faqPageJsonLd } from "../data/competitors";
+import { competitors, PRICING_AS_OF, PRICING_YEAR, PRICING_ISO, METHODOLOGY, ALTERNATIVES_FAQ, faqPageJsonLd } from "../data/competitors";
 import "../styles/marketing.css";
 
-const year = new Date(PRICING_AS_OF).getFullYear() || 2026;
+const year = PRICING_YEAR;
 const title = `Best free resume builder alternatives (${year}) — papersfly`;
 const description =
   "Compare papersfly with Resume.io, Zety, Canva, Novoresume and more. See which resume builders are truly free, need no signup, and keep your data on your device.";
@@ -38,9 +38,23 @@ const itemList = {
 };
 
 const faqPage = faqPageJsonLd(ALTERNATIVES_FAQ);
+
+const webPage = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: title,
+  description,
+  url: canonical,
+  dateModified: PRICING_ISO,
+};
 ---
 
-<BaseLayout title={title} description={description} extraJsonLd={[breadcrumb, itemList, faqPage]}>
+<BaseLayout
+  title={title}
+  description={description}
+  extraJsonLd={[breadcrumb, itemList, faqPage, webPage]}
+  ogImagePath="/og/alternatives.png"
+>
   <div class="site">
     <div class="wrap">
       <SiteHeader />
@@ -125,7 +139,7 @@ const faqPage = faqPageJsonLd(ALTERNATIVES_FAQ);
 
     <section class="section section-alt">
       <div class="wrap">
-        <div class="cmp-rule-h"><span class="lbl">Detail · head-to-head</span><span class="ln"></span></div>
+        <div class="cmp-rule-h"><h2 class="lbl">Detail · head-to-head</h2><span class="ln"></span></div>
         <div class="cmp-cards">
           {competitors.map((c) => (
             <a class="cmp-card" href={`/vs/${c.slug}`}>
@@ -141,7 +155,7 @@ const faqPage = faqPageJsonLd(ALTERNATIVES_FAQ);
 
     <section class="section">
       <div class="wrap">
-        <div class="cmp-rule-h"><span class="lbl">FAQ</span><span class="ln"></span></div>
+        <div class="cmp-rule-h"><h2 class="lbl">FAQ</h2><span class="ln"></span></div>
         <div class="cmp-faq">
           {ALTERNATIVES_FAQ.map((f) => (
             <div class="cmp-faq-item">
@@ -149,6 +163,16 @@ const faqPage = faqPageJsonLd(ALTERNATIVES_FAQ);
               <p class="cmp-faq-a">{f.a}</p>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="cmp-rule-h"><h2 class="lbl">How we compare</h2><span class="ln"></span></div>
+        <div class="cmp-prose">
+          <p>{METHODOLOGY}</p>
+          <p class="cmp-caption">Reviewed by the papersfly team · verified {PRICING_AS_OF}</p>
         </div>
       </div>
     </section>
