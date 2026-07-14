@@ -1,0 +1,249 @@
+---
+// src/pages/vs/[competitor].astro
+// "papersfly vs X" — the "conformance report" datasheet design, one page per
+// entry in src/data/competitors.ts.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteHeader from "../../components/site/SiteHeader.astro";
+import SiteFooter from "../../components/site/SiteFooter.astro";
+import { competitors, CAPABILITIES, PAPERSFLY_GAINS, PRICING_AS_OF } from "../../data/competitors";
+import type { CapValue } from "../../data/competitors";
+import "../../styles/marketing.css";
+
+// ✓ / ✗ / – rendering for a capability outcome.
+const mark = (v: CapValue) =>
+  v === "yes"
+    ? { cls: "pass", sym: "✓" }
+    : v === "partial"
+      ? { cls: "part", sym: "–" }
+      : { cls: "fail", sym: "✗" };
+
+export function getStaticPaths() {
+  return competitors.map((c, i) => ({
+    params: { competitor: c.slug },
+    props: { c, sheet: String(i + 1).padStart(2, "0") },
+  }));
+}
+
+const { c, sheet } = Astro.props;
+
+// Tally: count of clear "yes" outcomes (partials/crosses excluded).
+const usYes = CAPABILITIES.filter((cap) => cap.us === "yes").length;
+const themYes = c.capabilities.filter((cap) => cap.v === "yes").length;
+const capCount = CAPABILITIES.length;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "papersfly",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any (modern web browser)",
+  description:
+    "Free, 100% client-side résumé and document builder that exports a true-vector PDF — no signup, no upload, works offline.",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+};
+
+const breadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).href },
+    { "@type": "ListItem", position: 2, name: "Comparisons", item: new URL("/alternatives", Astro.site).href },
+    { "@type": "ListItem", position: 3, name: `papersfly vs ${c.name}`, item: canonical },
+  ],
+};
+
+const qaPage = {
+  "@context": "https://schema.org",
+  "@type": "QAPage",
+  mainEntity: c.faq.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+
+const related = competitors.filter((o) => o.slug !== c.slug);
+---
+
+<BaseLayout
+  title={c.title}
+  description={c.description}
+  jsonLd={jsonLd}
+  extraJsonLd={[breadcrumb, qaPage]}
+>
+  <div class="site">
+    <div class="wrap">
+      <SiteHeader />
+      <div class="cmp-hero">
+        <div class="cmp-head">
+          <span class="cmp-eyebrow">Comparison · Conformance report</span>
+          <h1 class="cmp-title">papersfly <span class="accent">vs {c.name}</span></h1>
+          <p class="cmp-lede">{c.lede}</p>
+          <span class="cmp-updated">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Verified {PRICING_AS_OF}
+          </span>
+        </div>
+        <div class="cmp-tblock">
+          <div class="r"><div class="c"><span class="k">Drawing</span><span class="v big">papersfly</span></div><div class="c"><span class="k">Sheet</span><span class="v">CMP-{sheet}</span></div></div>
+          <div class="r"><div class="c" style="flex:2"><span class="k">Subject</span><span class="v">vs {c.name}</span></div><div class="c"><span class="k">Rev</span><span class="v">2.0</span></div></div>
+          <div class="r"><div class="c"><span class="k">Verified</span><span class="v">{PRICING_AS_OF}</span></div><div class="c"><span class="k">Status</span><span class="v ok">Approved</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="cmp-sheet">
+          <div class="cmp-sheet-h">
+            <span class="t">papersfly vs {c.name}</span>
+            <span class="meta">{capCount} capabilities · verified {PRICING_AS_OF}</span>
+          </div>
+          <div class="cmp-sheet-scroll">
+            <table class="cmp-table cmp-caps">
+              <thead>
+                <tr>
+                  <th scope="col">Capability</th>
+                  <th scope="col" class="cmp-us cmp-c">papersfly</th>
+                  <th scope="col" class="cmp-c">{c.name}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CAPABILITIES.map((cap, i) => {
+                  const us = mark(cap.us);
+                  const them = mark(c.capabilities[i].v);
+                  const themNote = c.capabilities[i].note;
+                  return (
+                    <tr>
+                      <td class="cmp-feat">{cap.label}</td>
+                      <td class="cmp-col-us cmp-c">
+                        <span class={`cmp-cap ${us.cls}`}><span class="b">{us.sym}</span></span>
+                      </td>
+                      <td class="cmp-c">
+                        <span class={`cmp-cap ${them.cls}`}>
+                          <span class="b">{them.sym}</span>
+                          {themNote && <span class="n">{themNote}</span>}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div class="cmp-tally">
+            <span>papersfly <b class="up">{usYes} / {capCount}</b></span>
+            <span>{c.name} <b>{themYes} / {capCount}</b></span>
+          </div>
+        </div>
+        <p class="cmp-caption">{capCount} capabilities · verified {PRICING_AS_OF}. Sources below.</p>
+        <div class="cta-row" style="margin-top:24px">
+          <a class="btn btn-primary" href="/create-resume">
+            Try papersfly free
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="/alternatives">All comparisons</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="cmp-rule-h"><span class="lbl">The difference</span><span class="ln"></span></div>
+        <div class="cmp-prose">
+          {c.body.map((para) => <p>{para}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="cmp-rule-h"><span class="lbl">What changes when you switch</span><span class="ln"></span></div>
+        <div class="cmp-redline">
+          <div class="cmp-rl-col them">
+            <h3>{c.name}</h3>
+            <span class="sub">What you leave behind</span>
+            <ul class="cmp-rl-list">
+              {c.leaveBehind.map((s) => <li>{s}</li>)}
+            </ul>
+          </div>
+          <div class="cmp-rl-col us">
+            <h3>papersfly</h3>
+            <span class="sub">What you get</span>
+            <ul class="cmp-rl-list">
+              {PAPERSFLY_GAINS.map((s) => <li>{s}</li>)}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="cmp-rule-h"><span class="lbl">An honest read · where each wins</span><span class="ln"></span></div>
+        <div class="cmp-split">
+          <div class="t-card">
+            <h3 class="t-title">Choose papersfly if…</h3>
+            <ul class="cmp-list">
+              {c.papersflyStrengths.map((s) => <li>{s}</li>)}
+            </ul>
+          </div>
+          <div class="t-card">
+            <h3 class="t-title">Choose {c.name} if…</h3>
+            <ul class="cmp-list">
+              {c.competitorStrengths.map((s) => <li>{s}</li>)}
+            </ul>
+          </div>
+        </div>
+        <div class="cmp-verdict" style="margin-top:24px">
+          <div class="cmp-stamp">Spec met<small>papersfly</small></div>
+          <p>{c.verdict}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="cmp-rule-h"><span class="lbl">FAQ</span><span class="ln"></span></div>
+        <div class="cmp-faq">
+          {c.faq.map((f) => (
+            <div class="cmp-faq-item">
+              <h3 class="cmp-faq-q">{f.q}</h3>
+              <p class="cmp-faq-a">{f.a}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="cmp-rule-h"><span class="lbl">Keep comparing</span><span class="ln"></span></div>
+        <div class="cmp-cards">
+          {related.map((o) => (
+            <a class="cmp-card" href={`/vs/${o.slug}`}>
+              <span class="cmp-card-tag">{o.tagline}</span>
+              <span class="cmp-card-name">vs {o.name}</span>
+              <span class="cmp-card-text">{o.cardBlurb}</span>
+              <span class="cmp-card-cta">Read comparison →</span>
+            </a>
+          ))}
+        </div>
+        <div class="cmp-prose" style="margin-top:36px">
+          <p><strong>Sources.</strong> Pricing and feature claims about {c.name} are drawn from public sources, verified {PRICING_AS_OF}:{" "}
+            {c.sources.map((s, i) => (
+              <>
+                <a href={s.url} rel="nofollow noopener" target="_blank">{s.label}</a>{i < c.sources.length - 1 ? ", " : "."}
+              </>
+            ))}
+            {" "}papersfly is our own product; comparisons are made in good faith and updated when {c.name} ships major changes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <SiteFooter />
+  </div>
+</BaseLayout>

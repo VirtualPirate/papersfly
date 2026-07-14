@@ -2,6 +2,7 @@
 // src/components/site/SiteFooter.astro
 import Logo from "./Logo.astro";
 import { documents } from "../../documents/registry";
+import { competitors } from "../../data/competitors";
 import { builderHref, createHref } from "../../lib/routing";
 import "../../styles/marketing.css";
 ---
@@ -31,6 +32,16 @@ import "../../styles/marketing.css";
           </ul>
         </div>
       ))}
+      {competitors.length > 0 && (
+        <div class="foot-col">
+          <a class="foot-col-title" href="/alternatives">Compare</a>
+          <ul class="foot-links">
+            {competitors.map((c) => (
+              <li><a href={`/vs/${c.slug}`}>vs {c.name}</a></li>
+            ))}
+          </ul>
+        </div>
+      )}
     </nav>
   </div>
   <div class="wrap foot-row">
