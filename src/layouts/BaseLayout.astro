@@ -25,6 +25,17 @@ interface Props {
    * "/og/vs-zety.png"). Defaults to the shared /og-image.png when omitted.
    */
   ogImagePath?: string;
+  /**
+   * When true, emit `<meta name="robots" content="noindex" />` so the page is
+   * kept out of search indexes. Used by error pages (404/500).
+   */
+  noindex?: boolean;
+  /**
+   * When true, emit no JSON-LD at all — suppresses the site-wide
+   * Organization/WebSite graph and the page's primary schema. Used by error
+   * pages, where advertising full app schema would be misleading.
+   */
+  noSchema?: boolean;
 }
 const {
   title,
@@ -32,6 +43,8 @@ const {
   jsonLd: jsonLdOverride,
   extraJsonLd = [],
   ogImagePath = "/og-image.png",
+  noindex = false,
+  noSchema = false,
 } = Astro.props;
 
 // All absolute URLs derive from the `site` config (astro.config.mjs).
@@ -72,7 +85,9 @@ const defaultJsonLd = {
 };
 
 const primaryJsonLd = { ...(jsonLdOverride ?? defaultJsonLd), url: canonical };
-const jsonLdGraphs = [organization, webSite, primaryJsonLd, ...extraJsonLd];
+const jsonLdGraphs = noSchema
+  ? []
+  : [organization, webSite, primaryJsonLd, ...extraJsonLd];
 ---
 
 <!doctype html>
@@ -96,6 +111,7 @@ const jsonLdGraphs = [organization, webSite, primaryJsonLd, ...extraJsonLd];
     </script>
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#12233c" />
     <!-- Favicons. favicon.svg is theme-adaptive (embedded prefers-color-scheme);
