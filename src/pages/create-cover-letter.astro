@@ -1,0 +1,57 @@
+---
+// src/pages/create-cover-letter.astro
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import { CreateGallery } from "../components/create/CreateGallery";
+import "../styles/marketing.css";
+
+const title = "Free cover letter builder — papersfly";
+const description =
+  "Write a cover letter in your browser and export a true-vector PDF with selectable text and embedded fonts. No signup, no upload — works offline.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "papersfly — cover letter builder",
+  description,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any (modern web browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  featureList: [
+    "Live cover-letter preview across five letter designs",
+    "True-vector PDF export with selectable text and embedded fonts",
+    "Works fully offline in the browser",
+  ],
+};
+
+const breadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).href },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Cover letter builder",
+      item: new URL(Astro.url.pathname, Astro.site).href,
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd} extraJsonLd={[breadcrumb]}>
+  <div class="site">
+    <div class="wrap">
+      <SiteHeader />
+      <div class="create-head">
+        <h1 class="create-title">Create a cover letter</h1>
+        <p class="create-sub">
+          Pick a letter design, write your paragraphs, and export a true-vector
+          PDF — selectable text, embedded fonts. Everything renders in your
+          browser — nothing is uploaded.
+        </p>
+      </div>
+      <CreateGallery client:only="react" activeDocId="cover-letter" />
+    </div>
+  </div>
+</BaseLayout>

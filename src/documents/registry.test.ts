@@ -18,4 +18,10 @@ describe("document registry", () => {
     expect(invoice).toBeDefined();
     expect(invoice?.templates.length).toBe(4);
   });
+
+  it("registers the cover letter with five templates", () => {
+    const coverLetter = documents.find((d) => d.id === "cover-letter");
+    expect(coverLetter).toBeDefined();
+    expect(coverLetter?.templates.length).toBe(5);
+  });
 });

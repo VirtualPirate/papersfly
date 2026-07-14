@@ -99,3 +99,26 @@ describe("size presets", () => {
     expect(resolveVariant({ colorId: "navy", fontId: "classic", sizeId: "bogus" }).fontScale).toBe(1);
   });
 });
+
+describe("per-template font pairing lists", () => {
+  const CUSTOM = [
+    { id: "editorial", name: "Editorial", display: "playfair" as const, body: "lora" as const },
+  ];
+
+  it("resolveVariant resolves the pairing against a provided list", () => {
+    const r = resolveVariant({ colorId: "navy", fontId: "editorial" }, undefined, CUSTOM);
+    expect(r.bodyStack).toBe('"Lora", Georgia, serif');
+    expect(r.displayStack).toBe('"Playfair Display", Georgia, serif');
+  });
+
+  it("resolveVariantFontIds embeds the provided list's faces", () => {
+    expect(new Set(resolveVariantFontIds({ colorId: "navy", fontId: "editorial" }, CUSTOM))).toEqual(
+      new Set(["playfair", "lora"]),
+    );
+  });
+
+  it("unknown fontId falls back to the provided list's first pairing", () => {
+    const r = resolveVariant({ colorId: "navy", fontId: "bogus" }, undefined, CUSTOM);
+    expect(r.bodyStack).toBe('"Lora", Georgia, serif');
+  });
+});

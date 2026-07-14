@@ -109,8 +109,18 @@ function sizePreset(id: string | undefined): SizePreset {
  * outside that list — e.g. the invoice templates, which also reuse ids like
  * "teal" with a different hue — pass their own `variants.colors` so the accent
  * resolves correctly (and per-template id collisions can't cross-contaminate).
+ *
+ * `fonts` works the same way for the pairing list: templates whose pairings
+ * differ from the global FONT_PAIRINGS (the cover letters map each pairing to
+ * a distinct BODY face, because a letter's body is its content) pass their own
+ * `variants.fonts` — and the PDF download must then embed against that same
+ * list (App passes `template.variants.fonts` to resolveVariantFontIds).
  */
-export function resolveVariant(v: Variant, colors: ColorScheme[] = COLOR_SCHEMES): {
+export function resolveVariant(
+  v: Variant,
+  colors: ColorScheme[] = COLOR_SCHEMES,
+  fonts: FontPairing[] = FONT_PAIRINGS,
+): {
   accent: string;
   displayStack: string;
   bodyStack: string;
@@ -118,7 +128,7 @@ export function resolveVariant(v: Variant, colors: ColorScheme[] = COLOR_SCHEMES
   fontScale: number;
 } {
   const c = colors.find((x) => x.id === v.colorId) ?? colors[0] ?? colorScheme(v.colorId);
-  const f = fontPairing(v.fontId);
+  const f = fonts.find((x) => x.id === v.fontId) ?? fonts[0] ?? fontPairing(v.fontId);
   const s = spacingPreset(v.spacingId);
   const z = sizePreset(v.sizeId);
   return {
@@ -130,8 +140,9 @@ export function resolveVariant(v: Variant, colors: ColorScheme[] = COLOR_SCHEMES
   };
 }
 
-/** The font ids a variant needs embedded in the PDF (display + body, deduped). */
-export function resolveVariantFontIds(v: Variant): FontId[] {
-  const f = fontPairing(v.fontId);
+/** The font ids a variant needs embedded in the PDF (display + body, deduped).
+ *  `fonts` must be the same pairing list the template renders with. */
+export function resolveVariantFontIds(v: Variant, fonts: FontPairing[] = FONT_PAIRINGS): FontId[] {
+  const f = fonts.find((x) => x.id === v.fontId) ?? fonts[0] ?? fontPairing(v.fontId);
   return [...new Set<FontId>([f.display, f.body])];
 }

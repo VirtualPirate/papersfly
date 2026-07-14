@@ -1,0 +1,86 @@
+/*
+ * Foundry — a giant ghost initial behind a quiet header. Ported from the
+ * approved demo (design-demos/cover-letters.src.html, .cl-foundry block).
+ * The 320pt surname initial is a type-specimen mark: pure text, tinted by
+ * opacity so it follows the color variant, cropped by the page edge via
+ * overflow:hidden. Flow content stays position:relative so it paints above.
+ */
+.resume-page.t-foundry {
+  --fdy-ink: #1a222c;
+  --fdy-body: #2b333d;
+  --fdy-meta: #3a424b;
+  --fdy-mut: #5f6b77;
+  width: var(--page-w);
+  min-height: var(--page-h);
+  box-sizing: border-box;
+  background: #fff;
+  color: var(--fdy-ink);
+  font-family: var(--f-sans);
+  padding: 56pt 60pt;
+  position: relative;
+  overflow: hidden;
+}
+
+.t-foundry .fdy-ghost {
+  position: absolute;
+  /* Fully in-page, NEVER negative offsets: the PDF export drops glyphs whose
+     element box starts above/left of the page origin (verified empirically —
+     a -78pt top made the ghost vanish from the exported PDF). */
+  top: 24pt;
+  left: 20pt;
+  font-family: var(--f-serif);
+  font-weight: 700;
+  font-size: calc(260pt * var(--s-font-scale));
+  line-height: 1;
+  /* Solid pale tint, NOT opacity — element opacity is dropped by the PDF
+     export path (doc.html), which would erase the ghost from the exported
+     letter. --c-accent-soft ≈ the accent at ~8% over white. */
+  color: var(--c-accent-soft);
+  user-select: none;
+  pointer-events: none;
+}
+
+.t-foundry .fdy-head {
+  position: relative;
+  margin-top: 30pt;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24pt;
+}
+.t-foundry .fdy-name {
+  margin: 0;
+  font-size: calc(20pt * var(--s-font-scale));
+  font-weight: 700;
+  letter-spacing: -0.3pt;
+}
+.t-foundry .fdy-role { margin-top: 4pt; font-size: 9pt; color: var(--fdy-mut); }
+.t-foundry .fdy-contact { position: relative; text-align: right; font-size: 7.5pt; line-height: 1.7; color: var(--fdy-mut); white-space: nowrap; }
+.t-foundry .fdy-rule { position: relative; margin-top: calc(18pt * var(--sp-section-scale)); height: 1pt; background: var(--fdy-ink); }
+
+.t-foundry .fdy-meta {
+  position: relative;
+  margin-top: 14pt;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24pt;
+  font-size: 8.5pt;
+  line-height: 1.6;
+  color: var(--fdy-meta);
+}
+.t-foundry .fdy-label {
+  display: inline-block;
+  width: 28pt;
+  font-size: 6.5pt;
+  font-weight: 600;
+  letter-spacing: 1.5pt;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+.t-foundry .fdy-meta strong { font-weight: 600; color: var(--fdy-ink); }
+
+.t-foundry .fdy-salute { position: relative; margin-top: calc(24pt * var(--sp-section-scale)); font-weight: 600; font-size: calc(10pt * var(--s-font-scale)); }
+.t-foundry .fdy-para { position: relative; margin: 9pt 0 0; font-size: 9.75pt; line-height: 1.62; color: var(--fdy-body); }
+
+.t-foundry .fdy-close { position: relative; margin-top: calc(18pt * var(--sp-section-scale)); font-size: 9.75pt; }
+.t-foundry .fdy-sig { margin-top: 10pt; font-family: var(--f-serif); font-weight: 600; font-size: calc(14pt * var(--s-font-scale)); color: var(--fdy-ink); }

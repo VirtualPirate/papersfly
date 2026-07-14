@@ -7,7 +7,7 @@ import { TemplateCard } from "./TemplateCard";
  * Illustrative-only document types. They communicate that the picker will hold
  * more kinds later; they are NOT selectable and nothing is built behind them.
  */
-const COMING_SOON_TYPES = ["Cover letter"];
+const COMING_SOON_TYPES: string[] = [];
 
 export function CreateGallery({
   documents = registryDocuments,

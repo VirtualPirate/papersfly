@@ -1,0 +1,70 @@
+/*
+ * Missive — the salutation is the headline. Ported from the approved demo
+ * (design-demos/cover-letters.src.html, .cl-missive block). Book-setting
+ * rules: first paragraph flush, the rest indented with no gap.
+ *
+ * DELIBERATE SLOT INVERSION: the letter body rides the DISPLAY slot
+ * (--f-serif) — in a letter the paragraphs ARE the design. With the default
+ * "classic" pairing the body reads in Source Serif; switching the pairing
+ * changes the body face. Labels/front matter stay on the body slot (--f-sans).
+ */
+.resume-page.t-missive {
+  --mis-ink: #262a24;
+  --mis-body: #2e332c;
+  --mis-mut: #6c7268;
+  --mis-soft: #4a4f47;
+  width: var(--page-w);
+  min-height: var(--page-h);
+  box-sizing: border-box;
+  background: #fff;
+  color: var(--mis-ink);
+  font-family: var(--f-serif);
+  padding: 62pt 66pt;
+}
+
+.t-missive .mis-return {
+  text-align: right;
+  font-family: var(--f-sans);
+  font-size: 7.5pt;
+  line-height: 1.7;
+  letter-spacing: 1.1pt;
+  text-transform: uppercase;
+  color: var(--mis-mut);
+}
+.t-missive .mis-return strong { display: block; font-weight: 600; color: var(--mis-ink); }
+
+.t-missive .mis-date { margin-top: calc(26pt * var(--sp-section-scale)); font-family: var(--f-sans); font-size: 8.5pt; color: var(--mis-mut); }
+.t-missive .mis-to { margin-top: 14pt; font-family: var(--f-sans); font-size: 8.5pt; line-height: 1.55; color: var(--mis-soft); }
+.t-missive .mis-to strong { display: block; font-weight: 600; color: var(--mis-ink); }
+.t-missive .mis-re {
+  margin-top: calc(18pt * var(--sp-section-scale));
+  font-family: var(--f-sans);
+  font-weight: 600;
+  font-size: 7.5pt;
+  letter-spacing: 1.4pt;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+.t-missive .mis-salute {
+  margin: 10pt 0 0;
+  font-weight: 400;
+  font-size: calc(26pt * var(--s-font-scale));
+  letter-spacing: -0.2pt;
+}
+.t-missive .mis-salute::before {
+  content: "";
+  display: block;
+  width: 30pt;
+  height: 2.5pt;
+  background: var(--c-accent);
+  margin-bottom: 12pt;
+}
+
+.t-missive .mis-body { margin-top: 14pt; font-size: calc(10.5pt * var(--s-font-scale)); line-height: 1.68; color: var(--mis-body); }
+.t-missive .mis-para { margin: 0; }
+.t-missive .mis-para + .mis-para { text-indent: 18pt; margin-top: 3pt; }
+
+.t-missive .mis-close { margin-top: calc(22pt * var(--sp-section-scale)); text-align: right; }
+.t-missive .mis-close-word { font-size: 10.5pt; }
+.t-missive .mis-sig { margin-top: 8pt; font-weight: 600; font-size: calc(13.5pt * var(--s-font-scale)); }

@@ -1,0 +1,59 @@
+/*
+ * Strata — Swiss routing grid. Ported from the approved demo
+ * (design-demos/cover-letters.src.html, .cl-strata block). The labeled
+ * To / Re / Date columns quote the reference line of standardized business
+ * letters (DIN 5008). Accent (demo cobalt) is var(--c-accent); the sender
+ * name rides the display slot (sans by default via the "modern" pairing).
+ */
+.resume-page.t-strata {
+  --str-ink: #16181d;
+  --str-body: #2a2d33;
+  --str-mut: #62676f;
+  --str-line: #dadce1;
+  width: var(--page-w);
+  min-height: var(--page-h);
+  box-sizing: border-box;
+  background: #fff;
+  color: var(--str-ink);
+  font-family: var(--f-sans);
+  padding: 54pt 58pt;
+}
+
+.t-strata .str-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24pt; }
+.t-strata .str-name {
+  margin: 0;
+  font-family: var(--f-serif);
+  font-size: calc(24pt * var(--s-font-scale));
+  font-weight: 700;
+  letter-spacing: -0.4pt;
+  line-height: 1.05;
+}
+.t-strata .str-role { margin-top: 5pt; font-size: 9pt; color: var(--str-mut); }
+.t-strata .str-contact { text-align: right; font-size: 7.5pt; line-height: 1.7; color: var(--str-mut); white-space: nowrap; }
+.t-strata .str-bar { margin-top: calc(16pt * var(--sp-section-scale)); height: 2.5pt; background: var(--c-accent); }
+
+.t-strata .str-matter {
+  display: grid;
+  grid-template-columns: 2fr 1.6fr 1fr;
+  border-bottom: 0.5pt solid var(--str-line);
+}
+.t-strata .str-matter--nore { grid-template-columns: 2fr 1fr; }
+.t-strata .str-cell { padding: 12pt 14pt 12pt 0; }
+.t-strata .str-cell + .str-cell { border-left: 0.5pt solid var(--str-line); padding-left: 14pt; }
+.t-strata .str-label {
+  font-size: 6.5pt;
+  font-weight: 600;
+  letter-spacing: 1.6pt;
+  text-transform: uppercase;
+  color: var(--c-accent);
+  margin-bottom: 5pt;
+}
+.t-strata .str-value { font-size: 8.5pt; line-height: 1.5; }
+.t-strata .str-value strong { display: block; font-weight: 600; }
+
+.t-strata .str-body { margin-top: calc(24pt * var(--sp-section-scale)); }
+.t-strata .str-salute { font-weight: 600; font-size: calc(10pt * var(--s-font-scale)); }
+.t-strata .str-para { margin: 9pt 0 0; font-size: 9.75pt; line-height: 1.6; color: var(--str-body); }
+.t-strata .str-close-block { margin-top: calc(18pt * var(--sp-section-scale)); }
+.t-strata .str-close { font-size: 9.75pt; }
+.t-strata .str-sig { margin-top: 3pt; font-weight: 600; font-size: 10pt; }

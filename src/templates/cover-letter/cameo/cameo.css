@@ -1,0 +1,93 @@
+/*
+ * Cameo — engraved personal stationery. Ported from the approved demo
+ * (design-demos/cover-letters.src.html, .cl-cameo block). The ruled oval
+ * monogram, spaced capitals, and thick-thin double rule come from engraved
+ * letterhead conventions. Accent (demo burgundy) is driven by the variant via
+ * var(--c-accent); the monogram/name/signature ride the display slot.
+ */
+.resume-page.t-cameo {
+  --cam-ink: #2a2420;
+  --cam-body: #38332d;
+  --cam-mut: #6e675e;
+  --cam-soft: #8a8378;
+  width: var(--page-w);
+  min-height: var(--page-h);
+  box-sizing: border-box;
+  background: #fff;
+  color: var(--cam-ink);
+  font-family: var(--f-sans);
+  padding: 56pt 64pt;
+}
+
+.t-cameo .cam-head { text-align: center; }
+.t-cameo .cam-mono {
+  width: 46pt;
+  height: 58pt;
+  margin: 0 auto;
+  border: 0.75pt solid var(--c-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-serif);
+  font-size: calc(16pt * var(--s-font-scale));
+  font-weight: 400;
+  letter-spacing: 2pt;
+  text-indent: 2pt;
+  color: var(--c-accent);
+}
+.t-cameo .cam-name {
+  margin: 12pt 0 0;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: calc(15pt * var(--s-font-scale));
+  letter-spacing: 3.5pt;
+  text-transform: uppercase;
+}
+.t-cameo .cam-role {
+  margin-top: 6pt;
+  font-size: 7.5pt;
+  letter-spacing: 2.5pt;
+  text-transform: uppercase;
+  color: var(--cam-soft);
+}
+.t-cameo .cam-contact { margin-top: 8pt; font-size: 7.5pt; letter-spacing: 0.3pt; color: var(--cam-mut); }
+.t-cameo .cam-sep { margin: 0 5pt; }
+.t-cameo .cam-rule {
+  margin-top: 18pt;
+  height: 4pt;
+  border-top: 1.5pt solid var(--c-accent);
+  border-bottom: 0.5pt solid var(--c-accent);
+}
+
+.t-cameo .cam-matter { text-align: left; }
+.t-cameo .cam-date {
+  margin-top: calc(18pt * var(--sp-section-scale));
+  text-align: center;
+  font-size: 8.5pt;
+  letter-spacing: 1pt;
+  text-transform: uppercase;
+  color: var(--cam-mut);
+}
+.t-cameo .cam-to { margin-top: calc(22pt * var(--sp-section-scale)); font-size: 9pt; line-height: 1.5; }
+.t-cameo .cam-to strong { display: block; font-weight: 600; }
+.t-cameo .cam-re { margin-top: 12pt; font-size: 9pt; font-weight: 600; color: var(--c-accent); }
+
+.t-cameo .cam-salute { margin-top: calc(16pt * var(--sp-section-scale)); font-size: 10pt; }
+.t-cameo .cam-body { margin: 9pt 0 0; font-size: 9.75pt; line-height: 1.62; color: var(--cam-body); }
+
+.t-cameo .cam-close { margin-top: calc(20pt * var(--sp-section-scale)); }
+.t-cameo .cam-close-word { font-size: 9.75pt; }
+.t-cameo .cam-sig {
+  margin-top: 14pt;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: calc(16pt * var(--s-font-scale));
+}
+.t-cameo .cam-typed {
+  margin-top: 5pt;
+  font-size: 7pt;
+  letter-spacing: 1.5pt;
+  text-transform: uppercase;
+  color: var(--cam-soft);
+}

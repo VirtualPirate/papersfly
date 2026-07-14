@@ -1,0 +1,80 @@
+/*
+ * Carbon — typewritten official correspondence. Ported from the approved demo
+ * (design-demos/cover-letters.src.html, .cl-carbon block): TO/AT/RE/DATE
+ * routing rows with dotted leaders, in the voice of typewriter-era memos.
+ * The letterhead, routing block, signature and footer ride the display slot
+ * (mono by default via the "mono" pairing); the body reads in the body slot.
+ * Accent (demo stamp-red) is var(--c-accent).
+ */
+.resume-page.t-carbon {
+  --car-ink: #26231e;
+  --car-body: #35312a;
+  --car-mut: #6e6a60;
+  --car-dot: #b8b2a6;
+  width: var(--page-w);
+  min-height: var(--page-h);
+  box-sizing: border-box;
+  background: #fff;
+  color: var(--car-ink);
+  font-family: var(--f-sans);
+  padding: 58pt 62pt;
+}
+
+.t-carbon .car-name {
+  margin: 0;
+  font-family: var(--f-serif);
+  font-weight: 700;
+  font-size: calc(14.5pt * var(--s-font-scale));
+  letter-spacing: 3pt;
+  text-transform: uppercase;
+}
+.t-carbon .car-sub {
+  margin-top: 7pt;
+  font-family: var(--f-serif);
+  font-size: 7.5pt;
+  letter-spacing: 1pt;
+  text-transform: uppercase;
+  color: var(--car-mut);
+}
+.t-carbon .car-double {
+  margin-top: 14pt;
+  height: 4pt;
+  border-top: 1pt solid var(--car-ink);
+  border-bottom: 1pt solid var(--car-ink);
+}
+
+.t-carbon .car-routing { margin-top: calc(16pt * var(--sp-section-scale)); display: grid; gap: 7pt; }
+.t-carbon .car-row { display: flex; align-items: baseline; font-family: var(--f-serif); font-size: 8pt; }
+.t-carbon .car-label { font-weight: 600; letter-spacing: 1pt; width: 34pt; flex: none; text-transform: uppercase; color: var(--car-mut); }
+.t-carbon .car-leader { flex: 1; border-bottom: 1pt dotted var(--car-dot); margin: 0 8pt; transform: translateY(-2pt); }
+.t-carbon .car-value { text-align: right; text-transform: uppercase; letter-spacing: 0.2pt; max-width: 340pt; }
+.t-carbon .car-re { color: var(--c-accent); font-weight: 600; }
+
+.t-carbon .car-body { margin-top: calc(20pt * var(--sp-section-scale)); font-size: 9.75pt; line-height: 1.62; color: var(--car-body); }
+.t-carbon .car-salute { margin: 0; }
+.t-carbon .car-para { margin: 9pt 0 0; }
+
+.t-carbon .car-close { margin-top: calc(18pt * var(--sp-section-scale)); font-size: 9.75pt; }
+.t-carbon .car-sig {
+  margin-top: 12pt;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: calc(10pt * var(--s-font-scale));
+  letter-spacing: 2pt;
+  text-transform: uppercase;
+}
+
+/* In flow, NOT pinned to the page bottom: the PDF capture neutralizes the
+   page's min-height, so absolutely-bottom-pinned content collapses upward in
+   the export and the preview/PDF stop matching. */
+.t-carbon .car-foot {
+  margin-top: calc(40pt * var(--sp-section-scale));
+  border-top: 1pt dotted var(--car-dot);
+  padding-top: 8pt;
+  text-align: center;
+  font-family: var(--f-serif);
+  font-size: 7pt;
+  letter-spacing: 0.5pt;
+  text-transform: uppercase;
+  color: var(--car-mut);
+}

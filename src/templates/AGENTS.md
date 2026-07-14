@@ -13,6 +13,7 @@ src/templates/
   lazyTemplate.ts   lazyTemplate<T>(meta, load) — wires a code-split chunk (shared)
   resume/           the resume designs (one folder per template) + registry.ts
   invoice/          variants.ts (per-template palettes) + the invoice designs
+  cover-letter/     variants.ts (per-template palettes) + the cover-letter designs
 ```
 
 A **template** is one *design* over a document's data type `T`. Designs are
@@ -72,6 +73,12 @@ visible divider. You only annotate the markup — no per-template wiring.
   unmarked: a full-width spacer cannot be inserted into a two-column flow, so it
   shows no divider until the pre-pass grows column awareness. Any other new
   single-column template must be marked.
+- **Never pin content to the page bottom** (`position: absolute; bottom: …`,
+  as the cover-letter Carbon's contact rail first tried): (a) if marked, the
+  pre-pass sees it straddling the boundary and shows a phantom "Page 2"
+  divider; (b) worse, `pdf/download.ts` neutralizes the page's `min-height` at
+  capture, so bottom-pinned content collapses upward in the exported PDF and
+  the preview/PDF stop matching. Keep footers in normal flow.
 
 ## Add a new DESIGN to an existing document type
 
@@ -138,6 +145,14 @@ existing sibling (e.g. `invoice/nordic/`) and adapt.
      section gaps by `var(--sp-section-scale)` for the Spacing preset.
    - **No raster.** Logos are text/monograms; never `<img>` — it would break the
      true-vector PDF.
+   - **No `opacity` for tints.** Element opacity is dropped by the export path
+     (a watermark-style ghost glyph simply vanishes from the PDF — hit by the
+     cover-letter Foundry). Use a solid pale color instead: `var(--c-accent-soft)`
+     is the accent pre-tinted ~92% toward white.
+   - **No negative offsets on text.** A glyph whose element box starts above or
+     left of the page origin (`top: -78pt` on Foundry's ghost initial) is
+     silently dropped from the exported PDF, in every renderer. Keep decorative
+     type fully inside the page box.
 
 3. **`index.ts`** — register the design:
    ```ts
@@ -175,11 +190,22 @@ interface TemplateVariants { colors: ColorScheme[]; fonts: FontPairing[]; defaul
   This is required because per-template color ids are not in the global map and
   can even collide across templates (e.g. `teal` differs between Prism and
   Bureau) — resolving against the template's own list keeps them independent.
-- **Fonts.** Reuse the shared `FONT_PAIRINGS` (ids `classic`, `editorial`,
-  `modern`, `mono`). Each pairing is `{ display, body }` FontIds → `--f-serif`
-  and `--f-sans`. Pick a `default.fontId` whose display face matches the look
-  you want by default (e.g. a sans-first design defaults to `modern` so its
-  wordmark stays sans; a serif design defaults to `editorial`/`classic`).
+- **Fonts.** Resume/invoice templates reuse the shared `FONT_PAIRINGS` (ids
+  `classic`, `editorial`, `modern`, `mono`). Each pairing is `{ display, body }`
+  FontIds → `--f-serif` and `--f-sans`. Pick a `default.fontId` whose display
+  face matches the look you want by default (e.g. a sans-first design defaults
+  to `modern` so its wordmark stays sans; a serif design defaults to
+  `editorial`/`classic`).
+  - A document type may ship its OWN pairing list when the shared bodies don't
+    fit: the cover letters use `CL_FONT_PAIRINGS` (cover-letter/variants.ts),
+    where every pairing has a DISTINCT body face — a letter's body is its
+    content, so pairing switches must visibly restyle it (with the shared list,
+    3 of 4 pairings share an Inter body and look identical on a letter).
+  - **If you ship a bespoke pairing list you MUST pass it everywhere it
+    resolves**: `resolveVariant(variant, X.colors, X.fonts)` in the Preview,
+    and the PDF download already embeds via `template.variants.fonts`
+    (`resolveVariantFontIds(v, fonts)` in App.tsx). Rendering with one list and
+    embedding with another silently exports fallback fonts.
 - **`default`** must reference ids that exist in this template's `colors`/`fonts`.
   Fonts are only embedded in the PDF when their FontId is in the font library
   (`fonts/library.ts` + generated `fonts/fontData.ts`) — all six shipped

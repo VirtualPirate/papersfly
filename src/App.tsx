@@ -179,7 +179,7 @@ export function App({ docId, templateId }: AppProps) {
     (async () => {
       try {
         const { downloadResumePdf } = await import("./pdf/download");
-        await downloadResumePdf(host, "resume.pdf", capture.fontOverrides, resolveVariantFontIds(capture.variant));
+        await downloadResumePdf(host, "resume.pdf", capture.fontOverrides, resolveVariantFontIds(capture.variant, template.variants.fonts));
         if (!cancelled) {
           (window as any).posthog?.capture('pdf_downloaded', {
             doc_type: doc.id,
