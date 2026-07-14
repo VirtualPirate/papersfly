@@ -10,7 +10,6 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "gen:fonts": "node scripts/gen-fonts.mjs",
-    "gen:og": "node scripts/gen-og.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "verify:pdf": "node scripts/verify-pdfs.mjs",

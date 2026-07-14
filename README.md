@@ -16,7 +16,6 @@ Other scripts:
 pnpm build       # astro check (type-check) + static production build into dist/
 pnpm preview     # serve the production build locally
 pnpm gen:fonts   # regenerate the embedded base64 font module from the TTFs
-pnpm gen:og      # regenerate public/og-image.png (social card)
 ```
 
 ## Hosting & SEO

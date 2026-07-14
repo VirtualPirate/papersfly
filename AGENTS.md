@@ -23,7 +23,6 @@ pnpm exec vitest run src/forms/schema.test.ts   # run a single test file
 pnpm exec vitest run -t "substring of test name" # run tests matching a name
 
 pnpm gen:fonts        # regenerate src/fonts/fontData.ts (base64) from the TTFs — run if a TTF changes
-pnpm gen:og           # regenerate public/og-image.png
 ```
 
 Package manager is **pnpm** (single-package repo; `pnpm-workspace.yaml` lists no sub-packages).
