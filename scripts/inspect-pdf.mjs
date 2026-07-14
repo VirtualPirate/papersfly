@@ -25,7 +25,7 @@ const numFlag = (name) => {
 //   --min-weights=N  distinct embedded fonts drawing text must be >= N (a
 //                    weight-matching collapse renders every role in one font).
 //   --max-pages=N    page count must be <= N (catches layout overflow, e.g. a
-//                    size regression pushing a one-page résumé onto a second).
+//                    size regression pushing a one-page resume onto a second).
 const MIN_WEIGHTS = numFlag("--min-weights");
 const MAX_PAGES = numFlag("--max-pages");
 const FILE = args.find((a) => !a.startsWith("--"));

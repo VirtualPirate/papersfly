@@ -10,11 +10,11 @@
 
 Today the editor is a single hand-written React component, `src/components/EditorForm.tsx` (~300 lines), wired specifically to the `ResumeData` shape. Every field, section, side-by-side row, array add/remove handler, and string-array transform is coded by hand. Supporting a second document type (cover letter, invoice, bio, etc.) would mean writing another ~300-line form from scratch.
 
-**Goal:** Make the editor form **auto-generated from a schema definition**. A document type is described once by a typed schema; the form renders itself from that schema. The résumé becomes the first of many document types.
+**Goal:** Make the editor form **auto-generated from a schema definition**. A document type is described once by a typed schema; the form renders itself from that schema. The resume becomes the first of many document types.
 
 **Decisions locked during brainstorming:**
 
-1. **Many document types** — the résumé is just `documents[0]`; the engine is generic.
+1. **Many document types** — the resume is just `documents[0]`; the engine is generic.
 2. **Bespoke TypeScript schema** — no new dependencies (no Zod, no JSON Schema / RJSF). The schema is a small typed descriptor authored in TS.
 3. **Form auto-generated; preview hand-authored** — the schema drives the *editor*. The PDF *preview/design* stays a hand-authored template per document type, exactly like the current `ClassicPreview`. The existing template registry concept is preserved.
 
@@ -62,15 +62,15 @@ The form engine only edits an immutable `T`. The preview path (live preview + of
 | `src/documents/registry.ts` | **New.** `documents: DocumentType[]` list + `defaultDocument`. |
 | `src/components/EditorForm.tsx` | **Removed** (superseded by `SchemaForm`). |
 | `src/App.tsx` | **Changed.** Holds active document type; renders `<SchemaForm>`; adds a minimal doc-type `<select>`. |
-| `src/data/resume.ts` | **Unchanged.** `ResumeData` interfaces stay the source of truth for types; `sampleResume` becomes the résumé's `defaultData`. |
+| `src/data/resume.ts` | **Unchanged.** `ResumeData` interfaces stay the source of truth for types; `sampleResume` becomes the resume's `defaultData`. |
 
 ---
 
 ## 3. The Schema Model
 
-Five field kinds cover 100% of the current résumé form (verified against every input in `EditorForm.tsx`), plus one layout primitive:
+Five field kinds cover 100% of the current resume form (verified against every input in `EditorForm.tsx`), plus one layout primitive:
 
-| Kind | Renders as | Covers in résumé |
+| Kind | Renders as | Covers in resume |
 |------|------------|-------------------|
 | `text` | `<input>` | name, headline, role, company, dates, contact fields… |
 | `textarea` | `<textarea rows>` | summary |
@@ -113,7 +113,7 @@ group(key, children, { label? })
 list(key, title, makeItem, itemChildren)
 ```
 
-### 3.3 Résumé schema (target)
+### 3.3 resume schema (target)
 
 ```ts
 export const resumeSchema: FormSchema<ResumeData> = [
@@ -155,7 +155,7 @@ This ~35-line schema replaces ~270 lines of repetitive JSX and is the same kind 
 
 ## 4. The `SchemaForm` Renderer
 
-A single component walks the schema and renders the **exact same CSS class names** the current form uses: `editor-form`, `form-section`, `field`, `field-label`, `field-row`, `card`, `card-head`, `idx`, `btn-mini`, `btn-mini danger`. Because the markup and classes are identical, **the migrated résumé form is pixel-identical to today's** — the UI change is a pure refactor.
+A single component walks the schema and renders the **exact same CSS class names** the current form uses: `editor-form`, `form-section`, `field`, `field-label`, `field-row`, `card`, `card-head`, `idx`, `btn-mini`, `btn-mini danger`. Because the markup and classes are identical, **the migrated resume form is pixel-identical to today's** — the UI change is a pure refactor.
 
 ### 4.1 Rendering rules
 
@@ -209,17 +209,17 @@ The PDF capture pipeline (offscreen frozen copy, `downloadResumePdf`, scaling `R
 - The schema type definitions + builders (`src/forms/schema.ts`).
 - The generic `SchemaForm` renderer + immutable update helpers.
 - The 6 kinds in §3 (`text`, `textarea`, `stringList`, `group`, `array`, `row`).
-- The résumé fully migrated to `resumeSchema`; `EditorForm.tsx` removed.
+- The resume fully migrated to `resumeSchema`; `EditorForm.tsx` removed.
 - `documents/registry.ts` + `DocumentType`.
 - A minimal doc-type `<select>` in the topbar.
 
-**Acceptance bar:** after migration the résumé editor looks and behaves **identically** to today — same fields, same layout, same add/remove, same live-preview and PDF output. This is the primary regression gate.
+**Acceptance bar:** after migration the resume editor looks and behaves **identically** to today — same fields, same layout, same add/remove, same live-preview and PDF output. This is the primary regression gate.
 
 ### Deliberately out of scope (YAGNI for now)
 
 - **Field validation** (required / min / max / format). The current form has none.
 - **Drag-reorder** of array items. Not present today.
-- **Generic font-coverage walker.** `src/fonts/coverage.ts`'s `collectResumeText` is résumé-shaped. It keeps working for the résumé as-is. A second document type would need a generic "walk every string in the data" version — flagged here, not built now.
+- **Generic font-coverage walker.** `src/fonts/coverage.ts`'s `collectResumeText` is resume-shaped. It keeps working for the resume as-is. A second document type would need a generic "walk every string in the data" version — flagged here, not built now.
 - **Runtime/user-defined schemas.** Schemas are authored by developers in TS at build time.
 
 ---

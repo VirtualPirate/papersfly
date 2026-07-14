@@ -8,7 +8,7 @@
 
 papersfly markets itself heavily on privacy ("your data never leaves your
 browser", "no tracking pixels", footer "No data collected"). This is true of
-**document content** — résumés/invoices are built, rendered, and exported to PDF
+**document content** — resumes/invoices are built, rendered, and exported to PDF
 entirely client-side, nothing uploaded. However, **PostHog product analytics is
 wired in** (`src/components/posthog.astro` + `capture()` calls across the app),
 which does collect anonymous usage data and sends it to PostHog's servers.
@@ -23,7 +23,7 @@ the config and do NOT remove analytics. Describe reality accurately.
 ## Key facts the policy must state accurately
 
 - **Document content is never transmitted.** Editing, live preview, and the
-  true-vector PDF export all run in the browser. No résumé/invoice field text is
+  true-vector PDF export all run in the browser. No resume/invoice field text is
   ever sent anywhere. Works fully offline after first load.
 - **Analytics events contain only style choices, never document text.** Verified
   by inspecting every `posthog.capture()` call:
@@ -96,7 +96,7 @@ Keep the CSS minimal and idiomatic to the existing file.
 1. **The short version** (TL;DR) — documents never leave your device; only
    anonymous product analytics is collected; no account, no ads, works offline.
 2. **Your documents stay in your browser** — client-side architecture; nothing
-   uploaded; offline-capable; no résumé/invoice content transmitted.
+   uploaded; offline-capable; no resume/invoice content transmitted.
 3. **What we do collect — product analytics (PostHog)** — the event list above,
    stated plainly as "style choices, never document text"; plus the default
    PostHog technical metadata; and *why* (understand which templates/features are

@@ -5,7 +5,7 @@ Date: 2026-07-11
 ## Goal
 
 A project-scoped skill that guides an agent through adding a **new design
-(Template)** for an *existing* document type (résumé or invoice) in this repo,
+(Template)** for an *existing* document type (resume or invoice) in this repo,
 optionally from a user-supplied design reference, with a scratchpad HTML demo
 that the user reviews and approves **before** any real Template code is written.
 
@@ -40,7 +40,7 @@ invariants inline.
 
 3. **Ask variant questions** (colors + fonts + the one signature display
    element):
-   - *Résumé:* reuse global `COLOR_SCHEMES` + `FONT_PAIRINGS`
+   - *resume:* reuse global `COLOR_SCHEMES` + `FONT_PAIRINGS`
      (`theme/variants.ts`); choose a subset and a `default`.
    - *Invoice:* define a bespoke palette in `invoice/variants.ts` (must be
      passed to `resolveVariant(variant, X_VARIANTS.colors)`); choose font
@@ -69,7 +69,7 @@ invariants inline.
      preset `calc()`s; accent from `var(--c-accent)`.
    - `index.ts` — `lazyTemplate<T>(meta, () => import("./<Name>Preview"))`.
    - `<Name>Preview.test.tsx` + `index.test.tsx` — copy a sibling, adapt.
-   - Register: document's `templates` list; `resume/registry.ts` for résumés;
+   - Register: document's `templates` list; `resume/registry.ts` for resumes;
      palette entry in `invoice/variants.ts` for invoices.
 
 7. **Verify** — `pnpm test`, then `pnpm build && pnpm verify:pdf` (forensic

@@ -161,7 +161,7 @@ glanceable. The exact visual treatment is finalized during implementation under 
   `doc.html()` measures and draws.
 - `registerFonts.ts` will embed **only the fonts actually in use** — the template's
   default font(s) plus any font id present in `fontOverrides` — rather than the entire
-  library, so a résumé using two fonts does not carry six. Embedding stays base64 /
+  library, so a resume using two fonts does not carry six. Embedding stays base64 /
   no-network, preserving the offline invariant.
 - The font-registration invariant is preserved: each font's `file` name is
   simultaneously the jsPDF VFS key and the `pdfFontFaces` `src.url`. Both derive from

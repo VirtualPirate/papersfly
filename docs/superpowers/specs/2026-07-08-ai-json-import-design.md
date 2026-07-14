@@ -6,8 +6,8 @@
 ## Overview
 
 Let a user fill the editor by pasting a JSON blob that an AI tool produced from
-their existing résumé. The intended path: the user opens ChatGPT / Claude /
-Gemini, attaches their résumé PDF, pastes a **prompt supplied by the editor**,
+their existing resume. The intended path: the user opens ChatGPT / Claude /
+Gemini, attaches their resume PDF, pastes a **prompt supplied by the editor**,
 and copies back the JSON the model returns. The editor then validates that JSON
 and replaces the current document content with it.
 
@@ -41,7 +41,7 @@ src/import/
 
 src/components/ui/dialog.tsx     radix Dialog primitive (mirrors popover.tsx)
 src/documents/types.ts           DocumentType<T> gains `importSpec: ImportSpec`
-src/documents/resume/importSpec.ts   the résumé's ImportSpec
+src/documents/resume/importSpec.ts   the resume's ImportSpec
 src/documents/resume/index.ts    attach importSpec to resumeDocument
 src/App.tsx                      header Import button + dialog + success Alert
 ```
@@ -90,7 +90,7 @@ Two small utilities live here too, used by prompt + dialog:
   drives the replace-confirm. (Both objects share the same authored shape and key
   order, so stringify comparison is stable.)
 
-## The résumé spec — `src/documents/resume/importSpec.ts`
+## The resume spec — `src/documents/resume/importSpec.ts`
 
 Mirrors `ResumeData` exactly (no `id`s). Everything is required-present:
 
@@ -134,7 +134,7 @@ the document, not per template.)
 
 `buildImportPrompt(doc: DocumentType<any>): string` composes:
 
-1. **Role + task line** — "You are a résumé data extractor. Read the attached
+1. **Role + task line** — "You are a resume data extractor. Read the attached
    document and reply with a single JSON object and nothing else."
 2. **Hard rules** — output *only* JSON; no markdown code fences; no explanations;
    use exactly the listed keys and **no others**; unknown text → `""`, unknown
@@ -220,7 +220,7 @@ debounce) as one of: `idle` (empty), `parseError(message)`, `invalid(errors)`,
 `valid(value, summary)`.
 
 **Step 1 — Get prompt.** A stepper (`1 · Get prompt` active). Instruction line
-("Open ChatGPT, Claude, or Gemini, attach your résumé PDF, paste this prompt,
+("Open ChatGPT, Claude, or Gemini, attach your resume PDF, paste this prompt,
 then copy the JSON it replies with."). A read-only preview of
 `buildImportPrompt(doc)` and a **Copy** button → `navigator.clipboard.writeText`;
 on success flip to "Copied ✓" for ~1.5s. **Fallback:** if the clipboard API is
@@ -241,7 +241,7 @@ Footer: `‹ Back` · `Import & replace` (disabled unless `valid`).
 
 **Confirm-on-dirty.** Clicking Import when `isDirty(currentData, doc.defaultData)`
 sets `confirming = true`, swapping the footer/body for an in-dialog confirm
-("Replace current résumé? You've edited it; importing replaces everything and
+("Replace current resume? You've edited it; importing replaces everything and
 can't be undone." · `Keep editing` / `Replace`). Not dirty → import immediately.
 Confirm `Replace` → `onImport(finalizeImport(doc.importSpec, value), summary)`.
 
@@ -287,7 +287,7 @@ Confirm `Replace` → `onImport(finalizeImport(doc.importSpec, value), summary)`
 
 ## Testing (vitest)
 
-- **`src/import/validate.test.ts`** — a valid résumé passes and returns the value;
+- **`src/import/validate.test.ts`** — a valid resume passes and returns the value;
   a missing `contact` errors at path `contact`; `experience[0].bullets` as a
   string errors ("expected a list…") at that indexed path; an unknown top-level
   key errors; a fenced ```` ```json ```` blob parses; `null` is a type error;

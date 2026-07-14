@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add a third template-styling axis — a section-spacing preset (Compact / Default / Relaxed) — to the Style popover, adjusting the vertical gap between résumé sections across all five templates, persisting into the PDF automatically.
+**Goal:** Add a third template-styling axis — a section-spacing preset (Compact / Default / Relaxed) — to the Style popover, adjusting the vertical gap between resume sections across all five templates, persisting into the PDF automatically.
 
 **Architecture:** A new `spacingId` axis on `Variant` (optional; absent ⇒ `default`). `resolveVariant()` maps it to a unitless `sectionScale`; `themeCssVars()` emits it as `--sp-section-scale`; each template multiplies its own base section gap by that token via `calc()`. The picker gets a "Spacing" section; `App` threads the global `SPACING_PRESETS`. Default preset (scale `1`) reproduces today's layout exactly.
 

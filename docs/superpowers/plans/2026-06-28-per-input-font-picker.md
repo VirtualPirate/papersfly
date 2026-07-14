@@ -586,7 +586,7 @@ import { getFont, type FontId } from "./library";
  * register every weight. Driven entirely by the font library + FONT_DATA, so the
  * VFS key, the addFont path, and the @font-face src.url all derive from one
  * `file` field and cannot drift. Only the families in `usedIds` are embedded, so
- * a résumé using two fonts does not carry the whole library. No network: the
+ * a resume using two fonts does not carry the whole library. No network: the
  * bytes are bundled base64 (fontData.ts).
  */
 export function registerFonts(doc: jsPDF, usedIds: FontId[]): void {
@@ -646,7 +646,7 @@ async function renderResumeDoc(
 ): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "pt", format: "letter", compress: true });
 
-  // Embed only the fonts this résumé actually uses BEFORE rendering so
+  // Embed only the fonts this resume actually uses BEFORE rendering so
   // doc.html() can resolve the preview's inline font-family to them.
   const used = usedFontIds(overrides);
   registerFonts(doc, used);
@@ -1577,7 +1577,7 @@ pdffonts resume.pdf       # expect the chosen families "emb yes ... uni yes" (an
 pdftotext resume.pdf -    # real selectable text (proves not an image)
 node scripts/inspect-pdf.mjs resume.pdf   # VECTOR verdict, zero /Image
 ```
-Confirm a résumé with no overrides still embeds exactly Inter + Source Serif (file size unchanged from before this feature).
+Confirm a resume with no overrides still embeds exactly Inter + Source Serif (file size unchanged from before this feature).
 
 - [ ] **Step 8: Commit**
 

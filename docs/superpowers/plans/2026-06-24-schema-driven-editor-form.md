@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the hand-written `EditorForm` with a generic, schema-driven form engine so each document type is described by a typed schema and gets its editor form auto-generated; migrate the résumé to be the first such document type with no visual or behavioral change.
+**Goal:** Replace the hand-written `EditorForm` with a generic, schema-driven form engine so each document type is described by a typed schema and gets its editor form auto-generated; migrate the resume to be the first such document type with no visual or behavioral change.
 
 **Architecture:** A small bespoke TypeScript schema (authored via type-safe builder functions) describes a document's fields. One generic `SchemaForm` component walks that schema and renders the exact same markup/CSS the current form uses, generalizing the immutable-update logic. A `DocumentType` registry bundles `{ schema, defaultData, templates }` per type, mirroring the existing template registry. The PDF preview/capture pipeline is untouched.
 
@@ -13,7 +13,7 @@
 - **No new runtime dependencies.** Zod, JSON Schema, and react-jsonschema-form are explicitly forbidden. Only test tooling may be added, as `devDependencies`.
 - **Strict TypeScript everywhere:** `strict`, `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch` are on. Code must compile under `tsc --noEmit`.
 - **Import style:** no file extensions in import specifiers (match existing repo style, e.g. `import { x } from "./data/resume"`).
-- **Reuse existing CSS class names verbatim:** `editor-form`, `form-section`, `field`, `field-label`, `field-row`, `card`, `card-head`, `idx`, `btn-mini`, `btn-mini danger`. The migrated résumé editor MUST look and behave identically to today — this is the primary acceptance gate.
+- **Reuse existing CSS class names verbatim:** `editor-form`, `form-section`, `field`, `field-label`, `field-row`, `card`, `card-head`, `idx`, `btn-mini`, `btn-mini danger`. The migrated resume editor MUST look and behave identically to today — this is the primary acceptance gate.
 - **ID strategy (reuse exactly):** `crypto.randomUUID?.() ?? \`id-${Math.random().toString(36).slice(2)}\``.
 - **Components:** function components, named exports (match repo style).
 
@@ -819,7 +819,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ---
 
-### Task 5: Résumé schema and blank-item factories
+### Task 5: resume schema and blank-item factories
 
 **Files:**
 - Create: `src/documents/resume/schema.ts`
@@ -896,7 +896,7 @@ describe("resumeSchema", () => {
 Run: `npm test -- src/documents/resume/schema.test.tsx`
 Expected: FAIL — module `./schema` not found.
 
-- [ ] **Step 3: Implement the résumé schema**
+- [ ] **Step 3: Implement the resume schema**
 
 Create `src/documents/resume/schema.ts`:
 ```ts
@@ -1057,7 +1057,7 @@ import { resumeSchema } from "./schema";
 
 export const resumeDocument: DocumentType<ResumeData> = {
   id: "resume",
-  name: "Résumé",
+  name: "resume",
   schema: resumeSchema,
   defaultData: sampleResume,
   templates: [classicTemplate],
@@ -1257,7 +1257,7 @@ export function App() {
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          <h1>Vector Résumé Builder</h1>
+          <h1>Vector resume Builder</h1>
           <span className="tag">live preview · true-vector PDF · 100% offline</span>
         </div>
         <div className="topbar-actions">
@@ -1385,7 +1385,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 **Interfaces:**
 - Consumes: the running dev server.
-- Produces: confirmation the migrated résumé editor is visually and behaviorally identical to the pre-migration form.
+- Produces: confirmation the migrated resume editor is visually and behaviorally identical to the pre-migration form.
 
 - [ ] **Step 1: Start the dev server**
 
@@ -1401,8 +1401,8 @@ Confirm in the browser:
 - Typing in any field updates the live preview instantly.
 - `+ Add` appends a card with the same placeholder defaults as before; `Remove` deletes it.
 - Bullets edit one-per-line; skill items edit comma-separated, both without caret jumps.
-- "Reset sample" restores the sample résumé.
-- The "Document type" selector shows "Résumé".
+- "Reset sample" restores the sample resume.
+- The "Document type" selector shows "resume".
 
 - [ ] **Step 3: Verify PDF export still works**
 
@@ -1424,7 +1424,7 @@ Stop the server (Ctrl-C). The branch `feat/schema-driven-form` now contains the 
 | §2.3 file structure (forms/, documents/) | Tasks 2–7 |
 | §3 schema model: text/textarea/stringList/group/array/row | Task 3 (types + builders), Task 4 (rendering) |
 | §3.2 builders | Task 3 |
-| §3.3 résumé schema | Task 5 |
+| §3.3 resume schema | Task 5 |
 | §4 SchemaForm renderer, same CSS classes, immutable updates, stringList losslessness | Task 4 |
 | §4.2 id generation reused | Task 2 (`newId`) |
 | §5 registry + App wiring + selector | Tasks 6, 7 |
@@ -1433,10 +1433,10 @@ Stop the server (Ctrl-C). The branch `feat/schema-driven-form` now contains the 
 | §7 testing: unit updates, stringList, render parity, behavior | Tasks 2, 4, 5 |
 | §6 out-of-scope (validation, reorder, generic font-coverage, runtime schemas) | Not implemented — intentional |
 
-No gaps found. `collectResumeText` stays résumé-shaped (spec §6 out-of-scope), called against `data: any` — typechecks.
+No gaps found. `collectResumeText` stays resume-shaped (spec §6 out-of-scope), called against `data: any` — typechecks.
 
 **2. Placeholder scan:** No "TBD"/"TODO"/"handle edge cases"/"similar to Task N" present. Every code step shows complete code; every command step shows exact command + expected output.
 
-**3. Type consistency:** Node discriminant is `kind` everywhere (`field`/`row`/`group`/`section`/`array`). Builder methods (`field`, `textarea`, `lines`, `tags`, `row`, `group`, `section`, `list`) are named identically in the type defs (Task 3), the résumé schema (Task 5), and the tests (Tasks 3–5). Update helper names (`newId`, `setKey`, `addItem`, `updateItem`, `removeItem`) match between Task 2 definitions and Task 4 consumption. `FieldSpec.stringList` carries `separator`/`multiline`/`rows` consistently in Task 3 and is read identically in Task 4's `Control`. `DocumentType<T>` fields (`id`, `name`, `schema`, `defaultData`, `templates`) match between Task 6 definition and Task 7 consumption (`doc.schema`, `doc.templates[0].Preview`, `doc.defaultData`).
+**3. Type consistency:** Node discriminant is `kind` everywhere (`field`/`row`/`group`/`section`/`array`). Builder methods (`field`, `textarea`, `lines`, `tags`, `row`, `group`, `section`, `list`) are named identically in the type defs (Task 3), the resume schema (Task 5), and the tests (Tasks 3–5). Update helper names (`newId`, `setKey`, `addItem`, `updateItem`, `removeItem`) match between Task 2 definitions and Task 4 consumption. `FieldSpec.stringList` carries `separator`/`multiline`/`rows` consistently in Task 3 and is read identically in Task 4's `Control`. `DocumentType<T>` fields (`id`, `name`, `schema`, `defaultData`, `templates`) match between Task 6 definition and Task 7 consumption (`doc.schema`, `doc.templates[0].Preview`, `doc.defaultData`).
 
 **Known minor deviation (intentional):** array item `aria-label`s become `Remove ${title} N` (e.g. "Remove Experience 1") rather than the original lowercase phrasings ("Remove experience 1", "Remove skill group 1"). Screen-reader-only wording; no functional/visual change. Acceptable under the parity bar.

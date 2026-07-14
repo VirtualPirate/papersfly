@@ -1,11 +1,11 @@
-# Design: Four new résumé templates (Meridian, Quill, Ledger, Atlas)
+# Design: Four new resume templates (Meridian, Quill, Ledger, Atlas)
 
 Date: 2026-07-08
 Status: Approved (designs) — awaiting spec review
 
 ## Goal
 
-Add four structurally distinct résumé layouts to the builder, each fully wired
+Add four structurally distinct resume layouts to the builder, each fully wired
 into the existing **variants** system (color schemes + font pairings) with a
 sensible per-template default. The current single design (Classic) becomes one
 of five. Content (`ResumeData`) and the PDF-export path are unchanged in spirit;
@@ -18,7 +18,7 @@ approved set:
 |------|--------|----------|-----------|
 | **Meridian** | Modern header band — full-bleed accent header block, single column below | Design-forward | Safe (single column) |
 | **Quill** | Minimalist / centered — centered header, hairline rules, restrained color | Conservative | Safe (single column) |
-| **Ledger** | Compact / dense — tight rhythm, tabular dates, packs a senior résumé on one page | Conservative / ATS | Safe (single column) |
+| **Ledger** | Compact / dense — tight rhythm, tabular dates, packs a senior resume on one page | Conservative / ATS | Safe (single column) |
 | **Atlas** | Two-column sidebar — tinted left rail (contact / skills / education), main column for summary + experience | Design-forward | **Needs export verification** |
 
 ## Background & hard constraints (do not violate)
@@ -42,7 +42,7 @@ These come from `CLAUDE.md`, `theme.ts`, `variants.ts`, and the export path in
 4. **The name element must carry class `.resume-name`.** `download.ts` reads its
    `textContent` for the PDF title/author metadata.
 5. **Root must set `min-height: var(--page-h)`.** `download.ts` neutralizes this
-   inline to `0` during capture so a one-page résumé doesn't spill a trailing
+   inline to `0` during capture so a one-page resume doesn't spill a trailing
    blank page. Any full-height visual (e.g. Atlas's sidebar tint) must therefore
    reach the bottom via layout stretch, not via a fixed page height (see Atlas).
 6. **All text renders through the variant font slots.** Use `var(--f-serif)`
@@ -52,7 +52,7 @@ These come from `CLAUDE.md`, `theme.ts`, `variants.ts`, and the export path in
    hardcoded family that isn't in the active pairing falls back to Helvetica in
    the PDF and breaks offline. Accent color comes from `var(--c-accent)`.
 7. **Single-page output only.** Pagination is coarse; design each template to fit
-   the sample résumé on one page.
+   the sample resume on one page.
 
 ## How variants flow (why "proper variants" is mostly free)
 
@@ -81,7 +81,7 @@ offerings and defaults are chosen to suit each design:
 
 ## Per-template design detail
 
-Shared résumé components (name, headline, contact, section headings, experience/
+Shared resume components (name, headline, contact, section headings, experience/
 education items, bullets, skill rows) follow Classic's structure and class
 conventions where possible; each template restyles them. All reuse `theme.ts`
 rhythm vars as the baseline.
@@ -113,7 +113,7 @@ rhythm vars as the baseline.
 - Header: name left; contact stacked on the right, right-aligned, small. A thick
   `2pt` accent rule under the whole header.
 - Denser type scale and tighter vertical rhythm than Classic (smaller local `pt`
-  sizes / gaps) so a full senior résumé fits comfortably on one page with all
+  sizes / gaps) so a full senior resume fits comfortably on one page with all
   three roles and their bullets.
 - Experience items render role + company on one line (`role` bold, company inline
   in accent) with the date pushed right.
@@ -144,7 +144,7 @@ rhythm vars as the baseline.
 
 ### New shared: resume schema extraction (targeted refactor)
 
-All résumé templates edit the same `ResumeData`, so they share one editor schema.
+All resume templates edit the same `ResumeData`, so they share one editor schema.
 Today it lives in `src/templates/classic/schema.ts`. Extract it to a
 document-level home so no template owns another's schema:
 
@@ -236,7 +236,7 @@ part of the definition of done.
 - No new fonts or color schemes beyond what `library.ts` / `variants.ts` already
   provide (the four pairings + four colors are reused).
 - No multi-page support work.
-- No new document kinds (résumé only).
+- No new document kinds (resume only).
 - Template names (Meridian / Quill / Ledger / Atlas) are proposals; renaming is a
   cheap change if desired during spec review.
 

@@ -4,7 +4,7 @@
 
 **Goal:** Rebuild the editor chrome (topbar, document-type select, buttons, warning/error bars, and the schema-generated form) on shadcn/ui, without changing the exported vector PDF.
 
-**Architecture:** Add Tailwind v4 + shadcn/ui to the existing Astro + React 19 island. Migrate only the chrome inside `App.tsx` and `SchemaForm.tsx`. The résumé template (`ClassicPreview.tsx`, `classic.css`, `theme.ts`) — the source `doc.html()` captures into the PDF — is left byte-for-byte untouched. Tailwind's global Preflight is omitted in favor of a reset scoped to `.app` that explicitly excludes the preview/capture subtree, because `doc.html()` clones the entire document.
+**Architecture:** Add Tailwind v4 + shadcn/ui to the existing Astro + React 19 island. Migrate only the chrome inside `App.tsx` and `SchemaForm.tsx`. The resume template (`ClassicPreview.tsx`, `classic.css`, `theme.ts`) — the source `doc.html()` captures into the PDF — is left byte-for-byte untouched. Tailwind's global Preflight is omitted in favor of a reset scoped to `.app` that explicitly excludes the preview/capture subtree, because `doc.html()` clones the entire document.
 
 **Tech Stack:** Astro 5, React 19, Tailwind CSS v4 (`@tailwindcss/vite`), shadcn/ui (`new-york`, `neutral`), Radix primitives, lucide-react, Vitest + Testing Library, pnpm.
 
@@ -180,7 +180,7 @@ Create `src/styles/globals.css`. shadcn tokens and the scoped reset are added in
 ```css
 /* Tailwind v4 — theme + utilities only. Preflight (a global element reset) is
    intentionally OMITTED: doc.html() (jsPDF) clones the ENTIRE document to render
-   the PDF, so a global reset risks changing the exported résumé. shadcn tokens
+   the PDF, so a global reset risks changing the exported resume. shadcn tokens
    and a chrome-scoped reset are added in Task 2. */
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
@@ -295,7 +295,7 @@ Replace the contents of `src/styles/globals.css` with:
 ```css
 /* Tailwind v4 — theme + utilities only. Preflight (a global element reset) is
    intentionally OMITTED: doc.html() (jsPDF) clones the ENTIRE document to render
-   the PDF, so a global reset risks changing the exported résumé. The scoped
+   the PDF, so a global reset risks changing the exported resume. The scoped
    reset at the bottom re-creates only what shadcn/ui needs, and never matches
    the preview/capture subtree. */
 @layer theme, base, components, utilities;
@@ -355,7 +355,7 @@ Replace the contents of `src/styles/globals.css` with:
 }
 
 /* ---- Chrome-scoped reset (replaces the omitted Preflight) ---------------
-   Applies only inside .app, and NEVER to .preview/.pdf-capture — the résumé
+   Applies only inside .app, and NEVER to .preview/.pdf-capture — the resume
    template that becomes the PDF. :where() keeps specificity at 0 so Tailwind
    utility classes (utilities layer) always win over this base-layer reset. */
 @layer base {
@@ -436,7 +436,7 @@ In `src/App.test.tsx`, replace the `"shows a document-type selector defaulting t
     // shadcn/Radix Select renders a combobox button showing the current value.
     const select = screen.getByRole("combobox", { name: "Document type" });
     expect(select).toBeInTheDocument();
-    expect(select).toHaveTextContent("Résumé");
+    expect(select).toHaveTextContent("resume");
     // Flush the lazy preview so its resolution is wrapped in act().
     await screen.findByRole("heading", { name: "Jordan Avery Chen" });
   });
@@ -445,7 +445,7 @@ In `src/App.test.tsx`, replace the `"shows a document-type selector defaulting t
 - [ ] **Step 2: Run the test to verify it fails**
 
 Run: `pnpm exec vitest run src/App.test.tsx -t "document-type selector"`
-Expected: FAIL — there is still a native `<select>` (role `combobox` query may match it, but `toHaveTextContent("Résumé")` fails because a native select renders `<option>`s, not the value text, and `aria-label` resolution differs). Confirms the test now targets the shadcn markup.
+Expected: FAIL — there is still a native `<select>` (role `combobox` query may match it, but `toHaveTextContent("resume")` fails because a native select renders `<option>`s, not the value text, and `aria-label` resolution differs). Confirms the test now targets the shadcn markup.
 
 - [ ] **Step 3: Add the shadcn imports to `App.tsx`**
 
@@ -469,7 +469,7 @@ In `src/App.tsx`, replace this block:
 ```tsx
       <header className="topbar">
         <div className="brand">
-          <h1>Vector Résumé Builder</h1>
+          <h1>Vector resume Builder</h1>
           <span className="tag">live preview · true-vector PDF · 100% offline</span>
         </div>
         <div className="topbar-actions">
@@ -500,7 +500,7 @@ with:
 ```tsx
       <header className="flex shrink-0 items-center justify-between gap-4 border-b bg-background px-5 py-3">
         <div className="flex items-baseline gap-2.5">
-          <h1 className="text-base font-bold tracking-tight">Vector Résumé Builder</h1>
+          <h1 className="text-base font-bold tracking-tight">Vector resume Builder</h1>
           <span className="text-xs text-muted-foreground">
             live preview · true-vector PDF · 100% offline
           </span>
@@ -653,7 +653,7 @@ with:
 - [ ] **Step 5: Run the App tests to verify they pass**
 
 Run: `pnpm exec vitest run src/App.test.tsx`
-Expected: all App tests pass, including the new dismissable-error test. (The sample résumé is Latin-only, so `unsupported` is empty and only the error Alert carries `role="alert"`.)
+Expected: all App tests pass, including the new dismissable-error test. (The sample resume is Latin-only, so `unsupported` is empty and only the error Alert carries `role="alert"`.)
 
 - [ ] **Step 6: Verify the build**
 
@@ -1154,7 +1154,7 @@ Expected: `astro check` 0 errors; build succeeds.
 
 - [ ] **Step 4: Visual smoke check in the production preview**
 
-Run: `pnpm preview`, open the URL. Confirm: topbar uses shadcn Button/Select; sections are an accordion with Basics open; expanding Experience/Education/Skills shows item Cards with a trash button and an "Add …" button; editing a field updates the live preview. Switch the document-type select (only "Résumé" exists) and click "Reset sample". Keep `preview` running for Step 5.
+Run: `pnpm preview`, open the URL. Confirm: topbar uses shadcn Button/Select; sections are an accordion with Basics open; expanding Experience/Education/Skills shows item Cards with a trash button and an "Add …" button; editing a field updates the live preview. Switch the document-type select (only "resume" exists) and click "Reset sample". Keep `preview` running for Step 5.
 
 - [ ] **Step 5: PDF forensic gate (final)**
 
@@ -1166,7 +1166,7 @@ pdffonts resume.pdf
 pdftotext resume.pdf -
 ```
 
-Expected: same verdict as the Task 1 baseline — single page; `Inter` + `SourceSerif` `emb yes ... uni yes`; zero `/Image`; selectable text matching the résumé; header (name/headline/contact) stacked at `x=56`. Stop `preview`.
+Expected: same verdict as the Task 1 baseline — single page; `Inter` + `SourceSerif` `emb yes ... uni yes`; zero `/Image`; selectable text matching the resume; header (name/headline/contact) stacked at `x=56`. Stop `preview`.
 
 - [ ] **Step 6: Confirm the template layer is untouched**
 

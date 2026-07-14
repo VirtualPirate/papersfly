@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-24
 **Status:** Approved (design); pending implementation plan
-**Scope decision:** "Just wrap the tool" — migrate the existing client-side React résumé
+**Scope decision:** "Just wrap the tool" — migrate the existing client-side React resume
 builder onto an Astro shell, reuse all existing React/TS code, move SEO into a statically
 rendered `<head>`, and trim the initial JS payload. No new marketing/content pages.
 

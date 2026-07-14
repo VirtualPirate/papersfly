@@ -5,7 +5,7 @@
 
 ## Context
 
-The app is a fully client-side, offline-first résumé builder (Astro static shell + a
+The app is a fully client-side, offline-first resume builder (Astro static shell + a
 browser-only React island). It has two UI surfaces with **opposite** constraints:
 
 1. **The PDF template** — `src/templates/classic/ClassicPreview.tsx` + `classic.css`, driven by

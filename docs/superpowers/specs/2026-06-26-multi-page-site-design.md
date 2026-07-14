@@ -19,10 +19,10 @@ The site also ships **dark mode** across all pages.
 
 ## Non-goals (explicitly out of scope)
 
-- **No new templates.** Only the existing `classic` résumé template ships. The gallery
+- **No new templates.** Only the existing `classic` resume template ships. The gallery
   shows one real card plus a clearly non-functional dashed "more coming" placeholder.
 - **No new document types.** Only `resume` is real. The doc-type picker shows the
-  Résumé pill plus muted, non-clickable "Soon" pills (Cover letter, Invoice) purely to
+  resume pill plus muted, non-clickable "Soon" pills (Cover letter, Invoice) purely to
   communicate the selector's purpose. Nothing is built behind them.
 - No changes to the PDF generation pipeline, the schema-driven form, or `theme.ts`.
 - No backend, no analytics, no auth (the product is client-only by design).
@@ -40,7 +40,7 @@ The site also ships **dark mode** across all pages.
 - Styling layers: `index.css` (app shell vars `--app-bg` etc. + `.app`/`.editor`/
   `.preview`), `styles/globals.css` (shadcn tokens, **light only**, with a reset
   scoped to `.app` and explicitly excluding `.preview`/`.pdf-capture`), and
-  `templates/classic/classic.css` (the résumé design, colored from `theme.ts` via
+  `templates/classic/classic.css` (the resume design, colored from `theme.ts` via
   `themeCssVars()` → `--c-ink`, `--c-accent`, … applied inline on `.resume-page`).
 
 ## Target architecture

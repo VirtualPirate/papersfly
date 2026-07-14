@@ -1,6 +1,6 @@
 # PostHog post-wizard report
 
-The wizard has completed a PostHog integration for papersfly — a fully client-side Astro + React résumé builder. PostHog is initialized via a reusable `src/components/posthog.astro` snippet (injected into `BaseLayout.astro` so it covers every page), and six custom events are captured across the core conversion funnel: homepage CTA → template gallery → builder → PDF download, plus style variant exploration and AI-import usage.
+The wizard has completed a PostHog integration for papersfly — a fully client-side Astro + React resume builder. PostHog is initialized via a reusable `src/components/posthog.astro` snippet (injected into `BaseLayout.astro` so it covers every page), and six custom events are captured across the core conversion funnel: homepage CTA → template gallery → builder → PDF download, plus style variant exploration and AI-import usage.
 
 | Event | Description | File |
 |---|---|---|

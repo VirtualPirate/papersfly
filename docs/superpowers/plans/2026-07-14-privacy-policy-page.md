@@ -122,7 +122,7 @@ const breadcrumb = {
         <div class="legal">
           <h2>The short version</h2>
           <ul>
-            <li><strong>Your documents never leave your device.</strong> Everything you type is edited, previewed, and turned into a PDF inside your browser. No résumé or invoice content is ever sent to a server.</li>
+            <li><strong>Your documents never leave your device.</strong> Everything you type is edited, previewed, and turned into a PDF inside your browser. No resume or invoice content is ever sent to a server.</li>
             <li><strong>No account, ever.</strong> There is no sign-up, no email, and no login required to use papersfly.</li>
             <li><strong>We collect anonymous product analytics only.</strong> We record which templates and style options are used so we can improve the product — never the text of your document.</li>
             <li><strong>Works offline.</strong> After the first load you can disconnect entirely and keep building and exporting.</li>

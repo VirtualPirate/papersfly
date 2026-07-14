@@ -5,7 +5,7 @@
 
 ## Overview
 
-Improve how the exported PDF breaks across pages. Today a résumé that overflows
+Improve how the exported PDF breaks across pages. Today a resume that overflows
 one page splits at arbitrary points — a section heading can be stranded at the
 bottom of a page while its content flows to the next, and a single logical block
 (a job entry with its bullets, a skill row) can be cut across the boundary
@@ -32,7 +32,7 @@ margin on the page it left. No logical block is ever split.
    1fr`) whose linear top-to-bottom band model does not apply, and its full-bleed
    tinted sidebar must reach the page edges. Atlas is a one-page design and is
    left exactly as-is.
-4. A résumé that fits on one page produces **zero** spacers ⇒ output is unchanged.
+4. A resume that fits on one page produces **zero** spacers ⇒ output is unchanged.
 
 ## Root cause (why today's breaks are bad)
 
@@ -212,7 +212,7 @@ return spacers
 /**
  * Measure the keep-together units in `root`, insert page-break spacers, and
  * return a cleanup fn that removes them. No-op (returns a no-op cleanup) when
- * `root` has no [data-pdf-block] units (e.g. Atlas, or a single-page résumé
+ * `root` has no [data-pdf-block] units (e.g. Atlas, or a single-page resume
  * with nothing to push). Call AFTER fonts are ready and min-height is
  * neutralized, so measurements are final.
  */
@@ -285,7 +285,7 @@ w.r.t. the element it is handed.
 
 ## Edge cases
 
-- **Single-page résumé / Atlas:** no unit straddles / no `[data-pdf-block]`
+- **Single-page resume / Atlas:** no unit straddles / no `[data-pdf-block]`
   present ⇒ `computeSpacers` returns `[]` / the DOM half no-ops ⇒ identical
   output. (Guarded by tests.)
 - **Entry taller than a usable band:** skipped; jsPDF line-splits it (unchanged
@@ -331,7 +331,7 @@ w.r.t. the element it is handed.
   `.<x>skill-row` / heading carries `data-pdf-block` / `data-pdf-heading`, and
   that the Atlas preview has **no** `[data-pdf-block]`.
 - **Browser verification** (playwright-core + system Chrome vs `pnpm preview`,
-  per the project harness): with a résumé that overflows one page, for each of
+  per the project harness): with a resume that overflows one page, for each of
   the four single-column templates:
   - `node scripts/inspect-pdf.mjs resume.pdf` still reports **VECTOR**, 0 images,
     embedded Inter/SourceSerif;
@@ -340,7 +340,7 @@ w.r.t. the element it is handed.
   - page 2 content starts below a top margin (not flush to the edge);
   - Atlas: output is byte-for-byte unchanged (full-bleed sidebar intact).
 - Full existing suite + `pnpm build` (0 type errors) stay green; a single-page
-  sample résumé produces an unchanged PDF.
+  sample resume produces an unchanged PDF.
 
 ## Non-goals
 

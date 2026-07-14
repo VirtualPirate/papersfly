@@ -384,9 +384,9 @@ pnpm build && pnpm preview --port 4399 --host 127.0.0.1   # serve dist/ — do N
 
 (Use a scratch dir for artifacts. Install the driver only, no browser download, and launch system Chrome — per the project harness: `playwright-core` with `executablePath: "/usr/bin/google-chrome"`, `args: ["--no-sandbox"]`, `waitUntil: "domcontentloaded"` + a `waitForSelector`.)
 
-- [ ] **Step 2: For each single-column template, import an overflowing résumé and assert the on-screen split**
+- [ ] **Step 2: For each single-column template, import an overflowing resume and assert the on-screen split**
 
-Drive the app at `http://127.0.0.1:4399/build/resume/<template>/` for `<template>` in `classic`, `ledger`, `meridian`, `quill`. Import a résumé long enough to overflow one page (open **Import** → **Next: paste JSON** → fill the `Pasted JSON` textbox → **Import & replace**; a 5-experience / 7-skill-group résumé overflows). Then in the page context assert:
+Drive the app at `http://127.0.0.1:4399/build/resume/<template>/` for `<template>` in `classic`, `ledger`, `meridian`, `quill`. Import a resume long enough to overflow one page (open **Import** → **Next: paste JSON** → fill the `Pasted JSON` textbox → **Import & replace**; a 5-experience / 7-skill-group resume overflows). Then in the page context assert:
 
 ```js
 // At least one divider is shown, labelled for page 2.
@@ -415,12 +415,12 @@ pdftotext -layout resume.pdf -               # inspect the page-1/page-2 boundar
 Confirm, per template:
 - The block that starts page 2 in `pdftotext -layout` output is the **same** block shown immediately after the preview's "Page 2" divider (Step 2) — the preview matches the export.
 - No entry, skill row, or heading is split at the boundary (same block-aware break as the page-break feature).
-- **The divider text never leaks into the PDF:** `pdftotext resume.pdf - | grep -c "Page 2"` counts only genuine résumé content (0 from the divider) — the `[data-preview-break]` nodes are preview-only and absent from `.pdf-capture`.
+- **The divider text never leaks into the PDF:** `pdftotext resume.pdf - | grep -c "Page 2"` counts only genuine resume content (0 from the divider) — the `[data-preview-break]` nodes are preview-only and absent from `.pdf-capture`.
 - The PDF is otherwise identical to a pre-feature export (same VECTOR verdict, page count, and text).
 
 - [ ] **Step 4: Confirm the no-op cases**
 
-- **Single-page résumé** (the default sample, no import): the preview shows **no** `[data-preview-break]`; its PDF is one page, unchanged.
+- **Single-page resume** (the default sample, no import): the preview shows **no** `[data-preview-break]`; its PDF is one page, unchanged.
 - **Atlas** (`/build/resume/atlas/`, overflowing import): the preview shows **no** `[data-preview-break]` (no `data-pdf-*` markers → no-op), and its PDF is unchanged.
 
 - [ ] **Step 5: Checkpoint**

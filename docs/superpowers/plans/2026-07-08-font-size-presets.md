@@ -564,7 +564,7 @@ pnpm build && pnpm preview
 ```
 
 At the preview URL:
-1. Open `/build/resume/classic` → Style popover → confirm a **Size** row with `Small / Medium / Large`, `Medium` active. Click `Small` and `Large`; confirm the whole résumé's type (name, headings, body, line spacing) shrinks/grows together, hierarchy preserved.
+1. Open `/build/resume/classic` → Style popover → confirm a **Size** row with `Small / Medium / Large`, `Medium` active. Click `Small` and `Large`; confirm the whole resume's type (name, headings, body, line spacing) shrinks/grows together, hierarchy preserved.
 2. Set **Large**, **Download PDF**, verify with `pdffonts` / `pdftotext` / `node scripts/inspect-pdf.mjs`: still VECTOR, 0 images, variant fonts embedded, and the exported text sizes match the on-screen Large sizes.
 3. Re-check **Atlas** at `/build/resume/atlas` under Small and Large: two columns intact, sidebar tint reaches content bottom, sidebar text (hardcoded sizes) scaled along with the main column. Also check **Ledger** (fully hardcoded) visibly scales at Small/Large.
 

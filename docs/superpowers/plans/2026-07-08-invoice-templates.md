@@ -4,7 +4,7 @@
 
 **Goal:** Add an "Invoice" document type to the client-side builder with four hand-authored templates (Nordic, Sterling, Prism, Bureau), each exported as a true-vector PDF.
 
-**Architecture:** Invoices reuse the résumé pipeline (schema-driven editor → live HTML/CSS preview → `doc.html()` vector PDF). A new `InvoiceData` model, a pure `computeTotals`/`formatMoney` module (the only new logic), and four small generalizations that make the app document-agnostic: a generic `Template<T>`, a `DocumentType.collectText` hook, a numeric import-spec node, and `number`/`select` form controls. Each template renders a root `.resume-page` (the historical, now-generic PDF capture-root class).
+**Architecture:** Invoices reuse the resume pipeline (schema-driven editor → live HTML/CSS preview → `doc.html()` vector PDF). A new `InvoiceData` model, a pure `computeTotals`/`formatMoney` module (the only new logic), and four small generalizations that make the app document-agnostic: a generic `Template<T>`, a `DocumentType.collectText` hook, a numeric import-spec node, and `number`/`select` form controls. Each template renders a root `.resume-page` (the historical, now-generic PDF capture-root class).
 
 **Tech Stack:** Astro + React (browser-only islands), TypeScript, vitest + @testing-library/react, jsPDF `doc.html()`, pnpm, vite@8, Tailwind + shadcn/ui.
 
@@ -533,7 +533,7 @@ export function lazyTemplate<T = ResumeData>(
   };
 }
 ```
-(The existing `import type { ResumeData }` stays as the default type argument. Résumé call sites are unaffected — `T` infers `ResumeData` from their `resumeSchema`.)
+(The existing `import type { ResumeData }` stays as the default type argument. resume call sites are unaffected — `T` infers `ResumeData` from their `resumeSchema`.)
 
 - [ ] **Step 5: Add `collectText` to the document interface** in `src/documents/types.ts`
 
@@ -556,7 +556,7 @@ Add `import type { Template } from "../templates/types";` if not already present
 import type { ResumeData } from "../../data/resume";
 // … existing imports …
 
-/** Flatten every user-entered résumé string into one blob for coverage scanning. */
+/** Flatten every user-entered resume string into one blob for coverage scanning. */
 export function collectResumeText(data: ResumeData): string {
   const parts: string[] = [data.name, data.headline, data.summary, ...Object.values(data.contact)];
   for (const e of data.experience) parts.push(e.role, e.company, e.location, ...e.bullets);
@@ -567,7 +567,7 @@ export function collectResumeText(data: ResumeData): string {
 
 export const resumeDocument: DocumentType<ResumeData> = {
   id: "resume",
-  name: "Résumé",
+  name: "resume",
   defaultData: sampleResume,
   importSpec: resumeImportSpec,
   templates: [classicTemplate, meridianTemplate, quillTemplate, ledgerTemplate, atlasTemplate],
@@ -598,7 +598,7 @@ Expected: PASS — the new `collectText` test plus all existing document/templat
 - [ ] **Step 9: Type-check**
 
 Run: `pnpm build`
-Expected: `astro check` passes with 0 errors (confirms the generic change compiles across all résumé templates).
+Expected: `astro check` passes with 0 errors (confirms the generic change compiles across all resume templates).
 
 - [ ] **Step 10: Checkpoint** — green. Leave for the user to commit.
 
@@ -1880,7 +1880,7 @@ const COMING_SOON_TYPES = ["Cover letter"];
 - [ ] **Step 6: Run tests to verify they pass**
 
 Run: `pnpm exec vitest run src/documents`
-Expected: PASS — invoice index + registry (résumé default unchanged) green.
+Expected: PASS — invoice index + registry (resume default unchanged) green.
 
 - [ ] **Step 7: Full suite + type-check**
 

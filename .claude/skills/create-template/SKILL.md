@@ -1,6 +1,6 @@
 ---
 name: create-template
-description: Use when adding or porting a new visual design (template) for an existing document type (résumé or invoice) in this repo — triggers include "add a template", "new résumé design", "new invoice layout", "port this mockup/screenshot into a template", "make a design like <image>". Not for creating a new document KIND (data + schema); that is a separate, larger flow.
+description: Use when adding or porting a new visual design (template) for an existing document type (resume or invoice) in this repo — triggers include "add a template", "new resume design", "new invoice layout", "port this mockup/screenshot into a template", "make a design like <image>". Not for creating a new document KIND (data + schema); that is a separate, larger flow.
 ---
 
 # Creating a template
@@ -35,7 +35,7 @@ big title / wordmark that gets the display face).
 
 | Doc type | Colors | Fonts |
 |---|---|---|
-| **résumé** | reuse global `COLOR_SCHEMES` (`theme/variants.ts`); `resolveVariant(variant)` needs no 2nd arg | reuse `FONT_PAIRINGS` |
+| **resume** | reuse global `COLOR_SCHEMES` (`theme/variants.ts`); `resolveVariant(variant)` needs no 2nd arg | reuse `FONT_PAIRINGS` |
 | **invoice** | bespoke palette in `invoice/variants.ts`; MUST pass it: `resolveVariant(variant, X_VARIANTS.colors)` | reuse `FONT_PAIRINGS` |
 
 `default` must reference ids that exist in this template's `colors`/`fonts`.
@@ -82,7 +82,7 @@ approves. **Do NOT create any file under `src/templates/` before approval.**
 Create `src/templates/<docType>/<name>/` with the five files per AGENTS.md
 (`<Name>Preview.tsx`, `<name>.css`, `index.ts`, `<Name>Preview.test.tsx`,
 `index.test.tsx`), then register it (document's `templates` list; also
-`resume/registry.ts` for résumés; add the palette to `invoice/variants.ts` for
+`resume/registry.ts` for resumes; add the palette to `invoice/variants.ts` for
 invoices). Re-read the AGENTS.md "Add a new DESIGN" section as the checklist.
 
 **Start by copying the closest sibling verbatim** (e.g. `invoice/nordic/`) and

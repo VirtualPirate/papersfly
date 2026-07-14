@@ -8,7 +8,7 @@
 Add a third template-styling axis — **section spacing** — alongside the existing
 Color and Font pickers. The user chooses one of three presets — **Compact /
 Default / Relaxed** — from the Style popover, and the vertical gap *between
-résumé sections* (Summary → Experience → Education → Skills) tightens or loosens
+resume sections* (Summary → Experience → Education → Skills) tightens or loosens
 live. Like color and font, the choice is part of the `Variant` object, so it
 persists into the exported PDF automatically (the PDF is the rendered DOM — no
 separate layout to wire).

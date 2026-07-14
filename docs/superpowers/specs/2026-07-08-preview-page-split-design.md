@@ -7,7 +7,7 @@
 
 Show the reader where the exported PDF breaks across pages, **in the live
 preview**, without changing the exported PDF in any way. The preview currently
-renders the résumé as **one continuous white sheet** (`.page-frame`) that simply
+renders the resume as **one continuous white sheet** (`.page-frame`) that simply
 grows taller as content overflows one page — there is no visual page division, so
 the user cannot tell where page 2 begins until they download.
 
@@ -22,8 +22,8 @@ to match the export.
 
 1. **Faithful (WYSIWYG) reflow**, not a mere guide line: content is physically
    pushed onto the next page region with real margins, exactly as exported.
-2. **Always on** — dividers appear automatically whenever the résumé overflows
-   one page; nothing is shown for a single-page résumé. No toggle.
+2. **Always on** — dividers appear automatically whenever the resume overflows
+   one page; nothing is shown for a single-page resume. No toggle.
 3. **Atlas shows nothing** — Atlas (two-column) has no `data-pdf-*` markers and is
    excluded from block-aware pagination; its preview stays the plain continuous
    sheet, matching how its PDF already behaves. Same no-op path as the PDF.
@@ -122,7 +122,7 @@ Steps:
      (the exact page cut: the page edge sits `height − mt` below the gap top,
      leaving `mt` of top margin below it — derivation below), and
    - a `.page-break-label` reading `Page ${i + 2}`.
-   The node is `aria-hidden` (decorative; not résumé content).
+   The node is `aria-hidden` (decorative; not resume content).
 5. Return a cleanup that calls `.remove()` on every inserted node.
 
 **Cut-line derivation:** a spacer's height is `gap = (page+1)·pageH + mt −
@@ -150,7 +150,7 @@ include the divider gaps via the existing `ResizeObserver`). One addition:
   and store its cleanup; the effect's cleanup calls it. `scale` is a dependency
   because measurement reads scaled rects; recomputing when the fit-scale changes
   keeps the measurement correct. (Breaks themselves are scale-independent true px,
-  so this only re-measures, never changes the result for a given résumé.)
+  so this only re-measures, never changes the result for a given resume.)
 - `handleDownload`, `.pdf-capture`, and `download.ts` are **untouched**.
 
 Because `insertPreviewBreaks` runs after layout, and jsdom reports zero-size rects
@@ -190,7 +190,7 @@ All three are decorative and live only in the preview; they are never in
   **no** `[data-preview-break]` and does not crash, and `download` (already
   stubbed) is still handed the single `.resume-page` (existing test unaffected).
 - **Browser verification** (playwright-core + system Chrome vs `pnpm preview`):
-  with a résumé that overflows one page, for each single-column template
+  with a resume that overflows one page, for each single-column template
   (Classic, Ledger, Meridian, Quill):
   - the preview shows a "Page 2" divider, and the block immediately below it is
     the **same** block that starts page 2 in the downloaded PDF (compare against

@@ -7,9 +7,9 @@
 ## 1. Overview
 
 Add a second document kind — **Invoice** — to the client-side builder, alongside the
-existing Résumé. It ships with **four hand-authored templates** (`Nordic`, `Sterling`,
+existing resume. It ships with **four hand-authored templates** (`Nordic`, `Sterling`,
 `Prism`, `Bureau`), each a distinct visual identity, rendered at true US-Letter size as
-HTML/CSS and exported to a true-vector PDF through the same `doc.html()` path the résumés
+HTML/CSS and exported to a true-vector PDF through the same `doc.html()` path the resumes
 use. There is no backend; everything runs in the browser and works offline.
 
 The visual designs were approved from a published demo (see link above). This spec covers
@@ -21,11 +21,11 @@ generalizations that make the app document-agnostic, and the module/testing plan
 - Full ("rich") data model: parties, line items, discount, multiple tax lines, deposit /
   balance due, PO number, payment instructions, notes, currency.
 - Correct, tested money math; templates render computed values and never calculate.
-- Same end-to-end quality bar as résumés: editable form, style variants, true-vector PDF.
+- Same end-to-end quality bar as resumes: editable form, style variants, true-vector PDF.
 - AI import parity (the Import dialog works for invoices too).
 
 ### Non-goals (out of scope for this work)
-- Multi-page invoices (pagination is coarse; single-page only, same as résumés).
+- Multi-page invoices (pagination is coarse; single-page only, same as resumes).
 - Line-item-level discounts or tax (discount and tax apply at the subtotal level).
 - Full ISO-4217 currency UX beyond `Intl` narrow-symbol formatting (see §11 risks).
 - Saving/loading invoices, numbering sequences, or any persistence.
@@ -74,7 +74,7 @@ export interface InvoiceData {
   // header / meta
   title: string;         // "Invoice" — overridable ("Tax Invoice", "Receipt")
   number: string;
-  issueDate: string;     // free text (matches résumé's free-text dates)
+  issueDate: string;     // free text (matches resume's free-text dates)
   dueDate: string;
   terms: string;         // "Net 30"
   poNumber: string;      // "" ⇒ row hidden
@@ -108,7 +108,7 @@ invoice — four line items, a returning-client 5% discount, an 8.5% sales-tax l
 $5,000 deposit, PO number, and bank remittance details — so the default exercises every
 optional field. (`quantity: 8, unit: "hrs"` reproduces the demo's "8 hrs".)
 
-### Empty-field rules (templates apply these, mirroring résumé "drop empties")
+### Empty-field rules (templates apply these, mirroring resume "drop empties")
 - `poNumber === ""` → hide the PO row.
 - `discountValue === 0` → hide the discount row.
 - `taxes.length === 0` → hide tax rows.
@@ -119,7 +119,7 @@ optional field. (`quantity: 8, unit: "hrs"` reproduces the demo's "8 hrs".)
 
 ## 4. Money computation — `src/documents/invoice/compute.ts`
 
-The one piece of logic the résumé builder doesn't have. Isolated as a pure, tested module
+The one piece of logic the resume builder doesn't have. Isolated as a pure, tested module
 so templates stay dumb (render numbers, never calculate). Line `amount = quantity × rate`.
 
 ```ts
@@ -159,24 +159,24 @@ The app is already mostly document-agnostic (`App.tsx`, the registry, and routin
    - `Template<T = ResumeData>` with `schema: FormSchema<T>` and
      `Preview: ComponentType<{ data: T; fontOverrides?; variant? }>`.
    - `lazyTemplate<T>(meta, load)` where `meta.schema: FormSchema<T>` and
-     `PreviewModule<T>`. Résumé call sites infer `T = ResumeData` unchanged.
+     `PreviewModule<T>`. resume call sites infer `T = ResumeData` unchanged.
    - `DocumentType<T>.templates: Template<T>[]`.
 
 2. **Move font-coverage text collection onto the document** — `src/documents/types.ts`:
    - Add `collectText: (data: T) => string` to `DocumentType<T>`.
-   - Résumé provides the existing `collectResumeText`; invoice provides
+   - resume provides the existing `collectResumeText`; invoice provides
      `collectInvoiceText` (name, meta, both parties, item descriptions/details/units,
      tax + payment labels, notes, **and the resolved currency symbol** so an unsupported
      symbol still trips the coverage warning).
-   - `App.tsx` calls `doc.collectText(data)` instead of the hardcoded résumé function.
-     `collectResumeText` moves to (or is re-exported from) the résumé document module.
+   - `App.tsx` calls `doc.collectText(data)` instead of the hardcoded resume function.
+     `collectResumeText` moves to (or is re-exported from) the resume document module.
 
 3. **Keep `.resume-page` as the capture-root class for ALL documents.** `App.tsx`
    (`querySelector(".resume-page")`) and the PDF export in `src/pdf/download.ts` locate the
    sheet by this class. This path is fragile and dev-environment-sensitive (the disabled
    dev-toolbar gotcha). **Decision: reuse `.resume-page` as a generic page-root marker** —
    invoice template roots carry `className="resume-page"`. Renaming to `.doc-page` would
-   touch the fragile export path plus five working résumé templates for no functional gain;
+   touch the fragile export path plus five working resume templates for no functional gain;
    rejected. (A comment at each usage will note the name is historical/generic.)
 
 4. **Extend the import spec with a numeric node** — `src/import/spec.ts`,
@@ -184,7 +184,7 @@ The app is already mostly document-agnostic (`App.tsx`, the registry, and routin
    - Add `{ type: "number"; required? }` to `ImportNode` and a `num()` helper.
    - `buildPrompt.ts` renders a numeric example; `validate.ts` accepts `typeof === "number"`
      (and coerces numeric strings, rejecting `NaN`).
-   - Required so `InvoiceData`'s numeric fields survive AI import; résumé import is
+   - Required so `InvoiceData`'s numeric fields survive AI import; resume import is
      unaffected (it uses no numbers).
 
 ## 6. Module layout
@@ -210,13 +210,13 @@ src/templates/invoice/
 - `src/documents/registry.ts` — append `invoiceDocument` to `documents`.
 - `src/templates/types.ts`, `src/templates/lazyTemplate.ts` — generic `T`.
 - `src/documents/types.ts` — add `collectText`.
-- `src/documents/resume/index.ts` — provide `collectText` (résumé).
+- `src/documents/resume/index.ts` — provide `collectText` (resume).
 - `src/App.tsx` — call `doc.collectText(data)`.
 - `src/import/spec.ts`, `src/import/buildPrompt.ts`, `src/import/validate.ts` — `num()` node.
 - `src/components/create/CreateGallery.tsx` — remove `"Invoice"` from `COMING_SOON_TYPES`
   (it becomes a real, selectable document).
 - `src/fonts/coverage.ts` — keeps the document-agnostic `unsupportedChars`; the
-  résumé-specific `collectResumeText` moves out to the résumé document module (so
+  resume-specific `collectResumeText` moves out to the resume document module (so
   `coverage.ts` no longer imports `ResumeData`). `collectInvoiceText` lives in the invoice
   module. Each document wires its collector into `DocumentType.collectText`.
 
@@ -255,7 +255,7 @@ Mirrors `InvoiceData` minus `id`s, using `str`/`strings`/`obj`/`list` plus the n
 Each template defines its **own curated `variants`** (`TemplateVariants`), defaulting to the
 demo look. **Font pairings + spacing + size presets are reused as-is** (universally safe).
 For color, each template exposes a few accents that suit it and wires them through its own
-CSS custom properties — because Prism and Bureau use *two* signature colors, the résumé's
+CSS custom properties — because Prism and Bureau use *two* signature colors, the resume's
 single-`--c-accent` model doesn't map cleanly:
 
 - Nordic — red / cobalt / ink
@@ -272,7 +272,7 @@ accents are a bonus, driven entirely by the template's own CSS vars.
 - Author all geometry in **points (pt)** via theme CSS vars so preview and PDF match true
   physical size. Reuse `--page-w`/`--page-h`/`--margin-*` and font-scale vars from
   `theme.ts`; template-specific measurements live in the template's own CSS.
-- Per-field font overrides via `fontStyleFor(fontOverrides, joinPath(...))`, same as résumé
+- Per-field font overrides via `fontStyleFor(fontOverrides, joinPath(...))`, same as resume
   templates, so the Style panel's per-field font control works.
 - No raster images (keeps the PDF true-vector). Logos are text/monogram placeholders.
 - Currency/accented glyphs must fall inside the embedded font subset (coverage.ts ranges);
@@ -318,7 +318,7 @@ accents are a bonus, driven entirely by the template's own CSS vars.
   coercion step converts numeric fields on change. Kept beside `update.ts`.
 - **Currency** — `Intl` narrow-symbol formatting only; no currency picker beyond a free
   ISO-code field in v1. Non-subset symbols surface via the existing coverage warning.
-- **Pagination** — single-page only, same limitation as résumés; long item lists may spill.
+- **Pagination** — single-page only, same limitation as resumes; long item lists may spill.
 
 ## 13. Out of scope
 Multi-page invoices, per-line tax/discount, recurring/numbered sequences, persistence,

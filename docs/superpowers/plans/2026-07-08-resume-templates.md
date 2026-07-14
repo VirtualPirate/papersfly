@@ -1,8 +1,8 @@
-# Four New Résumé Templates Implementation Plan
+# Four New resume Templates Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add four structurally distinct résumé templates — Meridian (modern header band), Quill (minimalist/centered), Ledger (compact/dense), Atlas (two-column sidebar) — each fully wired into the existing variants system, alongside the current Classic design.
+**Goal:** Add four structurally distinct resume templates — Meridian (modern header band), Quill (minimalist/centered), Ledger (compact/dense), Atlas (two-column sidebar) — each fully wired into the existing variants system, alongside the current Classic design.
 
 **Architecture:** Each template is a self-contained folder under `src/templates/<id>/` exporting a `Template` via `lazyTemplate(meta, () => import("./<Name>Preview"))` (its own build chunk). Each Preview renders a `.resume-page` root styled by `themeCssVars(resolveVariant(variant))`, so colors + font pairings + PDF font embedding flow automatically. Templates are registered in `src/templates/registry.ts` and attached to `src/documents/resume/index.ts`; the `/create` gallery and `/build/[doc]/[template]` route pick them up with no route changes.
 
@@ -23,9 +23,9 @@
 
 ---
 
-## Task 1: Extract the shared résumé schema
+## Task 1: Extract the shared resume schema
 
-Move `resumeSchema` (+ blank-item factories) out of the Classic template folder so no template owns another's editor schema; all résumé templates import it from a document-level home.
+Move `resumeSchema` (+ blank-item factories) out of the Classic template folder so no template owns another's editor schema; all resume templates import it from a document-level home.
 
 **Files:**
 - Create: `src/documents/resume/schema.ts`
@@ -701,7 +701,7 @@ import { meridianTemplate } from "../../templates/meridian";
 
 export const resumeDocument: DocumentType<ResumeData> = {
   id: "resume",
-  name: "Résumé",
+  name: "resume",
   defaultData: sampleResume,
   templates: [classicTemplate, meridianTemplate],
 };
@@ -1840,7 +1840,7 @@ import { atlasTemplate } from "../../templates/atlas";
 
 export const resumeDocument: DocumentType<ResumeData> = {
   id: "resume",
-  name: "Résumé",
+  name: "resume",
   defaultData: sampleResume,
   templates: [classicTemplate, meridianTemplate, quillTemplate, ledgerTemplate, atlasTemplate],
 };
@@ -1934,7 +1934,7 @@ Expected: `astro check` 0 errors; static build into `dist/` succeeds. This also 
 pnpm preview
 ```
 
-At the preview URL, open `/create`: confirm five cards (Classic, Meridian, Quill, Ledger, Atlas), each thumbnail rendered in ITS default variant (Quill in charcoal/Playfair, Atlas in navy/Plex Sans, etc.) and NOT bleeding Classic's styling. Open each `/build/resume/<id>`, confirm the design matches its mockup and the sample résumé fits on one page. Download a PDF from Meridian, Quill, and Ledger and spot-check with `pdffonts`/`pdftotext` (Atlas was covered by Task 7's gate).
+At the preview URL, open `/create`: confirm five cards (Classic, Meridian, Quill, Ledger, Atlas), each thumbnail rendered in ITS default variant (Quill in charcoal/Playfair, Atlas in navy/Plex Sans, etc.) and NOT bleeding Classic's styling. Open each `/build/resume/<id>`, confirm the design matches its mockup and the sample resume fits on one page. Download a PDF from Meridian, Quill, and Ledger and spot-check with `pdffonts`/`pdftotext` (Atlas was covered by Task 7's gate).
 
 - [ ] **Step 6: Checkpoint** — leave all changes for the user to review/commit.
 

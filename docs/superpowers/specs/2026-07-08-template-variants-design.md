@@ -5,7 +5,7 @@
 
 ## Goal
 
-Let a user toggle the résumé template's **color scheme** and **font pairing** from a live
+Let a user toggle the resume template's **color scheme** and **font pairing** from a live
 in-builder picker. Each option is its own visual demo (accent swatches, font specimens);
 clicking one instantly re-renders the live preview, and the choice flows into the exported
 PDF unchanged. Variants are **template-wide presets**; the existing per-field font picker
@@ -139,7 +139,7 @@ A new presentational component (`src/forms/VariantPicker.tsx`) given
 Placement: a **slim full-width Style toolbar** rendered in `App.tsx` directly below the main
 `<header>` and above `.workspace` — it spans both panes and does **not** sit inside the
 preview's observed scaling stage, so the `ResizeObserver`/scale logic is untouched. It wraps on
-narrow screens. Visual styling per the frontend-design skill; the résumé sheet itself is never
+narrow screens. Visual styling per the frontend-design skill; the resume sheet itself is never
 restyled (only `.resume-page`'s CSS vars change).
 
 ## Data flow

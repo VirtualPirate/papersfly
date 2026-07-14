@@ -4,7 +4,7 @@
 
 ## TL;DR
 
-In `pnpm run dev`, the exported résumé PDF rendered the header **horizontally** (name,
+In `pnpm run dev`, the exported resume PDF rendered the header **horizontally** (name,
 headline, and contact line as three side-by-side columns) instead of **stacked
 vertically**. The production build (`pnpm build && pnpm preview`) was always correct.
 
@@ -19,7 +19,7 @@ html2canvas's layout computation.
 devToolbar: { enabled: false },
 ```
 
-No résumé template, CSS, or PDF-pipeline code was changed.
+No resume template, CSS, or PDF-pipeline code was changed.
 
 ## Symptom
 

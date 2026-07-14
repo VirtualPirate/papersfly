@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add a live in-builder picker that toggles the résumé template's color scheme (4) and font pairing (4), flowing the choice into the live preview and the exported PDF.
+**Goal:** Add a live in-builder picker that toggles the resume template's color scheme (4) and font pairing (4), flowing the choice into the live preview and the exported PDF.
 
-**Architecture:** A variant is design metadata (`{ colorId, fontId }`) kept separate from `ResumeData`, resolved to overrides of three existing CSS custom properties (`--c-accent`, `--f-sans`, `--f-serif`) that `themeCssVars()` already sets on `.resume-page`. Templates own their catalog; the app holds the selection in state, freezes it into the PDF capture snapshot, and unions the pairing's fonts into `usedFontIds` so they get embedded. The picker is app chrome (Tailwind) in a Style toolbar under the header — the résumé sheet itself is never restyled.
+**Architecture:** A variant is design metadata (`{ colorId, fontId }`) kept separate from `ResumeData`, resolved to overrides of three existing CSS custom properties (`--c-accent`, `--f-sans`, `--f-serif`) that `themeCssVars()` already sets on `.resume-page`. Templates own their catalog; the app holds the selection in state, freezes it into the PDF capture snapshot, and unions the pairing's fonts into `usedFontIds` so they get embedded. The picker is app chrome (Tailwind) in a Style toolbar under the header — the resume sheet itself is never restyled.
 
 **Tech Stack:** Astro + React (browser-only islands), TypeScript, Tailwind, jsPDF `doc.html()`, Vitest + @testing-library/react. Package manager: pnpm.
 

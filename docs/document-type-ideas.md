@@ -2,7 +2,7 @@
 
 A menu of candidate document types for `vector-resume-builder`, ranked by how
 well they fit the architecture and how much work each would take. Use it to pick
-what to build next. Today the app ships **Résumé** and **Invoice**.
+what to build next. Today the app ships **resume** and **Invoice**.
 
 ## What makes a good fit (the litmus test)
 
@@ -48,7 +48,7 @@ layout.
 | **Receipt** | Invoice (trimmed) | Proof of payment: "Paid" state, paid date, method. |
 | **Purchase Order** | Invoice (buyer-issued) | Swap from/to semantics, add PO terms. |
 | **Credit Note / Credit Memo** | Invoice | Negative/refund variant of an invoice. |
-| **Cover Letter** | New but tiny; shares résumé contact block | Letterhead + salutation + body + sign-off. Natural résumé companion. |
+| **Cover Letter** | New but tiny; shares resume contact block | Letterhead + salutation + body + sign-off. Natural resume companion. |
 | **Business / Formal Letter** | Shared "letter" layout | Sender/recipient blocks, date, subject, body, signature. Extremely versatile base other letter types build on. |
 
 ## Tier 2 — Strong fit, moderate effort
@@ -63,9 +63,9 @@ constraints apply cleanly.
 | **Expense Report** | Business | Line items + category + total. Invoice-like. |
 | **Price List / Rate Card** | Business | Services/products + prices; strongly typographic. |
 | **Menu** (café/restaurant) | Hospitality | Sections + items + prices; great type/vector showcase. |
-| **Reference Sheet** | Career | Résumé companion: list of referees. Trivial schema. |
+| **Reference Sheet** | Career | resume companion: list of referees. Trivial schema. |
 | **Bio / One-pager** | Career/personal | Speaker/founder bio, links, highlights. |
-| **Academic CV** | Career | Long-form résumé (publications, grants); leans on multi-page. |
+| **Academic CV** | Career | Long-form resume (publications, grants); leans on multi-page. |
 | **Meeting Agenda** | Office | Topics, owners, time-boxes. |
 | **Meeting Minutes** | Office | Attendees, decisions, action items. |
 | **Itinerary** | Travel/events | Day-by-day schedule blocks. |
@@ -106,7 +106,7 @@ Worth doing, but each trips one constraint that needs a decision.
 1. **Quote/Estimate** and **Receipt** — almost free (reuse invoice), immediate
    breadth for the same freelancer/SMB audience.
 2. **Cover Letter** + a shared **Business Letter** base — unlocks the whole
-   letter family and pairs with the résumé.
+   letter family and pairs with the resume.
 3. Then pick from Tier 2 by audience (business ops vs. career vs. hospitality).
 4. Tackle **page-size configurability** once, which unlocks the entire Tier 3
    landscape/card cluster (certificates, business cards, invitations).

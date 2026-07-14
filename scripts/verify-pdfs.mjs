@@ -48,7 +48,7 @@ try {
   console.log(`\n================ STRICT INSPECT (${pdfs.length} PDFs) ================`);
   for (const f of pdfs) {
     // Every template draws at least body + one heavier weight, so <2 distinct
-    // fonts drawing text means a weight-matching collapse. Résumés are designed
+    // fonts drawing text means a weight-matching collapse. resumes are designed
     // to fit one page, so >1 page means a layout overflow (e.g. a font-size
     // regression) — invoices vary in length, so only the page gate is skipped
     // for them.

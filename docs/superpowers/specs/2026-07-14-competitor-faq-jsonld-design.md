@@ -66,7 +66,7 @@ in `<p>` matches the reference example and is valid HTML content for the `text` 
 
 ## Proposed `/alternatives` FAQ content (site-authored, verified against `competitors.ts`)
 
-**Q: Which résumé builders are actually free?**
+**Q: Which resume builders are actually free?**
 A: Only a handful let you download a real, formatted PDF at no cost with no catch.
 papersfly, Canva, FlowCV, Teal and Standard Resume offer genuinely free PDF
 downloads; Novoresume, Enhancv and VisualCV stamp a watermark or branding on the
@@ -75,25 +75,25 @@ Resume.io only export plain text for free, paywalling the formatted PDF. Of the 
 options, papersfly is the only one that needs no account and uploads nothing.
 
 **Q: What does "ATS-safe" mean?**
-A: An applicant tracking system (ATS) is the software employers use to scan résumés
-before a human sees them. An ATS-safe résumé uses a single-column layout and real,
+A: An applicant tracking system (ATS) is the software employers use to scan resumes
+before a human sees them. An ATS-safe resume uses a single-column layout and real,
 selectable text — not words baked into images or hidden in multi-column graphics — so
 the parser reads your name, roles and dates correctly. Most builders here export
 ATS-readable PDFs; Canva's popular multi-column, graphic-heavy templates are the main
 exception.
 
-**Q: Which résumé builder keeps my data private?**
+**Q: Which resume builder keeps my data private?**
 A: Every mainstream builder except papersfly is a cloud tool: you create an account
-and your résumé is stored on their servers. papersfly is private by architecture —
+and your resume is stored on their servers. papersfly is private by architecture —
 there is no account and nothing is uploaded. Your document is built, rendered and
 exported entirely in your browser, and it works offline after the first load.
 
-**Q: Do I have to create an account to build a résumé?**
+**Q: Do I have to create an account to build a resume?**
 A: For most builders on this page, yes — an account is required and your data is saved
 to the cloud. papersfly needs no signup: you open it and start building, and nothing
 is transmitted.
 
-**Q: Can I download a résumé PDF for free without a watermark?**
+**Q: Can I download a resume PDF for free without a watermark?**
 A: Yes, with papersfly — exports are unlimited, unbranded and watermark-free.
 Novoresume, Enhancv and VisualCV add a watermark or branding on free downloads, and
 Zety and Resume.io only give you plain text for free, so a clean PDF from those

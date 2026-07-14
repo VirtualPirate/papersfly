@@ -2,7 +2,7 @@
 // that family's base64 — plus a loader index that maps each FontId to a bare
 // dynamic import of its module. jsPDF needs base64 font data; embedding it means
 // PDF generation makes ZERO network requests. Splitting per family means the PDF
-// path only downloads the base64 for the families a given résumé actually uses
+// path only downloads the base64 for the families a given resume actually uses
 // (see src/fonts/registerFonts.ts). Re-run with `pnpm gen:fonts` if fonts change.
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";

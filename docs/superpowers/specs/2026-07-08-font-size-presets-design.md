@@ -7,7 +7,7 @@
 
 Add a fourth template-styling axis — **font size** — to the Style popover, beside
 Color, Font, and Spacing. The user picks one of three presets — **Small /
-Medium / Large** — and the résumé's whole type scale (name, section headings,
+Medium / Large** — and the resume's whole type scale (name, section headings,
 body text, and leading) grows or shrinks proportionally, preserving the visual
 hierarchy. Like the other axes, the choice lives on the `Variant` object, so it
 persists into the exported PDF automatically (the PDF is the rendered DOM).

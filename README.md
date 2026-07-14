@@ -1,6 +1,6 @@
-# Vector Résumé Builder
+# Vector resume Builder
 
-A fully **client-side** résumé builder. Fill in your content, watch a live HTML/CSS
+A fully **client-side** resume builder. Fill in your content, watch a live HTML/CSS
 preview, and click **Download PDF** to get a **true-vector** PDF (`resume.pdf`) — real
 selectable, searchable text and embedded fonts, never a screenshot. No backend, no server,
 no network call to generate or download the file. It works offline after the first load.
@@ -21,7 +21,7 @@ pnpm gen:og      # regenerate public/og-image.png (social card)
 
 ## Hosting & SEO
 
-The app is built with **Astro** (static output). The résumé tool itself is a browser-only
+The app is built with **Astro** (static output). The resume tool itself is a browser-only
 React island mounted with `client:only="react"` — Astro renders no application logic on the
 server; it renders the SEO-rich `<head>` and a lightweight pre-hydration skeleton. All SEO
 lives in that statically rendered `<head>`: `<title>`, description, canonical, Open Graph,
@@ -39,7 +39,7 @@ server runtime required.
 
 ## How it produces a vector PDF, client-side, with no backend (the short version)
 
-The résumé is authored **once** as an HTML/CSS template (`ClassicPreview` +
+The resume is authored **once** as an HTML/CSS template (`ClassicPreview` +
 [`classic.css`](src/templates/classic/classic.css)), and every measurement — page size,
 margins, font sizes, line heights, gaps — is expressed in **points (pt)** in one shared
 [`theme.ts`](src/theme/theme.ts), so the page renders at its true physical size
@@ -97,13 +97,13 @@ DOM. The visible preview is wrapped in a `transform: scale()` to fit the screen,
 distort the capture, so `App` also renders a hidden, true-size copy of the page and points
 `doc.html()` at that. `download.ts` neutralizes the preview's full-page `min-height` inline
 on the captured node (the clone `doc.html()` makes drops ancestor selectors) so a one-page
-résumé doesn't spill a trailing blank page on the 792pt boundary.
+resume doesn't spill a trailing blank page on the 792pt boundary.
 
 ## Why `doc.html()` (a DOM-to-PDF renderer)
 
 `doc.html()` lets us author the design once in HTML/CSS and get selectable, embedded-font
 vector text out the other side — no parallel hand-mapped layout to maintain. The trade-offs,
-which are acceptable for a client-side résumé download, are:
+which are acceptable for a client-side resume download, are:
 
 - **Browser-only.** It needs a real, laid-out DOM (computed styles, geometry), so PDF
   generation can't run headless in Node. (This is why there is no Node `verify:pdf` script;
@@ -139,7 +139,7 @@ chain) and widen the `pyftsubset` unicode set in the font-prep step.
 
 - **Pagination.** `doc.html()` paginates automatically (`autoPaging: "text"`). The bundled
   sample fits one page, which is the supported case. Page margins come from the template's
-  own padding, applied **once** around the whole block — so a résumé that overflows onto a
+  own padding, applied **once** around the whole block — so a resume that overflows onto a
   second page keeps a top margin only on page 1 and a bottom margin only on the last page;
   intermediate breaks have no margin and content can run to the sheet edge. Doing multi-page
   properly means moving margins to `doc.html()`'s per-page `margin` option; until then treat
@@ -155,7 +155,7 @@ PDF is true vector with embedded fonts, download `resume.pdf` and inspect it:
 
 ```bash
 pdffonts resume.pdf     # Inter / SourceSerif -> "CID TrueType ... emb yes ... uni yes"
-pdftotext resume.pdf -  # prints the résumé text, proving it is real text, not an image
+pdftotext resume.pdf -  # prints the resume text, proving it is real text, not an image
 node scripts/inspect-pdf.mjs resume.pdf   # pdf.js-based: pages, embedded fonts, /Image, text
 ```
 

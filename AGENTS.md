@@ -4,7 +4,7 @@ This file provides guidance to coding agents when working with code in this repo
 
 ## What this is
 
-A fully **client-side** document/résumé builder (Astro + React, package name `vector-resume-builder`).
+A fully **client-side** document/resume builder (Astro + React, package name `vector-resume-builder`).
 The user fills a form, sees a live HTML/CSS preview, and clicks Download to get a **true-vector PDF**
 (selectable text + embedded fonts) generated entirely in the browser — **no backend, no network call,
 works offline after first load**. There is intentionally no server runtime and no headless PDF path.
@@ -59,7 +59,7 @@ Three decoupled layers:
 src/documents/                 A DocumentType bundles { schema, defaultData, templates } for one doc kind.
   types.ts                     The DocumentType<T> interface.
   registry.ts                  `documents` list — add a doc kind here. `defaultDocument` is documents[0].
-  resume/{index,schema}.ts     The résumé document: ResumeData + its FormSchema + classicTemplate.
+  resume/{index,schema}.ts     The resume document: ResumeData + its FormSchema + classicTemplate.
 
 src/forms/                     Schema-driven editor (replaces the old hand-written EditorForm).
   schema.ts                    `builder<T>()` produces a type-checked FormSchema (section/list/group/
@@ -97,7 +97,7 @@ that same markup is what the PDF captures. Switching doc type loads that type's 
   true-size* copy only during download, fed a **frozen** data snapshot and the **preloaded concrete**
   (non-lazy) component — a still-suspended lazy component would yield no `.resume-page` and silently
   no-op the export. `download.ts` also neutralizes the preview's `min-height` inline on the captured node
-  so a one-page résumé doesn't spill a trailing blank page.
+  so a one-page resume doesn't spill a trailing blank page.
 
 - **Font registration invariant** (`registerFonts.ts`): each font's `file` name is simultaneously the
   jsPDF VFS key AND the `pdfFontFaces` `src.url`. They must stay equal — a mismatch makes jsPDF attempt a

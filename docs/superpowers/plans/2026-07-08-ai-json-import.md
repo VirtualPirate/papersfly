@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Let a user paste AI-generated JSON (produced from their existing résumé) into the editor via a guided modal, strictly validate it, and replace the document content.
+**Goal:** Let a user paste AI-generated JSON (produced from their existing resume) into the editor via a guided modal, strictly validate it, and replace the document content.
 
 **Architecture:** A hand-authored `importSpec` per document type is the single contract. Both a copyable prompt (`buildImportPrompt`) and a strict validator (`validateAgainstSpec`) read from it, so they cannot drift. A 2-step radix Dialog copies the prompt, then parses/validates a pasted blob and hands a fresh immutable object to `App`'s existing `setData`.
 
@@ -122,7 +122,7 @@ Expected: PASS (3 tests).
 
 ---
 
-### Task 2: Résumé `importSpec` + `DocumentType` field
+### Task 2: resume `importSpec` + `DocumentType` field
 
 **Files:**
 - Create: `src/documents/resume/importSpec.ts`
@@ -172,14 +172,14 @@ describe("resumeImportSpec", () => {
 Run: `pnpm exec vitest run src/documents/resume/importSpec.test.ts`
 Expected: FAIL — `Failed to resolve import "./importSpec"`.
 
-- [ ] **Step 3a: Create the résumé spec**
+- [ ] **Step 3a: Create the resume spec**
 
 Create `src/documents/resume/importSpec.ts`:
 
 ```ts
 import { type ImportSpec, str, strings, obj, list } from "../../import/spec";
 
-/** The résumé CONTENT contract (mirrors ResumeData minus `id`s). Everything is
+/** The resume CONTENT contract (mirrors ResumeData minus `id`s). Everything is
  *  required-present; empty "" / [] are valid values. */
 export const resumeImportSpec: ImportSpec = {
   name: str(),
@@ -230,7 +230,7 @@ export interface DocumentType<T> {
 }
 ```
 
-- [ ] **Step 3c: Attach it to the résumé document**
+- [ ] **Step 3c: Attach it to the resume document**
 
 Modify `src/documents/resume/index.ts` — add the import and the property:
 
@@ -240,7 +240,7 @@ import { resumeImportSpec } from "./importSpec";
 
 export const resumeDocument: DocumentType<ResumeData> = {
   id: "resume",
-  name: "Résumé",
+  name: "resume",
   defaultData: sampleResume,
   importSpec: resumeImportSpec,
   templates: [classicTemplate, meridianTemplate, quillTemplate, ledgerTemplate, atlasTemplate],
@@ -304,7 +304,7 @@ describe("parseImportJson", () => {
 });
 
 describe("validateAgainstSpec (strict)", () => {
-  it("accepts a full valid résumé", () => {
+  it("accepts a full valid resume", () => {
     const r = validateAgainstSpec(resumeImportSpec, validContent());
     expect(r.ok).toBe(true);
   });
@@ -722,7 +722,7 @@ describe("ImportDialog", () => {
 });
 ```
 
-> Note: validation runs synchronously on change (parse+validate is trivially cheap for résumé-sized JSON), so tests need no fake timers.
+> Note: validation runs synchronously on change (parse+validate is trivially cheap for resume-sized JSON), so tests need no fake timers.
 
 - [ ] **Step 2: Run test to verify it fails**
 
@@ -1225,7 +1225,7 @@ Run: `pnpm build && pnpm preview`, open the editor, and:
 1. Click **Import** → the modal opens on Step 1; **Copy** copies the prompt.
 2. On Step 2, paste a malformed blob → path errors appear, **Import** stays disabled.
 3. Paste a valid blob (e.g. the prompt's own example with an edited name) → green summary, **Import** enabled. Since the sample is unedited on a fresh load, it imports immediately; the preview repopulates and the success banner shows.
-4. Edit a field, reopen, import again → the "Replace current résumé?" confirm appears first.
+4. Edit a field, reopen, import again → the "Replace current resume?" confirm appears first.
 5. Download the PDF and confirm it is still VECTOR: `node scripts/inspect-pdf.mjs resume.pdf`.
 
 - [ ] **Step 4: Checkpoint** — feature complete; stop for review.
@@ -1252,5 +1252,5 @@ Run: `pnpm build && pnpm preview`, open the editor, and:
 
 ## Notes / deliberate simplifications
 
-- Validation runs **synchronously** on each change (not the ~200ms debounce the spec floated) — parse+validate is trivially cheap for résumé-sized JSON and keeps the dialog test free of fake timers. No behavior change for the user.
+- Validation runs **synchronously** on each change (not the ~200ms debounce the spec floated) — parse+validate is trivially cheap for resume-sized JSON and keeps the dialog test free of fake timers. No behavior change for the user.
 - Extra keys are rejected at **every** depth (top level and inside objects/list items), consistent with "strict".

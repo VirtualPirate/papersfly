@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Serve the existing client-side Vector Résumé Builder through an Astro shell — static SEO-rich `<head>`, sitemap/robots, smaller initial JS — while reusing all existing React/TS code and keeping behavior identical.
+**Goal:** Serve the existing client-side Vector resume Builder through an Astro shell — static SEO-rich `<head>`, sitemap/robots, smaller initial JS — while reusing all existing React/TS code and keeping behavior identical.
 
-**Architecture:** Astro renders a static page shell (SEO meta, JSON-LD, font preload, a pre-hydration skeleton). The entire résumé tool (`src/App.tsx` and its modules) mounts as a single `client:only="react"` island — server rendering it is pointless and unsafe because PDF export (jsPDF `doc.html()`) and the scaling logic require a real browser DOM. SEO lives in the statically rendered `<head>`, not in the editor DOM. The heavy jsPDF + embedded-font chunk is deferred to the Download click.
+**Architecture:** Astro renders a static page shell (SEO meta, JSON-LD, font preload, a pre-hydration skeleton). The entire resume tool (`src/App.tsx` and its modules) mounts as a single `client:only="react"` island — server rendering it is pointless and unsafe because PDF export (jsPDF `doc.html()`) and the scaling logic require a real browser DOM. SEO lives in the statically rendered `<head>`, not in the editor DOM. The heavy jsPDF + embedded-font chunk is deferred to the Download click.
 
 **Tech Stack:** Astro 5 (static output), `@astrojs/react`, `@astrojs/sitemap`, `@astrojs/check`, React 19, jsPDF, vitest + React Testing Library, pnpm. Build-time only: `@resvg/resvg-js` (OG image generation).
 
@@ -86,7 +86,7 @@ import sitemap from "@astrojs/sitemap";
 // (e.g. GitHub Pages project site) also set `base: "/repo-name/"`.
 const SITE = "https://example.com";
 
-// Fully static output (Astro default). The résumé tool is a browser-only React
+// Fully static output (Astro default). The resume tool is a browser-only React
 // island (`client:only`); Astro only renders the SEO <head> + skeleton shell.
 export default defineConfig({
   site: SITE,
@@ -231,13 +231,13 @@ const ogImage = new URL("/og-image.png", Astro.site).href;
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "Vector Résumé Builder",
+  name: "Vector resume Builder",
   description,
   applicationCategory: "BusinessApplication",
   operatingSystem: "Any (modern web browser)",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   featureList: [
-    "Live résumé preview",
+    "Live resume preview",
     "True-vector PDF export with selectable text and embedded fonts",
     "Works fully offline in the browser",
   ],
@@ -276,7 +276,7 @@ const jsonLd = {
   </head>
   <body>
     <slot />
-    <noscript>This résumé builder requires JavaScript to run in your browser.</noscript>
+    <noscript>This resume builder requires JavaScript to run in your browser.</noscript>
   </body>
 </html>
 ```
@@ -288,9 +288,9 @@ const jsonLd = {
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { App } from "../App";
 
-const title = "Vector Résumé Builder — Free True-Vector PDF Résumé Maker";
+const title = "Vector resume Builder — Free True-Vector PDF resume Maker";
 const description =
-  "Build a résumé in your browser and export a true-vector PDF with selectable text and embedded fonts. 100% client-side, works offline, no signup.";
+  "Build a resume in your browser and export a true-vector PDF with selectable text and embedded fonts. 100% client-side, works offline, no signup.";
 ---
 
 <BaseLayout title={title} description={description}>
@@ -298,7 +298,7 @@ const description =
       client-side. This static skeleton gives an instant paint and a crawlable
       heading; the inline script removes it the moment the React app mounts. */}
   <div id="app-skeleton" class="app-skeleton">
-    <h1>Vector Résumé Builder</h1>
+    <h1>Vector resume Builder</h1>
     <p>Live preview · true-vector PDF · 100% offline</p>
     <p class="app-skeleton__hint">Loading the editor…</p>
   </div>
@@ -325,7 +325,7 @@ const description =
 - [ ] **Step 3: Create `public/favicon.svg`**
 
 ```svg
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Résumé">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="resume">
   <rect width="32" height="32" rx="6" fill="#1f3a5f" />
   <rect x="9" y="7" width="14" height="18" rx="2" fill="#ffffff" />
   <rect x="11.5" y="11" width="9" height="1.6" rx="0.8" fill="#1f3a5f" />
@@ -409,7 +409,7 @@ Expected: `astro check` passes, then `astro build` writes `dist/` including `dis
 
 Start the dev server and verify with the preview tooling (do NOT use raw Bash/curl for this):
 1. Start the server (`preview_start`; it runs `pnpm dev`).
-2. `preview_snapshot` — confirm the editor form (e.g. a "Basics" section, the name field showing "Jordan Avery Chen") and the live résumé preview heading "Jordan Avery Chen" are present, and the `#app-skeleton` is gone after mount.
+2. `preview_snapshot` — confirm the editor form (e.g. a "Basics" section, the name field showing "Jordan Avery Chen") and the live resume preview heading "Jordan Avery Chen" are present, and the `#app-skeleton` is gone after mount.
 3. `preview_console_logs` — confirm no errors (no hydration errors, no missing-module errors).
 4. `preview_fill` the name field with a new value and `preview_snapshot` — confirm the preview updates live.
 5. Switch the "Document type" select and confirm it still works.
@@ -421,7 +421,7 @@ Expected: the tool behaves exactly as before the migration.
 ```bash
 git add src/layouts/BaseLayout.astro src/pages/index.astro public/favicon.svg src/index.css
 git rm index.html src/main.tsx
-git commit -m "feat: render résumé builder via Astro shell with SEO head"
+git commit -m "feat: render resume builder via Astro shell with SEO head"
 ```
 
 ---
@@ -537,7 +537,7 @@ const H = 630;
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <rect width="${W}" height="${H}" fill="#1f3a5f" />
-  <text x="80" y="300" font-family="Inter" font-weight="600" font-size="76" fill="#ffffff">Vector Résumé Builder</text>
+  <text x="80" y="300" font-family="Inter" font-weight="600" font-size="76" fill="#ffffff">Vector resume Builder</text>
   <text x="80" y="372" font-family="Inter" font-weight="400" font-size="34" fill="#c7d2e4">Live preview · true-vector PDF · 100% offline</text>
 </svg>`;
 
@@ -669,7 +669,7 @@ pnpm gen:fonts   # regenerate the embedded base64 font module from the TTFs
 pnpm gen:og      # regenerate public/og-image.png (social card)
 ```
 - Add a short "## Hosting & SEO" section stating:
-  - The app is built with **Astro** (static output) — the résumé tool is a `client:only` React island; SEO lives in the statically rendered `<head>` (title, description, canonical, Open Graph, Twitter, JSON-LD `WebApplication`), with an auto-generated `sitemap-index.xml` and a `robots.txt`.
+  - The app is built with **Astro** (static output) — the resume tool is a `client:only` React island; SEO lives in the statically rendered `<head>` (title, description, canonical, Open Graph, Twitter, JSON-LD `WebApplication`), with an auto-generated `sitemap-index.xml` and a `robots.txt`.
   - **Set the production domain in one place:** the `SITE` constant (`site` option) in `astro.config.mjs`. Canonical/OG/sitemap/robots all derive from it. For a subpath deploy, also set `base`.
   - Output is fully static (`dist/`) — deploy to any static host; no adapter required.
 

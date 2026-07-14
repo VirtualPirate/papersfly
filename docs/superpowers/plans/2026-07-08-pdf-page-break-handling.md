@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Stop the exported PDF from splitting a résumé entry, skill row, or section heading across a page boundary, and give every page (not just page 1) proper top/bottom margins.
+**Goal:** Stop the exported PDF from splitting a resume entry, skill row, or section heading across a page boundary, and give every page (not just page 1) proper top/bottom margins.
 
 **Architecture:** A block-aware pre-pass measures the offscreen capture copy just before `doc.html()` and inserts empty spacer `<div>`s so each keep-together block starts cleanly on the next page below a top margin, leaving a bottom margin on the page it left. Pure break math (`buildUnits`, `computeSpacers`) is isolated from DOM measurement (`insertPageBreakSpacers`) for unit-testing. jsPDF keeps `margin: 0`; margins are realized by the spacers, so full-bleed page-1 headers stay intact. Applies to the four single-column templates via `data-pdf-*` markers; Atlas (two-column) is excluded.
 
@@ -14,7 +14,7 @@
 - **Commits are the user's responsibility** — do NOT run `git commit`. End each task at a green state (tests pass, `pnpm build` clean) and report; the user commits.
 - The app is **fully client-side**; the PDF path is **browser-only**. `pnpm build && pnpm preview` is the source of truth for exported-PDF appearance (the Astro dev toolbar stays disabled).
 - All theme measurements are in **PostScript points**; `PX = 96 / 72` converts pt→CSS px (the page renders at true size, 612pt = 816px wide).
-- **Zero regression:** a résumé that fits one page, and every Atlas résumé, must export byte-for-byte as today (the pre-pass must no-op for them).
+- **Zero regression:** a resume that fits one page, and every Atlas resume, must export byte-for-byte as today (the pre-pass must no-op for them).
 - `pnpm build` runs `astro check` — it must report **0 type errors**. Test files are type-checked too; keep them well-typed.
 
 ---
@@ -138,7 +138,7 @@ Create `src/pdf/paginate.ts`:
  * jsPDF's doc.html() (autoPaging "text") only avoids slicing an individual line
  * of text; it has no concept of keeping a logical block together and ignores CSS
  * break-inside. This module measures the laid-out capture copy and inserts empty
- * spacer <div>s so no keep-together block (a résumé entry, a skill row, or a
+ * spacer <div>s so no keep-together block (a resume entry, a skill row, or a
  * section heading + its first item) straddles a page boundary — and so pushed
  * blocks land below a top margin, leaving a bottom margin on the page they left.
  *
@@ -319,7 +319,7 @@ Append to `src/pdf/paginate.ts`:
 /**
  * Measure the keep-together units in `root`, insert page-break spacers, and
  * return a cleanup fn that removes them. No-op when `root` has no [data-pdf-block]
- * units (Atlas, or a résumé with nothing to push). Call AFTER fonts are ready
+ * units (Atlas, or a resume with nothing to push). Call AFTER fonts are ready
  * and min-height is neutralized so measurements are final.
  */
 export function insertPageBreakSpacers(root: HTMLElement, m: PageMetrics): () => void {
@@ -521,10 +521,10 @@ with:
   const prevMinHeight = element.style.minHeight;
   element.style.minHeight = "0px";
 
-  // Block-aware page breaks: insert spacers so no keep-together block (a résumé
+  // Block-aware page breaks: insert spacers so no keep-together block (a resume
   // entry, a skill row, or a heading + its first item) straddles a page boundary,
   // and so pushed blocks land below a top margin with a bottom margin on the page
-  // they left. No-op for single-page résumés and for templates without
+  // they left. No-op for single-page resumes and for templates without
   // [data-pdf-block] markers (e.g. Atlas). doc.html keeps margin:0 — margins are
   // realized by the spacers, which leaves full-bleed page-1 headers untouched.
   const metrics: PageMetrics = {
@@ -568,7 +568,7 @@ Build and serve the production build, then exercise the download in a real brows
 pnpm build && pnpm preview   # serve dist/ — do NOT verify via pnpm dev
 ```
 
-For a résumé edited to overflow one page, in EACH single-column template (Classic, Ledger, Meridian, Quill), download the PDF and inspect it:
+For a resume edited to overflow one page, in EACH single-column template (Classic, Ledger, Meridian, Quill), download the PDF and inspect it:
 
 ```bash
 node scripts/inspect-pdf.mjs resume.pdf   # expect VECTOR, 0 images
@@ -583,7 +583,7 @@ Confirm, per template:
 - The verdict is still **VECTOR** with 0 `/Image` and embedded fonts.
 
 Then confirm **no regression**:
-- A single-page résumé exports identically to `main` (no spacers inserted).
+- A single-page resume exports identically to `main` (no spacers inserted).
 - **Atlas** exports identically to `main` — full-bleed sidebar still reaches the page edges; no spacer divs affect it.
 
 - [ ] **Step 5: Checkpoint**

@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Turn the single builder-at-`/` résumé tool into a small website — a marketing landing page, a `/create` template gallery, and the builder at `/build/[doc]/[template]` — with site-wide dark mode.
+**Goal:** Turn the single builder-at-`/` resume tool into a small website — a marketing landing page, a `/create` template gallery, and the builder at `/build/[doc]/[template]` — with site-wide dark mode.
 
 **Architecture:** Astro static pages for the landing (`/`) and gallery shell (`/create`); the existing React builder island moves behind a static-param route (`/build/[doc]/[template]`) generated from the document/template registries. A live-rendered `ClassicPreview` (scaled with CSS transform) is the hero showcase on the landing page and the thumbnail in each gallery card. Dark mode is a `.dark` class on `<html>` driven by a no-flash inline script and a shared theme helper.
 
@@ -16,7 +16,7 @@
 - **Brand name:** `papersfly` (lowercase wordmark). Theme localStorage key: `papersfly-theme`.
 - **Path alias:** `@` → `src` (e.g. `@/lib/utils`). Use relative imports inside the same folder.
 - **No new templates, no new real document types.** Only `resume`/`classic` are real. "Soon" doc-type pills and the dashed placeholder card are illustrative only — build no functionality behind them.
-- **Hard PDF/paper invariant:** the résumé sheet stays white in every theme. No dark-mode rule may target `.resume-page`, `.preview *`, or `.pdf-capture *`. `marketing.css` must use **class selectors only** — never bare `h1/h2/h3/p/ul/li/hr` selectors under `.site` (the hero contains a real `.resume-page`; bare tags would leak into it). The sheet's colors come from `theme.ts` (`--c-*`), a namespace separate from shadcn's `--background`/`--foreground`.
+- **Hard PDF/paper invariant:** the resume sheet stays white in every theme. No dark-mode rule may target `.resume-page`, `.preview *`, or `.pdf-capture *`. `marketing.css` must use **class selectors only** — never bare `h1/h2/h3/p/ul/li/hr` selectors under `.site` (the hero contains a real `.resume-page`; bare tags would leak into it). The sheet's colors come from `theme.ts` (`--c-*`), a namespace separate from shadcn's `--background`/`--foreground`.
 - **Astro dev toolbar stays disabled** (`devToolbar: { enabled: false }` in `astro.config.mjs`) — do not re-enable.
 - **Test commands:** single file `pnpm exec vitest run <path>`; whole suite `pnpm exec vitest run`. Full build + typecheck gate: `pnpm build` (runs `astro check` then `astro build`).
 
@@ -468,7 +468,7 @@ In `src/App.test.tsx`:
     const back = screen.getByRole("link", { name: /templates/i });
     expect(back).toHaveAttribute("href", "/create");
     const title = screen.getByTestId("builder-title");
-    expect(title).toHaveTextContent("Résumé");
+    expect(title).toHaveTextContent("resume");
     expect(title).toHaveTextContent("Classic");
     // No document-type dropdown anymore.
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
@@ -840,14 +840,14 @@ import { sampleResume } from "@/data/resume";
 
 // Two fake docs so we can assert doc-type switching swaps the cards.
 const fakeDocs = [
-  { id: "resume", name: "Résumé", schema: {}, defaultData: sampleResume, templates: [classicTemplate] },
+  { id: "resume", name: "resume", schema: {}, defaultData: sampleResume, templates: [classicTemplate] },
   { id: "letter", name: "Cover letter", schema: {}, defaultData: sampleResume, templates: [{ ...classicTemplate, id: "formal", name: "Formal" }] },
 ] as never;
 
 describe("CreateGallery", () => {
   it("shows a pill per document and the selected document's template cards", async () => {
     render(<CreateGallery documents={fakeDocs} />);
-    expect(screen.getByRole("button", { name: "Résumé" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "resume" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Cover letter" })).toBeInTheDocument();
     // Default selection = first doc → its Classic card links to the builder.
     const card = screen.getByRole("link", { name: /classic/i });
@@ -1251,7 +1251,7 @@ Expected: prints `HEADING_OK`.
 
 - [ ] **Step 3: Manual check**
 
-Run `pnpm preview`, open `http://localhost:4321/create`. Confirm: the Résumé pill is active, the Classic card shows a mini résumé preview, clicking it navigates to `/build/resume/classic`, the theme toggle flips light/dark, and the sheet thumbnail stays white in dark mode. Stop the server.
+Run `pnpm preview`, open `http://localhost:4321/create`. Confirm: the resume pill is active, the Classic card shows a mini resume preview, clicking it navigates to `/build/resume/classic`, the theme toggle flips light/dark, and the sheet thumbnail stays white in dark mode. Stop the server.
 
 - [ ] **Step 4: Checkpoint (no commit)**
 

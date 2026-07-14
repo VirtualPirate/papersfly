@@ -145,23 +145,23 @@ In `src/data/competitors.ts`, add after the `competitors` array (before `getComp
  */
 export const ALTERNATIVES_FAQ: { q: string; a: string }[] = [
   {
-    q: "Which résumé builders are actually free?",
+    q: "Which resume builders are actually free?",
     a: "Only a handful let you download a real, formatted PDF at no cost with no catch. papersfly, Canva, FlowCV, Teal and Standard Resume offer genuinely free PDF downloads; Novoresume, Enhancv and VisualCV stamp a watermark or branding on the free tier; Rezi and Kickresume cap how many times you can download; and Zety and Resume.io only export plain text for free, paywalling the formatted PDF. Of the free options, papersfly is the only one that needs no account and uploads nothing.",
   },
   {
     q: "What does “ATS-safe” mean?",
-    a: "An applicant tracking system (ATS) is the software employers use to scan résumés before a human sees them. An ATS-safe résumé uses a single-column layout and real, selectable text — not words baked into images or hidden in multi-column graphics — so the parser reads your name, roles and dates correctly. Most builders here export ATS-readable PDFs; Canva's popular multi-column, graphic-heavy templates are the main exception.",
+    a: "An applicant tracking system (ATS) is the software employers use to scan resumes before a human sees them. An ATS-safe resume uses a single-column layout and real, selectable text — not words baked into images or hidden in multi-column graphics — so the parser reads your name, roles and dates correctly. Most builders here export ATS-readable PDFs; Canva's popular multi-column, graphic-heavy templates are the main exception.",
   },
   {
-    q: "Which résumé builder keeps my data private?",
-    a: "Every mainstream builder except papersfly is a cloud tool: you create an account and your résumé is stored on their servers. papersfly is private by architecture — there is no account and nothing is uploaded. Your document is built, rendered and exported entirely in your browser, and it works offline after the first load.",
+    q: "Which resume builder keeps my data private?",
+    a: "Every mainstream builder except papersfly is a cloud tool: you create an account and your resume is stored on their servers. papersfly is private by architecture — there is no account and nothing is uploaded. Your document is built, rendered and exported entirely in your browser, and it works offline after the first load.",
   },
   {
-    q: "Do I have to create an account to build a résumé?",
+    q: "Do I have to create an account to build a resume?",
     a: "For most builders on this page, yes — an account is required and your data is saved to the cloud. papersfly needs no signup: you open it and start building, and nothing is transmitted.",
   },
   {
-    q: "Can I download a résumé PDF for free without a watermark?",
+    q: "Can I download a resume PDF for free without a watermark?",
     a: "Yes, with papersfly — exports are unlimited, unbranded and watermark-free. Novoresume, Enhancv and VisualCV add a watermark or branding on free downloads, and Zety and Resume.io only give you plain text for free, so a clean PDF from those requires paying.",
   },
 ];
@@ -346,4 +346,4 @@ Expected: `OK` for all 11 competitor pages, no `MISSING`.
 - **Spec coverage:** helper (Task 1), `/vs` swap (Task 3), hub content (Task 2) + hub wiring (Task 4), comment fix (Task 1), verification (Task 5) — all spec sections covered.
 - **Placeholder scan:** none — all steps carry actual code/commands.
 - **Type consistency:** `faqPageJsonLd(faq: { q: string; a: string }[])` used identically in Tasks 3 & 4; `ALTERNATIVES_FAQ` typed the same; `c.faq` already matches that shape.
-- **Note on encoding:** the non-ASCII glyphs in `ALTERNATIVES_FAQ` (curly quotes, em dashes, `é`) are written as literal UTF-8, matching the existing convention throughout `competitors.ts` (e.g. `résumé`, `—`).
+- **Note on encoding:** the non-ASCII glyphs in `ALTERNATIVES_FAQ` (curly quotes, em dashes, `é`) are written as literal UTF-8, matching the existing convention throughout `competitors.ts` (e.g. `resume`, `—`).
