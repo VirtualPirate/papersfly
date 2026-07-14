@@ -5,11 +5,11 @@
 
    IMPORTANT: class selectors ONLY. The hero embeds a real `.resume-page`; never
    write bare h1/h2/h3/p/ul/li/hr rules under `.site` — they would leak into the
-   résumé sheet and corrupt the PDF.
+   resume sheet and corrupt the PDF.
 
    FONT NOTE: chrome type uses --f-display (Saira Condensed) / --f-body (IBM Plex
-   Sans) / --f-mono (IBM Plex Mono). --f-sans / --f-serif are kept at the résumé's
-   own values ONLY as an inheritance fallback for the embedded résumé preview; the
+   Sans) / --f-mono (IBM Plex Mono). --f-sans / --f-serif are kept at the resume's
+   own values ONLY as an inheritance fallback for the embedded resume preview; the
    document also sets them inline via themeCssVars(), so it is never affected. */
 
 .site {
@@ -45,7 +45,7 @@
   /* fonts for the stylized showcase document (matches the demo) */
   --doc-serif: Georgia, "Times New Roman", serif;
   --doc-sans: system-ui, -apple-system, sans-serif;
-  /* résumé-inheritance fallback only (document overrides these inline) */
+  /* resume-inheritance fallback only (document overrides these inline) */
   --f-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-serif: "SourceSerif", Georgia, "Times New Roman", serif;
 
@@ -288,7 +288,7 @@
 .cmp-tally b { color: var(--ink); }
 .cmp-tally .up { color: var(--pass); }
 
-/* prose blocks — class-scoped so they never leak into the résumé sheet */
+/* prose blocks — class-scoped so they never leak into the resume sheet */
 .cmp-prose { max-width: 68ch; }
 .cmp-prose p { font-size: 1rem; line-height: 1.68; color: var(--muted); margin: 0 0 18px; }
 .cmp-prose p:last-child { margin-bottom: 0; }
@@ -444,3 +444,21 @@
   .tmpl-thumb { height: 208px; }
   .foot-row { flex-direction: column; align-items: flex-start; gap: 14px; }
 }
+
+/* ── Legal / policy prose (privacy page) ──────────────────────────────────
+   Readable long-form column reusing the site tokens. Major sections are
+   separated by the existing .cmp-rule-h blueprint rule. */
+.legal { max-width: 72ch; margin: 0 auto; color: var(--ink); }
+.legal > h2:first-child { margin-top: 0; }
+.legal h2 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.05; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink); margin: 0 0 14px; }
+.legal p { font-size: 1rem; line-height: 1.72; color: var(--muted); margin: 0 0 18px; }
+.legal ul { margin: 0 0 18px; padding-left: 1.2em; }
+.legal li { font-size: 1rem; line-height: 1.7; color: var(--muted); margin: 0 0 10px; }
+.legal p strong, .legal li strong { color: var(--ink); font-weight: 600; }
+.legal a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.legal a:hover { color: var(--accent-hi); }
+.legal .cmp-rule-h { margin-top: 40px; }
+
+/* Footer legal link — matches the footer note styling. */
+.foot-legal { color: var(--faint); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.06em; text-decoration: none; }
+.foot-legal:hover { color: var(--ink); }

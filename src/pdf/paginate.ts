@@ -4,7 +4,7 @@
  * jsPDF's doc.html() (autoPaging "text") only avoids slicing an individual line
  * of text; it has no concept of keeping a logical block together and ignores CSS
  * break-inside. This module measures the laid-out capture copy and inserts empty
- * spacer <div>s so no keep-together block (a résumé entry, a skill row, or a
+ * spacer <div>s so no keep-together block (a resume entry, a skill row, or a
  * section heading + its first item) straddles a page boundary — and so pushed
  * blocks land below a top margin, leaving a bottom margin on the page they left.
  *
@@ -122,7 +122,7 @@ export function computeSpacers(units: UnitRect[], m: PageMetrics): Spacer[] {
 /**
  * Measure the keep-together units in `root`, insert page-break spacers, and
  * return a cleanup fn that removes them. No-op when `root` has no [data-pdf-block]
- * units (Atlas, or a résumé with nothing to push). Call AFTER fonts are ready
+ * units (Atlas, or a resume with nothing to push). Call AFTER fonts are ready
  * and min-height is neutralized so measurements are final.
  */
 export function insertPageBreakSpacers(root: HTMLElement, m: PageMetrics): () => void {

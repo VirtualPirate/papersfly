@@ -22,7 +22,7 @@ function contactParts(
 }
 
 /**
- * Vantage — a two-column résumé: a full-width header band with a centered tab,
+ * Vantage — a two-column resume: a full-width header band with a centered tab,
  * a bold uppercase wordmark over the profession, then a wide main column
  * (summary / experience / education) beside a narrow rail (contact / skills).
  *

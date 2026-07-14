@@ -1,4 +1,4 @@
-/* Vantage — two-column résumé: full-width header band + centered tab, wide main
+/* Vantage — two-column resume: full-width header band + centered tab, wide main
    column (summary / experience / education) beside a narrow contact/skills rail.
    Self-contained: each template chunk loads alone, so scope everything here. */
 .resume-page.t-vantage {

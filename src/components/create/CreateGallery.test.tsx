@@ -6,7 +6,7 @@ import { sampleResume } from "@/data/resume";
 
 // Two fake docs so we can assert the active document drives which cards show.
 const fakeDocs = [
-  { id: "resume", name: "Résumé", schema: {}, defaultData: sampleResume, templates: [classicTemplate] },
+  { id: "resume", name: "Resume", schema: {}, defaultData: sampleResume, templates: [classicTemplate] },
   { id: "letter", name: "Cover letter", schema: {}, defaultData: sampleResume, templates: [{ ...classicTemplate, id: "formal", name: "Formal" }] },
 ] as never;
 
@@ -14,7 +14,7 @@ describe("CreateGallery", () => {
   it("renders a cross-link pill per document and the active document's cards", () => {
     render(<CreateGallery documents={fakeDocs} />);
     // Pills are real links to each doc's picker route (SEO cross-linking).
-    expect(screen.getByRole("link", { name: "Résumé" })).toHaveAttribute("href", "/create-resume");
+    expect(screen.getByRole("link", { name: "Resume" })).toHaveAttribute("href", "/create-resume");
     expect(screen.getByRole("link", { name: "Cover letter" })).toHaveAttribute("href", "/create-letter");
     // No activeDocId → first doc is active → its Classic card links to the builder.
     const card = screen.getByRole("link", { name: /classic/i });

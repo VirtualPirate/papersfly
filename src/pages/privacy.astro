@@ -1,0 +1,113 @@
+---
+// src/pages/privacy.astro
+// Privacy policy — honest disclosure: document content is 100% client-side and
+// never uploaded, while anonymous product analytics (PostHog) is collected.
+// Datasheet/blueprint aesthetic matching /alternatives and /vs pages.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import SiteFooter from "../components/site/SiteFooter.astro";
+import "../styles/marketing.css";
+
+const effectiveDate = "July 14, 2026";
+const contactEmail = "artaza.developer@gmail.com";
+
+const title = "Privacy policy — papersfly";
+const description =
+  "How papersfly handles your data: your documents are built and exported entirely in your browser and are never uploaded. We collect only anonymous product analytics — never your document content.";
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const breadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).href },
+    { "@type": "ListItem", position: 2, name: "Privacy policy", item: canonical },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} extraJsonLd={[breadcrumb]}>
+  <div class="site">
+    <div class="wrap">
+      <SiteHeader />
+      <div class="cmp-hero">
+        <div class="cmp-head">
+          <span class="cmp-eyebrow">Legal · Privacy policy</span>
+          <h1 class="cmp-title">Privacy <span class="accent">by architecture.</span></h1>
+          <p class="cmp-lede">
+            Your documents are built, rendered, and exported to PDF entirely in your
+            browser — they are never uploaded to any server. The only thing we
+            collect is anonymous product analytics, and never the content of what
+            you write.
+          </p>
+          <span class="cmp-updated">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Effective {effectiveDate}
+          </span>
+        </div>
+        <div class="cmp-tblock">
+          <div class="r"><div class="c"><span class="k">Drawing</span><span class="v big">privacy</span></div><div class="c"><span class="k">Rev</span><span class="v">1.0</span></div></div>
+          <div class="r"><div class="c"><span class="k">Sheet</span><span class="v">PRIVACY-00</span></div><div class="c"><span class="k">Scope</span><span class="v">papersfly</span></div></div>
+          <div class="r"><div class="c"><span class="k">Effective</span><span class="v">{effectiveDate}</span></div><div class="c"><span class="k">Status</span><span class="v ok">Approved</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="legal">
+          <h2>The short version</h2>
+          <ul>
+            <li><strong>Your documents never leave your device.</strong> Everything you type is edited, previewed, and turned into a PDF inside your browser. No resume or invoice content is ever sent to a server.</li>
+            <li><strong>No account, ever.</strong> There is no sign-up, no email, and no login required to use papersfly.</li>
+            <li><strong>We collect anonymous product analytics only.</strong> We record which templates and style options are used so we can improve the product — never the text of your document.</li>
+            <li><strong>Works offline.</strong> After the first load you can disconnect entirely and keep building and exporting.</li>
+          </ul>
+
+          <div class="cmp-rule-h"><span class="lbl">01 · Your documents</span><span class="ln"></span></div>
+          <h2>Your documents stay in your browser</h2>
+          <p>papersfly is a fully client-side application. When you edit a document, the live preview and the final true-vector PDF — with selectable text and embedded fonts — are generated entirely on your own device. There is no backend to receive your content, and nothing you type is transmitted over the network. After the initial page load the builder continues to work with no connection at all.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">02 · Analytics</span><span class="ln"></span></div>
+          <h2>What we do collect — product analytics</h2>
+          <p>To understand how papersfly is used and where to improve it, we use <a href="https://posthog.com" target="_blank" rel="noopener">PostHog</a>, a product-analytics service. It records a small set of interaction events. These events contain only which document type and style options you chose — <strong>never the content of your document</strong>. The events we send are:</p>
+          <ul>
+            <li>Selecting a template</li>
+            <li>Changing a style option (colour, font, spacing, or size)</li>
+            <li>Downloading a PDF — and, if it fails, an anonymous error report</li>
+            <li>Importing an existing document</li>
+            <li>Clicking the main call-to-action button</li>
+          </ul>
+          <p>As part of standard analytics, PostHog also collects technical metadata such as a randomly generated anonymous identifier, an approximate location derived from your IP address, your browser, device and operating system, and the current and referring page addresses. This data is not tied to your name or identity, and we do not attempt to re-identify you.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">03 · Cookies &amp; storage</span><span class="ln"></span></div>
+          <h2>Cookies &amp; local storage</h2>
+          <p>papersfly stores your light/dark theme preference in your browser's local storage so the site remembers it between visits. PostHog stores an anonymous identifier in your browser so repeat visits can be counted. We use no advertising cookies and do not track you across other websites.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">04 · Third parties</span><span class="ln"></span></div>
+          <h2>Third parties</h2>
+          <p>The only third party that receives any data is PostHog, which processes the anonymous analytics described above. The site itself is served as static files from a hosting/CDN provider. We do not sell your data, and no advertising network is involved.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">05 · Opting out</span><span class="ln"></span></div>
+          <h2>Opting out of analytics</h2>
+          <p>Analytics is never required to use papersfly. If you would rather not be counted, you can use a tracker-blocking browser extension or block the analytics domain — the builder will continue to work fully, including offline. Because the analytics is anonymous, no personal profile is created either way.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">06 · Retention &amp; rights</span><span class="ln"></span></div>
+          <h2>Data retention &amp; your rights</h2>
+          <p>The analytics data we collect is anonymous and retained only for as long as it is useful for understanding product usage. Because it is not linked to your identity, it cannot ordinarily be traced back to you. If you have a question about your data or wish to make a request, contact us using the details below and we will do our best to help.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">07 · Changes</span><span class="ln"></span></div>
+          <h2>Changes to this policy</h2>
+          <p>We may update this policy from time to time. When we do, we will revise the effective date shown at the top of the page. This policy was last updated on {effectiveDate}.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">08 · Contact</span><span class="ln"></span></div>
+          <h2>Contact</h2>
+          <p>Questions about this policy or your privacy? Email <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <SiteFooter />
+  </div>
+</BaseLayout>

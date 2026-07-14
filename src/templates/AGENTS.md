@@ -11,12 +11,12 @@ folder.
 src/templates/
   types.ts          Template<T> + TemplateVariants interfaces        (shared)
   lazyTemplate.ts   lazyTemplate<T>(meta, load) — wires a code-split chunk (shared)
-  resume/           the résumé designs (one folder per template) + registry.ts
+  resume/           the resume designs (one folder per template) + registry.ts
   invoice/          variants.ts (per-template palettes) + the invoice designs
 ```
 
 A **template** is one *design* over a document's data type `T`. Designs are
-grouped by document type: résumé designs live in `resume/`, invoice designs in
+grouped by document type: resume designs live in `resume/`, invoice designs in
 `invoice/`. `types.ts` and `lazyTemplate.ts` are shared by every document type —
 do not move them into a subfolder.
 
@@ -46,17 +46,17 @@ grow per template.
 
 The live preview shows a dashed **"Page N" divider** wherever the exported PDF
 will break across pages, and the PDF export keeps those same blocks intact — no
-résumé entry, **invoice line-item row**, or totals box is ever split across a
+resume entry, **invoice line-item row**, or totals box is ever split across a
 page boundary. Both behaviors are driven by two `data-*` attributes you put on
 the design's repeating / keep-together content. **Every template must carry them
 so the divider shows on it** (a template with none shows no divider and its PDF
 slices content mid-block):
 
 - **`data-pdf-block`** — a keep-together unit that must never straddle a page
-  boundary: a résumé entry / skill row, an **invoice line-item row**, the totals
+  boundary: a resume entry / skill row, an **invoice line-item row**, the totals
   box, the footer. Put it on each repeating row and each closing block.
 - **`data-pdf-heading`** *(optional)* — a section title that must stay with the
-  first `data-pdf-block` that follows it (résumé section headings use this).
+  first `data-pdf-block` that follows it (resume section headings use this).
   Omit it where there is no such title — the invoices don't use it.
 
 Mechanics: `src/pdf/paginate.ts` measures these blocks and inserts a spacer
@@ -68,7 +68,7 @@ visible divider. You only annotate the markup — no per-template wiring.
   `data-pdf-block` on each `<tbody>` `<tr>`. The spacer is emitted as a `<tr>`
   automatically (a `<div>` sibling would be an invalid table child and render
   outside the row flow) — mark the row and nothing else.
-- **The one exception is Atlas** (the two-column résumé), left intentionally
+- **The one exception is Atlas** (the two-column resume), left intentionally
   unmarked: a full-width spacer cannot be inserted into a two-column flow, so it
   shows no divider until the pre-pass grows column awareness. Any other new
   single-column template must be marked.
@@ -114,7 +114,7 @@ existing sibling (e.g. `invoice/nordic/`) and adapt.
      masthead name) to `var(--f-serif)` and everything else to `var(--f-sans)`.
      If you send all text through `--f-sans`, switching the font pairing only
      changes the body and the display face is silently ignored — a real bug we
-     hit. The résumé name (`.resume-name`) is the reference: it uses `--f-serif`.
+     hit. The resume name (`.resume-name`) is the reference: it uses `--f-serif`.
    - **Stay inside the embeddable font set.** The PDF embeds ONLY what the font
      library ships (`fonts/library.ts`): weights **400/600/700** and the
      **normal** style, reached exclusively through the two slots above. Anything
@@ -143,7 +143,7 @@ existing sibling (e.g. `invoice/nordic/`) and adapt.
    ```ts
    import { lazyTemplate } from "../../lazyTemplate";
    import { <schema> } from "../../../documents/<docType>/schema";
-   import { <NAME>_VARIANTS } from "../variants";           // invoice; résumé uses theme presets
+   import { <NAME>_VARIANTS } from "../variants";           // invoice; resume uses theme presets
    import type { <DataType> } from "../../../data/<docType>";
 
    export const <name>Template = lazyTemplate<<DataType>>(
@@ -158,7 +158,7 @@ existing sibling (e.g. `invoice/nordic/`) and adapt.
    round-trip works. Copy a sibling's tests and rename.
 
 5. **Attach it** to the document type's `templates: [...]` list
-   (`documents/<docType>/index.ts`), and — for résumés — also to
+   (`documents/<docType>/index.ts`), and — for resumes — also to
    `resume/registry.ts` if you want it in that legacy list.
 
 ## Variants (`TemplateVariants`)
@@ -167,7 +167,7 @@ existing sibling (e.g. `invoice/nordic/`) and adapt.
 interface TemplateVariants { colors: ColorScheme[]; fonts: FontPairing[]; default: Variant }
 ```
 
-- **Colors.** Résumé templates reuse the global `COLOR_SCHEMES` from
+- **Colors.** Resume templates reuse the global `COLOR_SCHEMES` from
   `theme/variants.ts` (ids `navy`/`charcoal`/`burgundy`/`forest`), so
   `resolveVariant(variant)` resolves them without arguments. Templates with a
   bespoke palette (all the invoice templates) define their own list in

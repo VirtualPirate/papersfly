@@ -9,9 +9,9 @@ import { competitors, PRICING_AS_OF } from "../data/competitors";
 import "../styles/marketing.css";
 
 const year = new Date(PRICING_AS_OF).getFullYear() || 2026;
-const title = `Best free résumé builder alternatives (${year}) — papersfly`;
+const title = `Best free resume builder alternatives (${year}) — papersfly`;
 const description =
-  "Compare papersfly with Resume.io, Zety, Canva, Novoresume and more. See which résumé builders are truly free, need no signup, and keep your data on your device.";
+  "Compare papersfly with Resume.io, Zety, Canva, Novoresume and more. See which resume builders are truly free, need no signup, and keep your data on your device.";
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
@@ -27,7 +27,7 @@ const breadcrumb = {
 const itemList = {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  name: "papersfly vs résumé builder comparisons",
+  name: "papersfly vs resume builder comparisons",
   numberOfItems: competitors.length,
   itemListElement: competitors.map((c, i) => ({
     "@type": "ListItem",
@@ -47,7 +47,7 @@ const itemList = {
           <span class="cmp-eyebrow">Comparison · Conformance report</span>
           <h1 class="cmp-title">Which builders <span class="accent">meet spec?</span></h1>
           <p class="cmp-lede">
-            A résumé builder should give you the file, keep your data, and cost nothing. We measured
+            A resume builder should give you the file, keep your data, and cost nothing. We measured
             every major builder against that spec. One of them is ours — here's the honest reading.
           </p>
           <span class="cmp-updated">
@@ -114,7 +114,7 @@ const itemList = {
         <p class="cmp-caption">Pricing verified {PRICING_AS_OF}. Sources on each comparison page.</p>
         <div class="cta-row" style="margin-top:24px">
           <a class="btn btn-primary" href="/create-resume">
-            Build a résumé free
+            Build a resume free
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>

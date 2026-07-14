@@ -23,7 +23,7 @@ describe("parseImportJson", () => {
 });
 
 describe("validateAgainstSpec (strict)", () => {
-  it("accepts a full valid résumé", () => {
+  it("accepts a full valid resume", () => {
     const r = validateAgainstSpec(resumeImportSpec, validContent());
     expect(r.ok).toBe(true);
   });

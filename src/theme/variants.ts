@@ -105,7 +105,7 @@ function sizePreset(id: string | undefined): SizePreset {
  * ids fall back to a sensible default.
  *
  * `colors` is the color list to resolve `colorId` against. It defaults to the
- * global COLOR_SCHEMES (résumé templates), but templates whose palette lives
+ * global COLOR_SCHEMES (resume templates), but templates whose palette lives
  * outside that list — e.g. the invoice templates, which also reuse ids like
  * "teal" with a different hue — pass their own `variants.colors` so the accent
  * resolves correctly (and per-template id collisions can't cross-contaminate).

@@ -9,7 +9,7 @@ import { getFont, type FontId } from "./library";
  * derive from one `file` field and cannot drift. Only the families in `usedIds`
  * are embedded — AND, because each family's base64 lives in its own dynamically
  * imported chunk (fontData/<id>.ts), only those families are even downloaded, so
- * a résumé using two fonts never fetches the whole library. No network beyond
+ * a resume using two fonts never fetches the whole library. No network beyond
  * the bundled chunk itself: the bytes are base64 baked into the build.
  *
  * Async because the family chunks load on demand — callers must await this

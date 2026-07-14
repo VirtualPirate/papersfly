@@ -13,17 +13,17 @@ import { fileURLToPath } from "node:url";
 // domain you don't own, which blocks correct indexing site-wide.
 const SITE = "https://example.com";
 
-// Fully static output (Astro default). The résumé tool is a browser-only React
+// Fully static output (Astro default). The resume tool is a browser-only React
 // island (`client:only`); Astro only renders the SEO <head> + skeleton shell.
 export default defineConfig({
   site: SITE,
   // Keep the Astro dev toolbar OFF: it injects extra DOM/<style> into the dev
   // page that html2canvas (jsPDF's doc.html() backend) clones, which corrupts
-  // the résumé header layout in the PDF exported from `astro dev`. Re-enabling it
+  // the resume header layout in the PDF exported from `astro dev`. Re-enabling it
   // brings back the bug where the name/headline/contact render as side-by-side
   // columns instead of stacked. Production is unaffected (no toolbar there).
   devToolbar: { enabled: false },
-  // The résumé/invoice picker split /create into /create-resume and
+  // The resume/invoice picker split /create into /create-resume and
   // /create-invoice. Keep the old URL alive: the static build emits a
   // <meta http-equiv="refresh"> stub here. A true 301 needs host-level rules.
   redirects: { "/create": "/create-resume" },

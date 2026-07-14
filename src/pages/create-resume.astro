@@ -5,20 +5,20 @@ import SiteHeader from "../components/site/SiteHeader.astro";
 import { CreateGallery } from "../components/create/CreateGallery";
 import "../styles/marketing.css";
 
-const title = "Free résumé builder — papersfly";
+const title = "Free resume builder — papersfly";
 const description =
-  "Build a résumé in your browser and export a true-vector PDF with selectable text and embedded fonts. No signup, no upload — works offline.";
+  "Build a resume in your browser and export a true-vector PDF with selectable text and embedded fonts. No signup, no upload — works offline.";
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "papersfly — résumé builder",
+  name: "papersfly — resume builder",
   description,
   applicationCategory: "BusinessApplication",
   operatingSystem: "Any (modern web browser)",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   featureList: [
-    "Live résumé preview",
+    "Live resume preview",
     "True-vector PDF export with selectable text and embedded fonts",
     "Works fully offline in the browser",
   ],
@@ -32,7 +32,7 @@ const breadcrumb = {
     {
       "@type": "ListItem",
       position: 2,
-      name: "Résumé builder",
+      name: "Resume builder",
       item: new URL(Astro.url.pathname, Astro.site).href,
     },
   ],
@@ -44,9 +44,9 @@ const breadcrumb = {
     <div class="wrap">
       <SiteHeader />
       <div class="create-head">
-        <h1 class="create-title">Create a résumé</h1>
+        <h1 class="create-title">Create a resume</h1>
         <p class="create-sub">
-          Pick a résumé template, fill it in, and export a true-vector PDF —
+          Pick a resume template, fill it in, and export a true-vector PDF —
           selectable text, embedded fonts. Everything renders in your browser —
           nothing is uploaded.
         </p>

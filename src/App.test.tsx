@@ -32,7 +32,7 @@ describe("App", () => {
     const back = screen.getByRole("link", { name: /templates/i });
     expect(back).toHaveAttribute("href", "/create-resume");
     const title = screen.getByTestId("builder-title");
-    expect(title).toHaveTextContent("Résumé");
+    expect(title).toHaveTextContent("Resume");
     expect(title).toHaveTextContent("Classic");
     // No document-type dropdown anymore.
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();

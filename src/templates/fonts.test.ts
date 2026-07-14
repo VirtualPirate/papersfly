@@ -24,7 +24,7 @@ import { FONT_LIBRARY } from "../fonts/library";
  */
 const TEMPLATES_DIR = dirname(fileURLToPath(import.meta.url));
 
-/** Every *.css under src/templates (résumé + invoice designs). */
+/** Every *.css under src/templates (resume + invoice designs). */
 function templateCssFiles(): string[] {
   return readdirSync(TEMPLATES_DIR, { recursive: true })
     .map(String)

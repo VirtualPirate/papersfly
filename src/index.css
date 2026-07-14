@@ -25,7 +25,7 @@ body {
   height: 100%;
   margin: 0;
   /* Stop iOS Safari / Android Chrome from auto-inflating font sizes ("font
-     boosting") on the fixed-width résumé sheet, which would otherwise leak the
+     boosting") on the fixed-width resume sheet, which would otherwise leak the
      inflated computed sizes into the doc.html()-captured PDF. See
      .resume-page below and src/pdf/textSizeAdjust.test.ts. */
   -webkit-text-size-adjust: 100%;
@@ -87,7 +87,7 @@ body {
   opacity: 0.8;
 }
 
-/* ---- Builder title (chrome header only; never the résumé) ------------ */
+/* ---- Builder title (chrome header only; never the resume) ------------ */
 .app > header h1 {
   font-family: "Saira Condensed", "Arial Narrow", sans-serif;
   font-weight: 700;

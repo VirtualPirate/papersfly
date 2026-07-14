@@ -9,7 +9,7 @@ import { atlasTemplate } from "../../templates/resume/atlas";
 import { vantageTemplate } from "../../templates/resume/vantage";
 import { resumeImportSpec } from "./importSpec";
 
-/** Flatten every user-entered résumé string into one blob for coverage scanning. */
+/** Flatten every user-entered resume string into one blob for coverage scanning. */
 export function collectResumeText(data: ResumeData): string {
   const parts: string[] = [data.name, data.headline, data.summary, ...Object.values(data.contact)];
   for (const e of data.experience) parts.push(e.role, e.company, e.location, ...e.bullets);
@@ -20,7 +20,7 @@ export function collectResumeText(data: ResumeData): string {
 
 export const resumeDocument: DocumentType<ResumeData> = {
   id: "resume",
-  name: "Résumé",
+  name: "Resume",
   defaultData: sampleResume,
   importSpec: resumeImportSpec,
   templates: [classicTemplate, meridianTemplate, quillTemplate, ledgerTemplate, atlasTemplate, vantageTemplate],

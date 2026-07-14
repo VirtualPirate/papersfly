@@ -75,7 +75,7 @@ python3 -m fontTools.subset /tmp/f-700.ttf \
 # 3. Regenerate the embedded base64, then run the gates:
 pnpm gen:fonts
 pnpm test                       # fontWeights.test.ts enforces rules 1–3
-pnpm build && pnpm verify:pdf   # no fallback/raster, weights not collapsed, résumés stay 1 page
+pnpm build && pnpm verify:pdf   # no fallback/raster, weights not collapsed, resumes stay 1 page
 ```
 
 Sanity-check a file directly:
@@ -94,6 +94,6 @@ and the `FontId` wired in `fontData/index.ts` `FONT_LOADERS`.
   `text-size-adjust` pin on the capture root; class rules alone don't survive
   jsPDF's html2canvas clone).
 - `scripts/verify-pdfs.mjs` → `inspect-pdf.mjs --strict --min-weights=2`
-  (+`--max-pages=1` for résumés): every exported PDF is clean vector, no
-  non-embedded fallback font draws text, no weight collapse, résumés stay one page.
+  (+`--max-pages=1` for resumes): every exported PDF is clean vector, no
+  non-embedded fallback font draws text, no weight collapse, resumes stay one page.
   This is browser-only and cannot run in vitest, so it is the CI backstop.

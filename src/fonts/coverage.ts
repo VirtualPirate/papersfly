@@ -5,7 +5,7 @@
  * scripts/gen-fonts notes and the `pyftsubset --unicodes` set). Characters
  * outside this set have no glyph and would render as nothing in the PDF — so we
  * detect them up front and warn the user instead of silently dropping text
- * (a non-Latin name vanishing from a résumé is the worst-case failure).
+ * (a non-Latin name vanishing from a resume is the worst-case failure).
  *
  * Keep these ranges in sync with the `U=` unicode set used when subsetting.
  */

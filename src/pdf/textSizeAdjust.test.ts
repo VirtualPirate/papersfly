@@ -7,7 +7,7 @@ import { pinTextSizeAdjust } from "./download";
 /**
  * Guard against mobile text auto-inflation corrupting the exported PDF.
  *
- * The résumé/invoice sheet renders in a fixed 816px-wide block (612pt) at true
+ * The resume/invoice sheet renders in a fixed 816px-wide block (612pt) at true
  * physical size, regardless of the device viewport. On real iOS Safari
  * (`-webkit-text-size-adjust: auto` default) and Android Chrome ("font
  * boosting" / Text Autosizing), a block far wider than the layout viewport has
@@ -15,7 +15,7 @@ import { pinTextSizeAdjust } from "./download";
  * the vector PDF from those computed styles, so the inflation flows straight
  * into the PDF — text comes out too big on phones while desktop is correct
  * (measured on iPhone: 9pt body text baked in at ~12.75pt, spilling a one-page
- * résumé onto a second page).
+ * resume onto a second page).
  *
  * The pin (`text-size-adjust: 100%`) lands in TWO places, and both matter:
  *
@@ -39,7 +39,7 @@ const GLOBAL_CSS = join(dirname(fileURLToPath(import.meta.url)), "..", "index.cs
 describe("text auto-inflation guard: index.css (preview)", () => {
   const css = readFileSync(GLOBAL_CSS, "utf8");
 
-  it("pins text-size-adjust: 100% on the résumé sheet capture root", () => {
+  it("pins text-size-adjust: 100% on the resume sheet capture root", () => {
     // Match a `.resume-page { ... text-size-adjust: 100% ... }` block, tolerating
     // the -webkit- prefix Safari requires.
     const block = /\.resume-page\s*\{[^}]*\}/gs;

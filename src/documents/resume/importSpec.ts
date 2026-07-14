@@ -1,6 +1,6 @@
 import { type ImportSpec, str, strings, obj, list } from "../../import/spec";
 
-/** The résumé CONTENT contract (mirrors ResumeData minus `id`s). Everything is
+/** The resume CONTENT contract (mirrors ResumeData minus `id`s). Everything is
  *  required-present; empty "" / [] are valid values. */
 export const resumeImportSpec: ImportSpec = {
   name: str(),

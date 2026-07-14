@@ -13,13 +13,13 @@ const PX = 96 / 72;
  * returning a restore fn.
  *
  * iOS Safari and Android Chrome auto-inflate ("font boosting" / text
- * autosizing) any block far wider than the phone viewport — and the résumé sheet
+ * autosizing) any block far wider than the phone viewport — and the resume sheet
  * is a fixed 816px (612pt) regardless of device. `doc.html()` deep-CLONES the
  * node into html2canvas's own measurement document, where a CLASS-based pin
  * (index.css `.resume-page`) from an external stylesheet is NOT guaranteed to
  * apply — so the browser re-enables autosizing there and the inflated computed
  * font-size bakes straight into the vector PDF (on iPhone, 9pt body text is
- * measured as ~12.75pt, overflowing a one-page résumé onto a second page and
+ * measured as ~12.75pt, overflowing a one-page resume onto a second page and
  * overlapping columns). An INLINE style is copied node-for-node by the clone and
  * inherits to every descendant, so it reliably reaches that measurement context
  * where the class rule cannot. Both the standard and `-webkit-` properties are
@@ -40,13 +40,13 @@ export function pinTextSizeAdjust(element: HTMLElement): () => void {
 }
 
 /**
- * Render the résumé into a jsPDF document directly from the rendered HTML/CSS.
+ * Render the resume into a jsPDF document directly from the rendered HTML/CSS.
  *
  * Unlike a hand-drawn writer, this walks the live DOM via `doc.html()`: jsPDF
  * emits native, selectable **vector** text for every element and embeds the
  * TTFs registered below (via `fontFaces`), so the output is true vector with the
  * real designer fonts — not a screenshot and not a Helvetica fallback. The
- * `<img>`-free résumé means nothing is rasterized.
+ * `<img>`-free resume means nothing is rasterized.
  *
  * Browser-only by nature: `doc.html()` reads computed styles and layout from a
  * laid-out DOM, so `element` must already be rendered (the app keeps an
@@ -59,16 +59,16 @@ async function renderResumeDoc(
 ): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "pt", format: "letter", compress: true });
 
-  // Embed only the fonts this résumé actually uses BEFORE rendering so
+  // Embed only the fonts this resume actually uses BEFORE rendering so
   // doc.html() can resolve the preview's inline font-family to them.
   const used = usedFontIds(overrides, baseFontIds);
   await registerFonts(doc, used);
 
-  const name = element.querySelector(".resume-name")?.textContent?.trim() || "Résumé";
+  const name = element.querySelector(".resume-name")?.textContent?.trim() || "Resume";
   doc.setProperties({
-    title: `${name} — Résumé`,
+    title: `${name} — Resume`,
     author: name,
-    subject: "Résumé",
+    subject: "Resume",
     creator: "jsPDF doc.html() — Vector Resume Builder",
     keywords: "resume, cv, vector pdf",
   });
@@ -90,10 +90,10 @@ async function renderResumeDoc(
   // html2canvas's measurement document, where the class-based pin may not reach.
   const restoreTextSizeAdjust = pinTextSizeAdjust(element);
 
-  // Block-aware page breaks: insert spacers so no keep-together block (a résumé
+  // Block-aware page breaks: insert spacers so no keep-together block (a resume
   // entry, a skill row, or a heading + its first item) straddles a page boundary,
   // and so pushed blocks land below a top margin with a bottom margin on the page
-  // they left. No-op for single-page résumés and for templates without
+  // they left. No-op for single-page resumes and for templates without
   // [data-pdf-block] markers (e.g. Atlas). doc.html keeps margin:0 — margins are
   // realized by the spacers, which leaves full-bleed page-1 headers untouched.
   const metrics: PageMetrics = {
@@ -125,7 +125,7 @@ async function renderResumeDoc(
 }
 
 /**
- * Generate the résumé PDF from the rendered HTML/CSS and trigger a direct
+ * Generate the resume PDF from the rendered HTML/CSS and trigger a direct
  * download (`doc.save` → temporary object-URL `<a download>`, no print dialog,
  * no network).
  */

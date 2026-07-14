@@ -1,6 +1,6 @@
 /* Tailwind v4 — theme + utilities only. Preflight (a global element reset) is
    intentionally OMITTED: doc.html() (jsPDF) clones the ENTIRE document to render
-   the PDF, so a global reset risks changing the exported résumé. The scoped
+   the PDF, so a global reset risks changing the exported resume. The scoped
    reset at the bottom re-creates only what shadcn/ui needs, and never matches
    the preview/capture subtree. */
 @layer theme, base, components, utilities;
@@ -86,7 +86,7 @@
 }
 
 /* ---- Chrome-scoped reset (replaces the omitted Preflight) ---------------
-   Applies only inside .app, and NEVER to .preview/.pdf-capture — the résumé
+   Applies only inside .app, and NEVER to .preview/.pdf-capture — the resume
    template that becomes the PDF. :where() keeps specificity at 0 so Tailwind
    utility classes (utilities layer) always win over this base-layer reset. */
 @layer base {
