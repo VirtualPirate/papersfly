@@ -1,0 +1,110 @@
+---
+// src/pages/terms.astro
+// Terms & Conditions — lightweight terms for a free, client-side, no-account
+// tool. Datasheet/blueprint aesthetic matching /privacy and /about.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import SiteFooter from "../components/site/SiteFooter.astro";
+import "../styles/marketing.css";
+
+const effectiveDate = "July 14, 2026";
+const contactEmail = "artaza.developer@gmail.com";
+
+const title = "Terms & Conditions — papersfly";
+const description =
+  "The terms for using papersfly, a free, 100% client-side document builder: your content stays on your device, the tool is provided as-is, and there is no account to create.";
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const siteUrl = new URL("/", Astro.site).href;
+
+const webPage = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Terms & Conditions",
+  description,
+};
+
+const breadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+    { "@type": "ListItem", position: 2, name: "Terms & Conditions", item: canonical },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={webPage} extraJsonLd={[breadcrumb]}>
+  <div class="site">
+    <div class="wrap">
+      <SiteHeader />
+      <div class="cmp-hero">
+        <div class="cmp-head">
+          <span class="cmp-eyebrow">Legal · Terms &amp; conditions</span>
+          <h1 class="cmp-title">Terms &amp; <span class="accent">conditions.</span></h1>
+          <p class="cmp-lede">
+            papersfly is a free tool that runs entirely in your browser. These
+            terms are deliberately short: what you make is yours, the tool is
+            provided as-is, and there is no account or payment involved.
+          </p>
+          <span class="cmp-updated">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Effective {effectiveDate}
+          </span>
+        </div>
+        <div class="cmp-tblock">
+          <div class="r"><div class="c"><span class="k">Drawing</span><span class="v big">terms</span></div><div class="c"><span class="k">Rev</span><span class="v">1.0</span></div></div>
+          <div class="r"><div class="c"><span class="k">Sheet</span><span class="v">TERMS-00</span></div><div class="c"><span class="k">Scope</span><span class="v">papersfly</span></div></div>
+          <div class="r"><div class="c"><span class="k">Effective</span><span class="v">{effectiveDate}</span></div><div class="c"><span class="k">Status</span><span class="v ok">Approved</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="legal">
+          <h2>Accepting these terms</h2>
+          <p>By using papersfly you agree to these terms. If you do not agree with them, please do not use the tool. Because papersfly requires no account, using the site is the only action that signals your acceptance.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">01 · The service</span><span class="ln"></span></div>
+          <h2>What papersfly provides</h2>
+          <p>papersfly is a free, browser-based tool for building documents and exporting them as PDFs. Everything runs on your own device. There is no account to create, nothing to pay, and no feature locked behind a trial or a watermark. We may add, change, or remove templates and features over time.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">02 · Your content</span><span class="ln"></span></div>
+          <h2>Your content is yours</h2>
+          <p>Anything you type into papersfly stays on your device and is never uploaded to us. You keep all rights to your content, and you are solely responsible for it — including making sure you have the right to use any text you enter and that it is accurate. Because your work is not stored on any server, keeping your own copy of the PDF you export is up to you.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">03 · Acceptable use</span><span class="ln"></span></div>
+          <h2>Acceptable use</h2>
+          <p>Please use papersfly lawfully and reasonably. Do not use it to create unlawful content, and do not attempt to disrupt, attack, reverse the security of, or otherwise interfere with the site or the people using it.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">04 · Analytics &amp; third parties</span><span class="ln"></span></div>
+          <h2>Analytics and third parties</h2>
+          <p>papersfly collects anonymous product analytics to understand how it is used, and is served as static files by a hosting provider. It does not collect the content of your documents. The full detail of what is and is not collected is described on the <a href="/privacy">privacy page</a>, which forms part of these terms.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">05 · No warranty</span><span class="ln"></span></div>
+          <h2>No warranty</h2>
+          <p>papersfly is provided "as is" and "as available", without warranties of any kind, whether express or implied. We do not guarantee that the tool will be uninterrupted, error-free, or that an exported PDF will meet every requirement of every recipient or system. You use it at your own discretion and risk.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">06 · Liability</span><span class="ln"></span></div>
+          <h2>Limitation of liability</h2>
+          <p>To the fullest extent permitted by law, papersfly and its maintainer will not be liable for any indirect, incidental, or consequential loss arising from your use of the tool — for example lost opportunities, or an error in a document you produced with it. papersfly is a free tool, and it is offered on that basis.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">07 · Intellectual property</span><span class="ln"></span></div>
+          <h2>Open source and intellectual property</h2>
+          <p>papersfly's source code is publicly available on <a href="https://github.com/VirtualPirate/papersfly" target="_blank" rel="noopener">GitHub</a>, and the fonts it ships with are distributed under their own open licences. The "papersfly" name and its branding remain the property of the project. Your use of the tool does not transfer ownership of the software or the brand to you.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">08 · Changes</span><span class="ln"></span></div>
+          <h2>Changes to these terms</h2>
+          <p>We may update these terms from time to time. When we do, we will revise the effective date shown at the top of this page. Continuing to use papersfly after a change means you accept the updated terms. These terms were last updated on {effectiveDate}.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">09 · Contact</span><span class="ln"></span></div>
+          <h2>Contact</h2>
+          <p>Questions about these terms? Email <a href={`mailto:${contactEmail}`}>{contactEmail}</a>, or see the <a href="/contact">contact page</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <SiteFooter />
+  </div>
+</BaseLayout>

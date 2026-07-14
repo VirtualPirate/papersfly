@@ -5,7 +5,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SiteHeader from "../../components/site/SiteHeader.astro";
 import SiteFooter from "../../components/site/SiteFooter.astro";
-import { competitors, CAPABILITIES, PAPERSFLY_GAINS, PRICING_AS_OF } from "../../data/competitors";
+import { competitors, CAPABILITIES, PAPERSFLY_GAINS, PRICING_AS_OF, faqPageJsonLd } from "../../data/competitors";
 import type { CapValue } from "../../data/competitors";
 import "../../styles/marketing.css";
 
@@ -54,15 +54,7 @@ const breadcrumb = {
   ],
 };
 
-const qaPage = {
-  "@context": "https://schema.org",
-  "@type": "QAPage",
-  mainEntity: c.faq.map((f) => ({
-    "@type": "Question",
-    name: f.q,
-    acceptedAnswer: { "@type": "Answer", text: f.a },
-  })),
-};
+const faqPage = faqPageJsonLd(c.faq);
 
 const related = competitors.filter((o) => o.slug !== c.slug);
 ---
@@ -71,7 +63,7 @@ const related = competitors.filter((o) => o.slug !== c.slug);
   title={c.title}
   description={c.description}
   jsonLd={jsonLd}
-  extraJsonLd={[breadcrumb, qaPage]}
+  extraJsonLd={[breadcrumb, faqPage]}
 >
   <div class="site">
     <div class="wrap">

@@ -1,0 +1,92 @@
+---
+// src/pages/about.astro
+// About papersfly — the project's mission, how it's built, and who maintains it.
+// Datasheet/blueprint aesthetic matching /privacy, /alternatives and /vs pages.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import SiteFooter from "../components/site/SiteFooter.astro";
+import "../styles/marketing.css";
+
+const repoUrl = "https://github.com/VirtualPirate/papersfly";
+
+const title = "About papersfly — a privacy-first document builder";
+const description =
+  "papersfly is a free, 100% client-side résumé and document builder that exports true-vector PDFs entirely in your browser. Learn why it exists, how it's built, and who maintains it.";
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const siteUrl = new URL("/", Astro.site).href;
+
+const aboutPage = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: "About papersfly",
+  description,
+  about: { "@type": "Organization", name: "papersfly", url: siteUrl },
+};
+
+const breadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+    { "@type": "ListItem", position: 2, name: "About", item: canonical },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={aboutPage} extraJsonLd={[breadcrumb]}>
+  <div class="site">
+    <div class="wrap">
+      <SiteHeader />
+      <div class="cmp-hero">
+        <div class="cmp-head">
+          <span class="cmp-eyebrow">About · The project</span>
+          <h1 class="cmp-title">A document builder that <span class="accent">respects you.</span></h1>
+          <p class="cmp-lede">
+            papersfly is a free, 100% client-side builder for résumés and other
+            documents. You pick a template, fill it in, and export a true-vector
+            PDF — with selectable text and embedded fonts — entirely in your own
+            browser. Nothing is uploaded, and there is no account to create.
+          </p>
+        </div>
+        <div class="cmp-tblock">
+          <div class="r"><div class="c"><span class="k">Drawing</span><span class="v big">about</span></div><div class="c"><span class="k">Rev</span><span class="v">1.0</span></div></div>
+          <div class="r"><div class="c"><span class="k">Sheet</span><span class="v">ABOUT-00</span></div><div class="c"><span class="k">Scope</span><span class="v">papersfly</span></div></div>
+          <div class="r"><div class="c"><span class="k">Type</span><span class="v">Open source</span></div><div class="c"><span class="k">Status</span><span class="v ok">Maintained</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="legal">
+          <h2>What papersfly is</h2>
+          <p>papersfly is a browser-based tool for building good-looking documents — starting with résumés and invoices — and exporting them as real, print-ready PDFs. The design you see on screen is rendered at true physical page size, and the PDF is drawn from that exact same layout, so what you preview is what you get. The exported file contains selectable text and embedded fonts; it is a genuine vector document, not a screenshot of one.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">01 · Why it exists</span><span class="ln"></span></div>
+          <h2>Why it exists</h2>
+          <p>Most online document builders follow the same pattern: you do all the work, then hit a paywall to download a usable file, or you have to hand over an email and let your data sit on someone else's server. papersfly was built as the opposite of that. The document you create is yours, it never leaves your device, and the finished PDF is free to download — no trial, no watermark, no sign-up.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">02 · How it's built</span><span class="ln"></span></div>
+          <h2>Privacy by architecture</h2>
+          <p>The privacy here is not a promise bolted on afterwards — it is a consequence of how the app is built. There is no backend to receive your content. Editing, live preview, and the PDF export all run as code in your browser, which means that after the first load the whole thing keeps working with no network connection at all. The only data that leaves your browser is anonymous product analytics, and never the text of your document. You can read the full detail on the <a href="/privacy">privacy page</a>.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">03 · Who makes it</span><span class="ln"></span></div>
+          <h2>Who makes it</h2>
+          <p>papersfly is designed, built, and maintained by a single independent developer. It started as a personal itch — wanting to produce a clean, typeset PDF without signing up for anything or paying for the privilege — and grew into a small tool worth sharing. I work on it in the open and add document types and templates over time.</p>
+          <p>If it saves you some time or spares you a paywall, that is the whole point. If something is broken or you have an idea, I would genuinely like to hear it — see the <a href="/contact">contact page</a>.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">04 · Open source</span><span class="ln"></span></div>
+          <h2>Free and open source</h2>
+          <p>papersfly is free to use and its source code is public. You can read exactly how it works, verify the privacy claims for yourself, and follow along with development on <a href={repoUrl} target="_blank" rel="noopener">GitHub</a>. The fonts it ships with are open-licensed, and the app itself will always be free to use.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">05 · Try it</span><span class="ln"></span></div>
+          <h2>Start building</h2>
+          <p>The best way to understand papersfly is to use it. <a href="/create-resume">Create a résumé</a> in a couple of minutes, or see <a href="/alternatives">how it compares</a> to the other résumé builders out there.</p>
+        </div>
+      </div>
+    </section>
+
+    <SiteFooter />
+  </div>
+</BaseLayout>

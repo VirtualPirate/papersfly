@@ -5,7 +5,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SiteHeader from "../components/site/SiteHeader.astro";
 import SiteFooter from "../components/site/SiteFooter.astro";
-import { competitors, PRICING_AS_OF } from "../data/competitors";
+import { competitors, PRICING_AS_OF, ALTERNATIVES_FAQ, faqPageJsonLd } from "../data/competitors";
 import "../styles/marketing.css";
 
 const year = new Date(PRICING_AS_OF).getFullYear() || 2026;
@@ -36,9 +36,11 @@ const itemList = {
     url: new URL(`/vs/${c.slug}`, Astro.site).href,
   })),
 };
+
+const faqPage = faqPageJsonLd(ALTERNATIVES_FAQ);
 ---
 
-<BaseLayout title={title} description={description} extraJsonLd={[breadcrumb, itemList]}>
+<BaseLayout title={title} description={description} extraJsonLd={[breadcrumb, itemList, faqPage]}>
   <div class="site">
     <div class="wrap">
       <SiteHeader />
@@ -132,6 +134,20 @@ const itemList = {
               <span class="cmp-card-text">{c.cardBlurb}</span>
               <span class="cmp-card-cta">Read comparison →</span>
             </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="cmp-rule-h"><span class="lbl">FAQ</span><span class="ln"></span></div>
+        <div class="cmp-faq">
+          {ALTERNATIVES_FAQ.map((f) => (
+            <div class="cmp-faq-item">
+              <h3 class="cmp-faq-q">{f.q}</h3>
+              <p class="cmp-faq-a">{f.a}</p>
+            </div>
           ))}
         </div>
       </div>

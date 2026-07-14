@@ -459,6 +459,7 @@
 .legal a:hover { color: var(--accent-hi); }
 .legal .cmp-rule-h { margin-top: 40px; }
 
-/* Footer legal link — matches the footer note styling. */
+/* Footer legal/company links — match the footer note styling. */
+.foot-legal-links { display: flex; flex-wrap: wrap; gap: 18px; }
 .foot-legal { color: var(--faint); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.06em; text-decoration: none; }
 .foot-legal:hover { color: var(--ink); }

@@ -63,7 +63,7 @@ export interface Competitor {
   competitorStrengths: string[];
   /** Where papersfly wins. */
   papersflyStrengths: string[];
-  /** Page-specific FAQ (also emitted as QAPage-adjacent prose). */
+  /** Page-specific FAQ (rendered visibly and emitted as FAQPage JSON-LD). */
   faq: { q: string; a: string }[];
   /** Public sources backing the pricing/feature claims. */
   sources: { label: string; url: string }[];
@@ -722,6 +722,47 @@ export const competitors: Competitor[] = [
   },
 ];
 
+/**
+ * General, site-authored FAQ for the /alternatives hub. Rendered visibly and
+ * emitted as FAQPage JSON-LD. Every claim is verifiable against the per-competitor
+ * facts above (quick.freeDownload / noSignup / onDevice / price).
+ */
+export const ALTERNATIVES_FAQ: { q: string; a: string }[] = [
+  {
+    q: "Which resume builders are actually free?",
+    a: "Only a handful let you download a real, formatted PDF at no cost with no catch. papersfly, Canva, FlowCV, Teal and Standard Resume offer genuinely free PDF downloads; Novoresume, Enhancv and VisualCV stamp a watermark or branding on the free tier; Rezi and Kickresume cap how many times you can download; and Zety and Resume.io only export plain text for free, paywalling the formatted PDF. Of the free options, papersfly is the only one that needs no account and uploads nothing.",
+  },
+  {
+    q: "What does \"ATS-safe\" mean?",
+    a: "An applicant tracking system (ATS) is the software employers use to scan resumes before a human sees them. An ATS-safe resume uses a single-column layout and real, selectable text — not words baked into images or hidden in multi-column graphics — so the parser reads your name, roles and dates correctly. Most builders here export ATS-readable PDFs; Canva's popular multi-column, graphic-heavy templates are the main exception.",
+  },
+  {
+    q: "Which resume builder keeps my data private?",
+    a: "Every mainstream builder except papersfly is a cloud tool: you create an account and your resume is stored on their servers. papersfly is private by architecture — there is no account and nothing is uploaded. Your document is built, rendered and exported entirely in your browser, and it works offline after the first load.",
+  },
+  {
+    q: "Do I have to create an account to build a resume?",
+    a: "For most builders on this page, yes — an account is required and your data is saved to the cloud. papersfly needs no signup: you open it and start building, and nothing is transmitted.",
+  },
+  {
+    q: "Can I download a resume PDF for free without a watermark?",
+    a: "Yes, with papersfly — exports are unlimited, unbranded and watermark-free. Novoresume, Enhancv and VisualCV add a watermark or branding on free downloads, and Zety and Resume.io only give you plain text for free, so a clean PDF from those requires paying.",
+  },
+];
+
 export function getCompetitor(slug: string): Competitor | undefined {
   return competitors.find((c) => c.slug === slug);
+}
+
+/** Build a Schema.org FAQPage node from a list of Q&A pairs. */
+export function faqPageJsonLd(faq: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: `<p>${f.a}</p>` },
+    })),
+  };
 }

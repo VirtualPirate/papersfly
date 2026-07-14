@@ -1,0 +1,85 @@
+---
+// src/pages/contact.astro
+// Contact papersfly — email-only contact page. Datasheet/blueprint aesthetic
+// matching /privacy, /about and /terms.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import SiteFooter from "../components/site/SiteFooter.astro";
+import "../styles/marketing.css";
+
+const contactEmail = "artaza.developer@gmail.com";
+
+const title = "Contact papersfly";
+const description =
+  "Get in touch with papersfly. Questions, bug reports, and feedback about the free client-side document builder are welcome by email.";
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const siteUrl = new URL("/", Astro.site).href;
+
+const contactPage = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact papersfly",
+  description,
+};
+
+const breadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+    { "@type": "ListItem", position: 2, name: "Contact", item: canonical },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={contactPage} extraJsonLd={[breadcrumb]}>
+  <div class="site">
+    <div class="wrap">
+      <SiteHeader />
+      <div class="cmp-hero">
+        <div class="cmp-head">
+          <span class="cmp-eyebrow">Contact · Get in touch</span>
+          <h1 class="cmp-title">Get in <span class="accent">touch.</span></h1>
+          <p class="cmp-lede">
+            papersfly is a small, independent project, and feedback genuinely
+            shapes it. Whether you have found a bug, have an idea for a template,
+            or just have a question, the best way to reach me is by email.
+          </p>
+        </div>
+        <div class="cmp-tblock">
+          <div class="r"><div class="c"><span class="k">Drawing</span><span class="v big">contact</span></div><div class="c"><span class="k">Rev</span><span class="v">1.0</span></div></div>
+          <div class="r"><div class="c"><span class="k">Sheet</span><span class="v">CONTACT-00</span></div><div class="c"><span class="k">Scope</span><span class="v">papersfly</span></div></div>
+          <div class="r"><div class="c"><span class="k">Channel</span><span class="v">Email</span></div><div class="c"><span class="k">Status</span><span class="v ok">Open</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="legal">
+          <h2>Email</h2>
+          <p>The most reliable way to reach papersfly is by email at <a href={`mailto:${contactEmail}`}>{contactEmail}</a>. It is read by the person who builds the tool, so please be as specific as you can and I will do my best to reply.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">01 · What to send</span><span class="ln"></span></div>
+          <h2>What to write about</h2>
+          <ul>
+            <li><strong>Bugs.</strong> If something looks wrong or a PDF did not export as expected, tell me which template you used and, if you can, which browser — it helps me reproduce the problem.</li>
+            <li><strong>Ideas.</strong> Missing a document type or a template style you would use? I add to papersfly over time and suggestions carry real weight.</li>
+            <li><strong>Questions.</strong> Not sure whether papersfly can do something? Ask — a quick email will usually settle it.</li>
+          </ul>
+
+          <div class="cmp-rule-h"><span class="lbl">02 · Privacy</span><span class="ln"></span></div>
+          <h2>Privacy questions</h2>
+          <p>If your question is about how papersfly handles data, the <a href="/privacy">privacy page</a> explains exactly what is and is not collected. If it does not answer your question, email me and I will fill in the gaps.</p>
+
+          <div class="cmp-rule-h"><span class="lbl">03 · Support</span><span class="ln"></span></div>
+          <h2>A note on support</h2>
+          <p>papersfly is a free tool maintained by one person, so support is offered on a best-effort basis — there is no ticket queue and no guaranteed response time. That said, I read everything that comes in, and clear, friendly emails tend to get answered faster.</p>
+        </div>
+      </div>
+    </section>
+
+    <SiteFooter />
+  </div>
+</BaseLayout>
