@@ -9,6 +9,13 @@
   --text-muted: #5d6b7f;
   --accent: #23588f;
   --on-accent: #ffffff;
+  /* App-shell brand accent, kept separate from the shadcn `--accent` token in
+     styles/globals.css (a subtle surface color: cream here, navy in dark).
+     globals.css is imported AFTER index.css in BaseLayout, so its `--accent`
+     shadows the one above document-wide — a plain var(--accent) in app-shell UI
+     would resolve to that surface color and lose contrast. Use these instead. */
+  --app-accent: #23588f;
+  --app-on-accent: #ffffff;
   --line: #23588f;
   --grid-min: rgba(48, 64, 90, 0.05);
   --grid-maj: rgba(48, 64, 90, 0.10);
@@ -120,9 +127,9 @@ body {
   cursor: pointer;
 }
 .view-toggle button[aria-selected="true"] {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
+  background: var(--app-accent);
+  border-color: var(--app-accent);
+  color: var(--app-on-accent);
 }
 
 /* ---- Two-pane layout ------------------------------------------------- */
@@ -259,6 +266,8 @@ body {
   --text-muted: #8ea9c6;
   --accent: #7ad4ea;
   --on-accent: #070d16;
+  --app-accent: #7ad4ea;
+  --app-on-accent: #070d16;
   --line: #7ad4ea;
   --grid-min: rgba(150, 200, 255, 0.045);
   --grid-maj: rgba(150, 200, 255, 0.09);

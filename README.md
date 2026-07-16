@@ -29,9 +29,8 @@ Twitter card, and a JSON-LD `WebApplication` schema. The build also emits an aut
 
 **Set the production domain in one place:** the `SITE` constant (the `site` option) in
 [`astro.config.mjs`](astro.config.mjs). Canonical URLs, Open Graph/Twitter image URLs, the
-sitemap, and `robots.txt` all derive from it — `https://example.com` is a placeholder until
-the real domain is chosen. For a subpath deploy (e.g. a GitHub Pages project site), also set
-`base`.
+sitemap, and `robots.txt` all derive from it — currently `https://papersfly.com`. For a
+subpath deploy (e.g. a GitHub Pages project site), also set `base`.
 
 Output is fully static (`dist/`), so it deploys to any static host with no adapter or
 server runtime required.

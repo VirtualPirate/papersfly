@@ -5,13 +5,12 @@ import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
 
 // SINGLE SOURCE OF TRUTH for the production origin. Canonical/OG URLs, the
-// sitemap, and robots.txt all derive from this. Replace with the real domain
-// once chosen (must start with http:// or https://). For a subpath deploy
-// (e.g. GitHub Pages project site) also set `base: "/repo-name/"`.
-// TODO(seo,CRITICAL): still the placeholder. Until this is the real domain,
-// every canonical/og:url/og:image/sitemap <loc>/robots Sitemap points to a
-// domain you don't own, which blocks correct indexing site-wide.
-const SITE = "https://papersfly.artaza-developer.workers.dev";
+// sitemap, and robots.txt all derive from this. Must start with http:// or
+// https://. For a subpath deploy (e.g. GitHub Pages project site) also set
+// `base: "/repo-name/"`.
+// The Cloudflare `*.workers.dev` preview origin is kept out of the index via
+// public/_headers (X-Robots-Tag: noindex) so only this canonical domain ranks.
+const SITE = "https://papersfly.com";
 
 // Fully static output (Astro default). The resume tool is a browser-only React
 // island (`client:only`); Astro only renders the SEO <head> + skeleton shell.
