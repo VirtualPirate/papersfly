@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "papersfly",
+  "compatibility_date": "2026-07-16",
+  // Fully static site: no Worker script (`main`), just serve the Astro build
+  // output as static assets. See AGENTS.md — this app has no server runtime.
+  "assets": {
+    "directory": "./dist",
+    // Astro emits directory-style routes (about/index.html); auto-trailing-slash
+    // resolves /about and /about/ to it. Unmatched routes serve the 404 page.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

@@ -3,3 +3,6 @@ allowBuilds:
   core-js: false
   esbuild: false
   sharp: false
+  # Native Workers runtime; only needed for local `wrangler dev`, not for
+  # `wrangler deploy` (static-asset upload). Flip to true if you want local dev.
+  workerd: false

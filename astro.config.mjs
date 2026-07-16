@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 // TODO(seo,CRITICAL): still the placeholder. Until this is the real domain,
 // every canonical/og:url/og:image/sitemap <loc>/robots Sitemap points to a
 // domain you don't own, which blocks correct indexing site-wide.
-const SITE = "https://example.com";
+const SITE = "https://papersfly.artaza-developer.workers.dev";
 
 // Fully static output (Astro default). The resume tool is a browser-only React
 // island (`client:only`); Astro only renders the SEO <head> + skeleton shell.
