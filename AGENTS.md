@@ -6,8 +6,10 @@ This file provides guidance to coding agents when working with code in this repo
 
 A fully **client-side** document/resume builder (Astro + React, package name `vector-resume-builder`).
 The user fills a form, sees a live HTML/CSS preview, and clicks Download to get a **true-vector PDF**
-(selectable text + embedded fonts) generated entirely in the browser — **no backend, no network call,
-works offline after first load**. There is intentionally no server runtime and no headless PDF path.
+(selectable text + embedded fonts) generated entirely in the browser (**no server-side PDF path**).
+Template *definitions* may be loaded at runtime from a backend store; PDF generation stays client-side
+and requires no server. There is intentionally no server-side rendering runtime and no headless PDF path
+(any backend is only a store for template definitions).
 
 ## Commands
 
@@ -108,7 +110,8 @@ that same markup is what the PDF captures. Switching doc type loads that type's 
 
 - **Pagination is coarse.** `doc.html()` paginates with `autoPaging: "text"` and margins come from the
   template's own padding applied once around the whole block. Only single-page output is fully supported;
-  multi-page is degraded (intermediate page breaks lose margins). See README "Notes & limitations".
+  multi-page is degraded (intermediate page breaks lose margins). Doing multi-page properly means moving
+  margins to `doc.html()`'s per-page `margin` option.
 
 - **Production domain** is a single `SITE` constant in `astro.config.mjs` (currently the placeholder
   `https://example.com`). Canonical/OG URLs, sitemap, and robots.txt all derive from it.
